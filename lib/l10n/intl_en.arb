@@ -1,0 +1,9 @@
+{
+  "@@last_modified": "2018-08-29T09:10:59.826348",
+  "title": "Ikonfete",
+  "@title": {
+    "description": "The application title",
+    "type": "text",
+    "placeholders": {}
+  }
+}

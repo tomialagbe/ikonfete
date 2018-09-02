@@ -1,0 +1,10 @@
+keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
+Enter keystore password:  android
+
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore /Users/tomi/.android/debug.keystore -destkeystore /Users/tomi/.android/debug.keystore -deststoretype pkcs12".
+(used by facebook api)
+to generate release key, use:
+keytool -exportcert -alias YOUR_RELEASE_KEY_ALIAS -keystore YOUR_RELEASE_KEY_PATH | openssl sha1 -binary | openssl base64
+
+bSj1AqA2J1iR7MlUuCnDcd7MA8c=
