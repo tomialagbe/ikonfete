@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/facebook/facebook.dart';
-import 'package:ikonfetemobile/twitter/twitter.dart';
+import 'package:ikonfetemobile/twitter/twitter_config.dart';
 import 'package:meta/meta.dart';
 
 class AppConfig extends InheritedWidget {

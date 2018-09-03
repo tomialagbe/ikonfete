@@ -11,18 +11,21 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_webview_plugin: ^0.2.1+2
-  twitter: ^0.5.2
+#  twitter:
   shared_preferences: ^0.4.2
   firebase_auth:
   cloud_firestore:
   flutter_facebook_login:
   flutter_twitter_login:
+  flutter_advanced_networkimage:
+  photo_view:
+  palette_generator:
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  intl_translation: "^0.16.7"
+  intl_translation:
 
 
 # For information on the generic Dart part of this file, see the

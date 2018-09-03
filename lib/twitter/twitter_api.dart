@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:http/http.dart' as http;
-import 'package:ikonfetemobile/twitter/twitter.dart';
+import 'package:ikonfetemobile/twitter/twitter_config.dart';
 
 String getOauthHeader(TwitterConfig config, http.Request request) {
   final nonce = _generateNonceString();
