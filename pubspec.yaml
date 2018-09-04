@@ -20,6 +20,9 @@ dependencies:
   flutter_advanced_networkimage:
   photo_view:
   palette_generator:
+  residemenu:
+  simple_coverflow:
+  flutter_swiper:
 
 
 dev_dependencies:
@@ -43,6 +46,13 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/splash_background.png
+    - assets/images/Ikonfete_logo_white.png
+    - assets/images/onboard_background1.png
+    - assets/images/onboard_background2.png
+    - assets/images/onboard_background3.png
+    - assets/images/onboard_background4.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
