@@ -8,16 +8,23 @@ class PrimaryButton extends StatefulWidget {
   final Color defaultColor;
   final Color activeColor;
   final Color borderColor;
+  final TextStyle textStyle;
+  final double elevation;
+  final Widget child;
 
   PrimaryButton({
     @required this.width,
     @required this.height,
-    @required this.text,
+    this.text,
+    this.child,
     @required this.defaultColor,
     this.activeColor,
     this.borderColor: Colors.transparent,
+    this.elevation: 1.0,
+    this.textStyle: const TextStyle(color: Colors.white),
     this.onTap,
-  });
+  })  : assert(!(text == null && child == null)),
+        assert(!(text != null && child != null));
 
   @override
   _PrimaryButtonState createState() => _PrimaryButtonState();
@@ -58,12 +65,14 @@ class _PrimaryButtonState extends State<PrimaryButton> {
             side: BorderSide(color: widget.borderColor, width: 1.0),
             borderRadius: BorderRadius.circular(5.0),
           ),
-          elevation: 1.0,
+          elevation: widget.elevation,
           child: Center(
-            child: Text(
-              this.widget.text,
-              style: TextStyle(color: Colors.white),
-            ),
+            child: widget.text != null
+                ? Text(
+                    this.widget.text,
+                    style: widget.textStyle,
+                  )
+                : widget.child,
           ),
         ),
       ),

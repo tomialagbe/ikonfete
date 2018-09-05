@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart' as routes;
-import 'package:ikonfetemobile/splash_screen.dart';
+import 'package:ikonfetemobile/screens/splash.dart';
 
 void main() => runApp(new IkonfeteApp());
 
@@ -30,6 +31,7 @@ class IkonfeteAppState extends State<IkonfeteApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          fontFamily: "SanFranciscoDisplay",
         ),
         localizationsDelegates: [
           AppLocalizationsDelegate(),
@@ -44,7 +46,11 @@ class IkonfeteAppState extends State<IkonfeteApp> {
           return AppLocalizations.of(context).title;
         },
         home: SplashScreen(),
-        routes: routes.appRoutes,
+        onGenerateRoute: (settings) {
+          final name = settings.name;
+          final widget = routes.appRoutes[name];
+          return CupertinoPageRoute(builder: (_) => widget);
+        },
       ),
     );
   }

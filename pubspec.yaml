@@ -81,6 +81,25 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
   fonts:
+    - family: Themify
+      fonts:
+        - asset: assets/fonts/themify.ttf
+    - family: FontAwesome5
+      fonts:
+        - asset: assets/fonts/fa-regular-400.ttf
+    - family: FontAwesome5Solid
+      fonts:
+        - asset: assets/fonts/fa-solid-900.ttf
+    - family: FontAwesome5Brands
+      fonts:
+        - asset: assets/fonts/fa-brands-400.ttf
     - family: Bebas
       fonts:
         - asset: assets/fonts/bebas.ttf
+    - family: SanFranciscoDisplay
+      fonts:
+        - asset: assets/fonts/sanfranciscodisplay-medium.ttf
+        - asset: assets/fonts/sanfranciscodisplay-semibold.ttf
+          weight: 500
+        - asset: assets/fonts/sanfranciscodisplay-bold.ttf
+          weight: 900

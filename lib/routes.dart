@@ -1,12 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/onboarding_screen.dart';
+import 'package:ikonfetemobile/screens/artist_login.dart';
+import 'package:ikonfetemobile/screens/artist_signup.dart';
+import 'package:ikonfetemobile/screens/onboarding.dart';
 
-final appRoutes = <String, WidgetBuilder>{
-  onBoardingRoute: (ctx) => OnBoardingScreen(),
-  artistSignupRoute: (ctx) => null,
-  fanSignupRoute: (ctx) => null,
+final appRoutes = <String, Widget>{
+  onBoarding: OnBoardingScreen(),
+  artistSignup: ArtistSignupScreen(),
+  artistLogin: ArtistLoginScreen(),
+  fanSignup: null,
 };
 
-final onBoardingRoute = "/onboarding";
-final artistSignupRoute = "/artist_signup";
-final fanSignupRoute = "/fan_signup";
+final onBoarding = "/onboarding";
+final artistSignup = "/artist_signup";
+final artistLogin = "/artist_login";
+final fanSignup = "/fan_signup";
