@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:ikonfetemobile/ikonfete_buttons.dart';
+import 'package:ikonfetemobile/routes.dart' as routes;
 
 class OnBoardingScreen extends StatefulWidget {
   @override
@@ -123,7 +124,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             PrimaryButton(
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
-              onTap: null,
+              onTap: () => Navigator.of(context)
+                  .pushReplacementNamed(routes.artistSignupRoute),
               text: "I'M AN ARTIST",
               defaultColor: Color(0xFFEE1C24),
               activeColor: Color(0xFFBA161C),
@@ -132,7 +134,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             PrimaryButton(
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
-              onTap: null,
+              onTap: () => Navigator.of(context)
+                  .pushReplacementNamed(routes.fanSignupRoute),
               text: "I'M A FAN",
               defaultColor: Colors.transparent,
               activeColor: Colors.white.withOpacity(0.2),

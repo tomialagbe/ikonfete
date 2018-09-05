@@ -23,6 +23,7 @@ dependencies:
   residemenu:
   simple_coverflow:
   flutter_swiper:
+  rxdart:
 
 
 dev_dependencies:

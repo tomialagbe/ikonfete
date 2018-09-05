@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ikonfetemobile/bloc/application_bloc.dart';
+import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
-import 'package:ikonfetemobile/onboarding_screen.dart';
+import 'package:ikonfetemobile/routes.dart' as routes;
 import 'package:ikonfetemobile/splash_screen.dart';
 
 void main() => runApp(new IkonfeteApp());
@@ -22,27 +24,28 @@ class IkonfeteAppState extends State<IkonfeteApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      localizationsDelegates: [
-        AppLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+    return BlocProvider<ApplicationBloc>(
+      bloc: ApplicationBloc(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        localizationsDelegates: [
+          AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
 //      supportedLocales: [Locale("en", ""), Locale("es", ""), Locale("pt", "")],
-      supportedLocales: [
-        Locale("en", ""),
-      ],
-      onGenerateTitle: (context) {
-        return AppLocalizations.of(context).title;
-      },
-      home: SplashScreen(),
-      routes: <String, WidgetBuilder>{
-        "/onboarding": (ctx) => OnBoardingScreen()
-      },
+        supportedLocales: [
+          Locale("en", ""),
+        ],
+        onGenerateTitle: (context) {
+          return AppLocalizations.of(context).title;
+        },
+        home: SplashScreen(),
+        routes: routes.appRoutes,
+      ),
     );
   }
 }
