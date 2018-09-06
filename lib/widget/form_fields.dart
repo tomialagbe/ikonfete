@@ -8,6 +8,7 @@ class LoginFormField extends StatelessWidget {
   final Function(String) onFieldSubmitted;
   final IconData suffixIcon;
   final FormFieldValidator<String> validator;
+  final Function(String) onSaved;
 
   LoginFormField({
     this.placeholder: "",
@@ -17,6 +18,7 @@ class LoginFormField extends StatelessWidget {
     this.onFieldSubmitted,
     this.suffixIcon,
     this.validator,
+    this.onSaved,
   });
 
   @override
@@ -43,6 +45,7 @@ class LoginFormField extends StatelessWidget {
       focusNode: focusNode,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,
+      onSaved: onSaved,
       decoration: InputDecoration(
         hintText: placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),
@@ -75,6 +78,7 @@ class LoginPasswordField extends StatefulWidget {
   final IconData revealIcon;
   final IconData hideIcon;
   final FormFieldValidator<String> validator;
+  final Function(String) onSaved;
 
   LoginPasswordField({
     this.placeholder: "",
@@ -85,6 +89,7 @@ class LoginPasswordField extends StatefulWidget {
     this.revealIcon,
     this.hideIcon,
     this.validator,
+    this.onSaved,
   })  : assert(!(revealIcon != null && hideIcon == null)),
         assert(!(revealIcon == null && hideIcon != null));
 
@@ -122,6 +127,7 @@ class _LoginPasswordFieldState extends State<LoginPasswordField> {
       obscureText: obscureText,
       onFieldSubmitted: widget.onFieldSubmitted,
       validator: widget.validator,
+      onSaved: widget.onSaved,
       decoration: InputDecoration(
         hintText: widget.placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),

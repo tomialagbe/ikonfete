@@ -2,10 +2,10 @@ import 'package:ikonfetemobile/model/model.dart';
 import 'package:ikonfetemobile/model/team.dart';
 
 class User extends Model<String> {
+  String uid;
   String username;
   String email;
-  String firstName;
-  String lastName;
+  String name;
   String phoneNumber;
   bool isActivated = false;
   String profilePictureUrl;
@@ -20,10 +20,10 @@ class User extends Model<String> {
   @override
   void fromJson(Map json) {
     this
+      ..uid = json["uid"]
       ..username = json["username"]
       ..email = json["email"]
-      ..firstName = json["firstName"]
-      ..lastName = json["lastName"]
+      ..name = json["name"]
       ..phoneNumber = json["phoneNumber"]
       ..isActivated = json["isActviated"]
       ..profilePictureUrl = json["profilePictureUrl"]
@@ -37,10 +37,10 @@ class User extends Model<String> {
   @override
   Map toJson() {
     return {
+      "uid": this.uid,
       "username": this.username,
       "email": this.email,
-      "firstName": this.firstName,
-      "lastName": this.lastName,
+      "name": this.name,
       "phoneNumber": this.phoneNumber ?? "",
       "isActivated": this.isActivated,
       "profilePictureUrl": this.profilePictureUrl ?? "",

@@ -2,12 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:ikonfetemobile/bloc/artist_signup_bloc.dart';
+import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart' as routes;
 import 'package:ikonfetemobile/widget/form_fields.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 
 class ArtistSignupScreen extends StatefulWidget {
   @override
@@ -16,24 +20,43 @@ class ArtistSignupScreen extends StatefulWidget {
 
 class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   FocusNode nameFocusNode;
-  FocusNode usernameFocusNode;
   FocusNode emailFocusNode;
   FocusNode passwordFocusNode;
+
+  HudOverlay hudOverlay;
+
+  bool _listenersRegistered;
 
   @override
   void initState() {
     super.initState();
+    _listenersRegistered = false;
     nameFocusNode = FocusNode();
-    usernameFocusNode = FocusNode();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_listenersRegistered) {
+      _listenersRegistered = true;
+      BlocProvider.of<ArtistSignupBloc>(context)
+          .validationResult
+          .listen(_handleValidationResult);
+      BlocProvider.of<ArtistSignupBloc>(context)
+          .signupResult
+          .listen(_handleSignupResult);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: Container(
         color: Colors.white,
         width: double.infinity,
@@ -47,7 +70,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               _buildTitleAndBackButton(),
-              SizedBox(height: 30.0),
+              SizedBox(height: 20.0),
               _buildIntroText(),
               SizedBox(height: 30.0),
               _buildForm(),
@@ -55,6 +78,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
               _buildPolicyText(),
               SizedBox(height: 20.0),
               _buildButtons(),
+              SizedBox(height: 40.0),
             ],
           ),
         ),
@@ -102,8 +126,6 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
         //Create an account to connect to\nyour awesome superfans. Already have\nan account?
         text: AppLocalizations.of(context).artistSignupIntroText,
         children: <TextSpan>[
-//          TextSpan(text: ""),
-//          TextSpan(text: "an account? "),
           TextSpan(
             text: AppLocalizations.of(context).signIn, //"Sign in",
             recognizer: tapHandler,
@@ -115,6 +137,8 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
   }
 
   Widget _buildForm() {
+    final signupBloc = BlocProvider.of<ArtistSignupBloc>(context);
+
     return Form(
       key: formKey,
       child: Padding(
@@ -129,18 +153,9 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
               validator: FormFieldValidators.notEmpty("name"),
               onFieldSubmitted: (newVal) {
                 nameFocusNode.unfocus();
-                FocusScope.of(context).requestFocus(usernameFocusNode);
-              },
-            ),
-            SizedBox(height: 20.0),
-            LoginFormField(
-              placeholder: "Username",
-              focusNode: usernameFocusNode,
-              validator: FormFieldValidators.notEmpty("username"),
-              onFieldSubmitted: (newVal) {
-                usernameFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(emailFocusNode);
               },
+              onSaved: (String val) => signupBloc.name.add(val),
             ),
             SizedBox(height: 20.0),
             LoginFormField(
@@ -152,6 +167,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
                 emailFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(passwordFocusNode);
               },
+              onSaved: (val) => signupBloc.email.add(val),
             ),
             SizedBox(height: 20.0),
             LoginPasswordField(
@@ -164,6 +180,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
               onFieldSubmitted: (newVal) {
                 _formSubmitted();
               },
+              onSaved: (val) => signupBloc.password.add(val),
             ),
           ],
         ),
@@ -322,10 +339,77 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
   }
 
   void _formSubmitted() {
-    final formState = formKey.currentState;
-    bool valid = formState.validate();
+    final overlayChild = Center(
+      child: CollectionSlideTransition(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              FontAwesome5Icons.solidCircle,
+              size: 15.0,
+              color: colors.primaryColor,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              FontAwesome5Icons.solidCircle,
+              size: 15.0,
+              color: colors.primaryColor,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              FontAwesome5Icons.solidCircle,
+              size: 15.0,
+              color: colors.primaryColor,
+            ),
+          ),
+          Icon(
+            FontAwesome5Icons.solidCircle,
+            size: 15.0,
+            color: colors.primaryColor,
+          ),
+        ],
+      ),
+    );
+
+    final bloc = BlocProvider.of<ArtistSignupBloc>(context);
+    bool valid = formKey.currentState.validate();
     if (valid) {
-      formState.save();
+      formKey.currentState.save();
+      // do server side validation
+      hudOverlay = HudOverlay.show(
+        context,
+        overlayChild,
+        Colors.white.withOpacity(0.7),
+      );
+
+      bloc.validate.add(null);
+    }
+  }
+
+  void _handleValidationResult(MapEntry<bool, String> result) {
+    if (!result.key) {
+      hudOverlay?.close();
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(result.value),
+        ),
+      );
+    } else {
+      BlocProvider.of<ArtistSignupBloc>(context).signup.add(null);
+    }
+  }
+
+  void _handleSignupResult(MapEntry<bool, String> result) {
+    hudOverlay?.close();
+    if (!result.key) {
+      // signup failed
+    } else {
+      // signup succeeded
     }
   }
 }

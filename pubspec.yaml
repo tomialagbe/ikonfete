@@ -24,6 +24,7 @@ dependencies:
   simple_coverflow:
   flutter_swiper:
   rxdart:
+  progress_indicators: ^0.1.2
 
 
 dev_dependencies:

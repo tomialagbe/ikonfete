@@ -14,4 +14,5 @@ class FontAwesome5Icons {
   static final eye = IconData(0xf06e, fontFamily: fontFamily);
   static final eyeSlash = IconData(0xf070, fontFamily: fontFamily);
   static final times = IconData(0xf00d, fontFamily: fontFamilySolid);
+  static final solidCircle = IconData(0xf111, fontFamily: fontFamilySolid);
 }
