@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -68,10 +69,7 @@ class SplashScreenState extends State<SplashScreen> {
             textAlign: TextAlign.center,
             text: TextSpan(
               style: TextStyle(color: Colors.white),
-              text: "Harness the power of\n",
-              children: [
-                TextSpan(text: "your fan base and loyalty"),
-              ],
+              text: AppLocalizations.of(context).splashScreenText,
             ),
           ),
         ),

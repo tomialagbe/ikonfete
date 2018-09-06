@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
+import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart' as routes;
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -70,7 +71,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              "WELCOME",
+              AppLocalizations.of(context).welcome.toUpperCase(), // WELCOME
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w100),
             ),
           ],
@@ -98,12 +99,13 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
       textAlign: TextAlign.center,
       text: TextSpan(
         style: TextStyle(fontSize: 14.0, color: Colors.black),
-        text: "Create an account to connect to\n",
+        //Create an account to connect to\nyour awesome superfans. Already have\nan account?
+        text: AppLocalizations.of(context).artistSignupIntroText,
         children: <TextSpan>[
-          TextSpan(text: "your awesome superfans. Already have\n"),
-          TextSpan(text: "an account? "),
+//          TextSpan(text: ""),
+//          TextSpan(text: "an account? "),
           TextSpan(
-            text: "Sign in",
+            text: AppLocalizations.of(context).signIn, //"Sign in",
             recognizer: tapHandler,
             style: TextStyle(color: colors.primaryColor),
           ),
@@ -115,7 +117,6 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
   Widget _buildForm() {
     return Form(
       key: formKey,
-//      autovalidate: true,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0),
         child: Column(
@@ -218,6 +219,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
           ),
         );
 
+    // TODO: localize this text
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
@@ -255,7 +257,8 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
           height: 50.0,
           defaultColor: colors.primaryButtonColor,
           activeColor: colors.primaryButtonActiveColor,
-          text: "REGISTER",
+          text: AppLocalizations.of(context).register.toUpperCase(),
+          // REGISTER
           onTap: () => _formSubmitted(),
         ),
         _buildButtonSeparator(),
@@ -305,7 +308,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
               margin: EdgeInsets.only(left: 40.0, right: 20.0),
             ),
           ),
-          Text("or"),
+          Text(AppLocalizations.of(context).or), // "or"
           Expanded(
             child: Container(
               height: 1.0,
@@ -319,7 +322,6 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
   }
 
   void _formSubmitted() {
-    print("Form Submitted");
     final formState = formKey.currentState;
     bool valid = formState.validate();
     if (valid) {

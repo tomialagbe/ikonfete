@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
+import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart' as routes;
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
@@ -12,16 +13,7 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class OnBoardingScreenState extends State<OnBoardingScreen> {
-  final List<MapEntry<String, String>> sliderEntries = [
-    MapEntry<String, String>("assets/images/onboard_background1.png",
-        "Connect with your\n true fans or favourite artist."),
-    MapEntry<String, String>("assets/images/onboard_background2.png",
-        "Understand your fan\n base with analytics."),
-    MapEntry<String, String>("assets/images/onboard_background3.png",
-        "Leverage your fan base\n and artist loyalty."),
-    MapEntry<String, String>("assets/images/onboard_background4.png",
-        "Choose what you want\n to stream, anytime."),
-  ];
+  List<MapEntry<String, String>> sliderEntries;
 
   SwiperController swiperController;
   final int sliderLength = 4;
@@ -31,6 +23,21 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
   void initState() {
     super.initState();
     swiperController = SwiperController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    sliderEntries = [
+      MapEntry<String, String>("assets/images/onboard_background1.png",
+          AppLocalizations.of(context).onboardText1),
+      MapEntry<String, String>("assets/images/onboard_background2.png",
+          AppLocalizations.of(context).onboardText2),
+      MapEntry<String, String>("assets/images/onboard_background3.png",
+          AppLocalizations.of(context).onboardText3),
+      MapEntry<String, String>("assets/images/onboard_background4.png",
+          AppLocalizations.of(context).onboardText4),
+    ];
   }
 
   @override
@@ -95,7 +102,9 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                   swiperController.move(sliderLength - 1);
                 },
                 child: Text(
-                  currentSliderIndex == sliderLength - 1 ? "" : "Skip",
+                  currentSliderIndex == sliderLength - 1
+                      ? ""
+                      : AppLocalizations.of(context).skip, //"Skip",
                   style: TextStyle(color: Colors.white, fontSize: 16.0),
                 ),
               ),
@@ -126,7 +135,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
               onTap: () => Navigator.of(context).pushNamed(routes.artistSignup),
-              text: "I'M AN ARTIST",
+              text: AppLocalizations.of(context).artistSignupButtonText,
+              // I'M AN ARTIST
               defaultColor: colors.primaryButtonColor,
               activeColor: colors.primaryButtonActiveColor,
             ),
@@ -135,7 +145,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
               onTap: () => Navigator.of(context).pushNamed(routes.fanSignup),
-              text: "I'M A FAN",
+              text: AppLocalizations.of(context).fanSignupButtonText,
+              //"I'M A FAN",
               defaultColor: Colors.transparent,
               activeColor: Colors.white.withOpacity(0.2),
               borderColor: Colors.white,
