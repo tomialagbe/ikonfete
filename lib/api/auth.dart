@@ -54,4 +54,30 @@ class AuthApi extends Api {
         throw ApiException(err.error);
     }
   }
+
+  Future<bool> setupArtistProfile(
+      String uid, String username, String profilePictureUrl) async {
+    final url = "${this.apiBaseUrl}/setup_profile";
+    final headers = {"Content-Type": "application/json"};
+    final body = {
+      "uid": uid,
+      "username": username,
+      "profilePictureUrl": profilePictureUrl,
+    };
+    try {
+      http.Response response =
+          await http.post(url, headers: headers, body: json.encode(body));
+      switch (response.statusCode) {
+        case 200:
+          Map responseData = json.decode(response.body);
+          return responseData["success"];
+        default:
+          final err = ApiError();
+          err.fromJson(json.decode(response.body));
+          throw ApiException(err.error);
+      }
+    } on Exception catch (e) {
+      throw ApiException("A network error occurred");
+    }
+  }
 }

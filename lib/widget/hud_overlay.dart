@@ -36,6 +36,8 @@ class HudOverlay {
     overlayEntry?.remove();
   }
 
+  static Color defaultColor() => Colors.white.withOpacity(0.7);
+
   static Widget dotsLoadingIndicator() {
     return Center(
       child: CollectionSlideTransition(

@@ -3,31 +3,59 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/preferences.dart';
+import 'package:ikonfetemobile/routes.dart' as routes;
+import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ArtistSignupProfileScreen extends StatefulWidget {
+class UserSignupProfileScreen extends StatefulWidget {
   final Artist artist;
+  final Fan fan;
 
-  ArtistSignupProfileScreen(this.artist) : assert(artist != null);
+  UserSignupProfileScreen({
+    this.artist,
+    this.fan,
+  })  : assert(!(artist == null && fan == null)),
+        assert(!(artist != null && fan != null));
 
   @override
-  _ArtistSignupProfileScreenState createState() =>
-      _ArtistSignupProfileScreenState();
+  _UserSignupProfileScreenState createState() =>
+      _UserSignupProfileScreenState();
 }
 
-class _ArtistSignupProfileScreenState extends State<ArtistSignupProfileScreen> {
+class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   File _displayPicture;
+
+  HudOverlay hudOverlay;
+
+  FocusNode usernameFocusNode;
+
+  UserSignupProfileBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameFocusNode = FocusNode();
+    bloc = BlocProvider.of<UserSignupProfileBloc>(context);
+    bloc.actionResult.listen(_handleProfileUpdateResult);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: Container(
         color: Colors.white,
         width: double.infinity,
@@ -111,9 +139,16 @@ class _ArtistSignupProfileScreenState extends State<ArtistSignupProfileScreen> {
             SizedBox(height: 40.0),
             LoginFormField(
               validator: FormFieldValidators.notEmpty("username"),
+              focusNode: usernameFocusNode,
               placeholder: "Username",
               textAlign: TextAlign.center,
               textInputAction: TextInputAction.done,
+              onSaved: (val) {
+                bloc.username.add(val);
+              },
+              onFieldSubmitted: (val) {
+                usernameFocusNode.unfocus();
+              },
             ),
           ],
         ),
@@ -134,7 +169,14 @@ class _ArtistSignupProfileScreenState extends State<ArtistSignupProfileScreen> {
           activeColor: colors.primaryButtonActiveColor,
           text: "PROCEED",
           // REGISTER
-          onTap: () => _updateProfile(),
+          onTap: () {
+            if (formKey.currentState.validate()) {
+              formKey.currentState.save();
+              hudOverlay = HudOverlay.show(context,
+                  HudOverlay.dotsLoadingIndicator(), HudOverlay.defaultColor());
+              bloc.action.add(null);
+            }
+          },
         ),
       ],
     );
@@ -144,10 +186,53 @@ class _ArtistSignupProfileScreenState extends State<ArtistSignupProfileScreen> {
     final im = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       _displayPicture = im;
+      bloc.profilePicture.add(im);
     });
   }
 
-  void _updateProfile() {}
+  void _handleProfileUpdateResult(Pair<bool, String> result) {
+    hudOverlay?.close();
+    if (!result.first) {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(content: Text(result.second)),
+      );
+    } else {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setBool(PreferenceKeys.isOnBoarded, true);
+      });
+      showDialog(
+        context: context,
+        builder: (c) {
+          return AlertDialog(
+            title: Text("Onboarding Complete"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    "Congratulations. Your Ikonfete account has been setup.\nYou can now log in to your account",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(routes.artistLogin);
+                },
+                child: Text(
+                  "LOGIN",
+                  style: TextStyle(color: colors.primaryColor),
+                ),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: false,
+      );
+    }
+  }
 }
 
 class ProfilePictureChooser extends StatelessWidget {

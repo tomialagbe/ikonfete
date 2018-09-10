@@ -11,11 +11,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   http:
+  uuid:
   flutter_webview_plugin: ^0.2.1+2
-#  twitter:
   shared_preferences: ^0.4.2
+  firebase_core:
   firebase_auth:
   cloud_firestore:
+  firebase_storage:
   flutter_facebook_login:
   flutter_twitter_login:
   flutter_advanced_networkimage:

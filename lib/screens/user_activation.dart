@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/user_activation_bloc.dart';
+import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/fan.dart';
-import 'package:ikonfetemobile/preferences.dart';
-import 'package:ikonfetemobile/routes.dart' as routes;
+import 'package:ikonfetemobile/screens/user_signup_profile.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserActivationScreen extends StatefulWidget {
   final Artist artist;
@@ -212,43 +212,21 @@ class _ArtistActivationScreenState extends State<UserActivationScreen> {
   }
 
   void _handleActivationResult(Pair<bool, String> result) {
+    final appConfig = AppConfig.of(context);
+    final uid = widget.artist != null ? widget.artist.uid : widget.fan.uid;
     hudOverlay?.close();
     if (result.first) {
-      // show signup success
-      SharedPreferences.getInstance().then((pref) {
-        pref.setBool(PreferenceKeys.isOnBoarded, true);
-      });
-
-      showDialog(
-        context: context,
-        builder: (c) {
-          return AlertDialog(
-            title: Text("Activation Successful"),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    "Congratulations. You're account has been activated.\nYou can now log in to your account",
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacementNamed(routes.artistLogin);
-                },
-                child: Text(
-                  "LOGIN",
-                  style: TextStyle(color: colors.primaryColor),
+      // take the user to the profile setup page
+      Navigator.of(context).pushReplacement(
+        CupertinoPageRoute(
+          builder: (_) => BlocProvider<UserSignupProfileBloc>(
+                bloc: UserSignupProfileBloc(appConfig: appConfig, uid: uid),
+                child: UserSignupProfileScreen(
+                  artist: widget.artist,
+                  fan: widget.fan,
                 ),
               ),
-            ],
-          );
-        },
-        barrierDismissible: false,
+        ),
       );
     } else {
       scaffoldKey.currentState.showSnackBar(

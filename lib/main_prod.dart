@@ -20,6 +20,7 @@ void main() {
       accessTokenSecret: "",
     ),
     serverBaseUrl: "",
+    firebaseStorage: null,
     child: IkonfeteApp(),
   );
   runApp(configuredApp);

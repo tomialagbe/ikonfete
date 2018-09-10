@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
@@ -71,12 +70,13 @@ class ArtistSignupBloc implements BlocBase {
   }
 
   Future _validateData() async {
-    if (await _emailExists(_email)) {
-      _validationResult.add(MapEntry<bool, String>(
-          false, "A user with this email already exists."));
-    } else {
-      _validationResult.add(MapEntry<bool, String>(true, null));
-    }
+//    if (await _emailExists(_email)) {
+//      _validationResult.add(MapEntry<bool, String>(
+//          false, "A user with this email already exists."));
+//    } else {
+//      _validationResult.add(MapEntry<bool, String>(true, null));
+//    }
+    _validationResult.add(MapEntry<bool, String>(true, null));
   }
 
   void _signupArtist() async {
@@ -89,13 +89,5 @@ class ArtistSignupBloc implements BlocBase {
     } on Exception catch (e) {
       _signupResult.add(Triple.from(false, null, e.toString()));
     }
-  }
-
-  Future<bool> _emailExists(String email) async {
-    final query = await Firestore.instance
-        .collection("users")
-        .where("email", isEqualTo: _email)
-        .getDocuments();
-    return query.documents.isNotEmpty;
   }
 }
