@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginFormField extends StatelessWidget {
   final String placeholder;
@@ -9,6 +10,9 @@ class LoginFormField extends StatelessWidget {
   final IconData suffixIcon;
   final FormFieldValidator<String> validator;
   final Function(String) onSaved;
+  final TextStyle textStyle;
+  final TextAlign textAlign;
+  final List<TextInputFormatter> inputFormatters;
 
   LoginFormField({
     this.placeholder: "",
@@ -19,6 +23,9 @@ class LoginFormField extends StatelessWidget {
     this.suffixIcon,
     this.validator,
     this.onSaved,
+    this.textStyle,
+    this.textAlign,
+    this.inputFormatters: const [],
   });
 
   @override
@@ -46,6 +53,10 @@ class LoginFormField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,
       onSaved: onSaved,
+      style: textStyle ??
+          Theme.of(context).textTheme.body1.copyWith(fontSize: 15.0),
+      textAlign: textAlign ?? TextAlign.start,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         hintText: placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),
@@ -79,6 +90,7 @@ class LoginPasswordField extends StatefulWidget {
   final IconData hideIcon;
   final FormFieldValidator<String> validator;
   final Function(String) onSaved;
+  final TextStyle textStyle;
 
   LoginPasswordField({
     this.placeholder: "",
@@ -90,6 +102,7 @@ class LoginPasswordField extends StatefulWidget {
     this.hideIcon,
     this.validator,
     this.onSaved,
+    this.textStyle,
   })  : assert(!(revealIcon != null && hideIcon == null)),
         assert(!(revealIcon == null && hideIcon != null));
 
@@ -128,6 +141,7 @@ class _LoginPasswordFieldState extends State<LoginPasswordField> {
       onFieldSubmitted: widget.onFieldSubmitted,
       validator: widget.validator,
       onSaved: widget.onSaved,
+      style: widget.textStyle ?? Theme.of(context).textTheme.body1,
       decoration: InputDecoration(
         hintText: widget.placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),

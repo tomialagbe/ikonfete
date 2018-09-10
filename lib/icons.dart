@@ -6,6 +6,11 @@ class ThemifyIcons {
   static final close = IconData(0xe646, fontFamily: fontFamily);
 }
 
+class LineAwesomeIcons {
+  static final fontFamily = "LineAwesome";
+  static final camera = IconData(0xf162, fontFamily: fontFamily);
+}
+
 class FontAwesome5Icons {
   static final fontFamily = "FontAwesome5";
   static final fontFamilySolid = "FontAwesome5Solid";
@@ -15,4 +20,5 @@ class FontAwesome5Icons {
   static final eyeSlash = IconData(0xf070, fontFamily: fontFamily);
   static final times = IconData(0xf00d, fontFamily: fontFamilySolid);
   static final solidCircle = IconData(0xf111, fontFamily: fontFamilySolid);
+  static final solidUser = IconData(0xf007, fontFamily: fontFamilySolid);
 }

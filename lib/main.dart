@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
@@ -25,6 +26,8 @@ class IkonfeteAppState extends State<IkonfeteApp> {
 
   @override
   Widget build(BuildContext context) {
+    final appConfig = AppConfig.of(context);
+    final routeMap = routes.appRoutes(appConfig);
     return BlocProvider<ApplicationBloc>(
       bloc: ApplicationBloc(),
       child: MaterialApp(
@@ -48,7 +51,7 @@ class IkonfeteAppState extends State<IkonfeteApp> {
         home: SplashScreen(),
         onGenerateRoute: (settings) {
           final name = settings.name;
-          final widget = routes.appRoutes[name];
+          final widget = routeMap[name];
           return CupertinoPageRoute(builder: (_) => widget);
         },
       ),

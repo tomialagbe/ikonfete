@@ -2,16 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/artist_signup_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/bloc/user_activation_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
+import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/routes.dart' as routes;
+import 'package:ikonfetemobile/screens/user_activation.dart';
+import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
-import 'package:progress_indicators/progress_indicators.dart';
 
 class ArtistSignupScreen extends StatefulWidget {
   @override
@@ -28,29 +32,24 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
 
   HudOverlay hudOverlay;
 
-  bool _listenersRegistered;
-
   @override
   void initState() {
     super.initState();
-    _listenersRegistered = false;
     nameFocusNode = FocusNode();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+
+    BlocProvider.of<ArtistSignupBloc>(context)
+        .validationResult
+        .listen(_handleValidationResult);
+    BlocProvider.of<ArtistSignupBloc>(context)
+        .signupResult
+        .listen(_handleSignupResult);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_listenersRegistered) {
-      _listenersRegistered = true;
-      BlocProvider.of<ArtistSignupBloc>(context)
-          .validationResult
-          .listen(_handleValidationResult);
-      BlocProvider.of<ArtistSignupBloc>(context)
-          .signupResult
-          .listen(_handleSignupResult);
-    }
   }
 
   @override
@@ -178,6 +177,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
               hideIcon: FontAwesome5Icons.eyeSlash,
               validator: FormFieldValidators.minLength("password", 6),
               onFieldSubmitted: (newVal) {
+                passwordFocusNode.unfocus();
                 _formSubmitted();
               },
               onSaved: (val) => signupBloc.password.add(val),
@@ -339,42 +339,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
   }
 
   void _formSubmitted() {
-    final overlayChild = Center(
-      child: CollectionSlideTransition(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Icon(
-              FontAwesome5Icons.solidCircle,
-              size: 15.0,
-              color: colors.primaryColor,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Icon(
-              FontAwesome5Icons.solidCircle,
-              size: 15.0,
-              color: colors.primaryColor,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Icon(
-              FontAwesome5Icons.solidCircle,
-              size: 15.0,
-              color: colors.primaryColor,
-            ),
-          ),
-          Icon(
-            FontAwesome5Icons.solidCircle,
-            size: 15.0,
-            color: colors.primaryColor,
-          ),
-        ],
-      ),
-    );
-
+    final overlayChild = HudOverlay.dotsLoadingIndicator();
     final bloc = BlocProvider.of<ArtistSignupBloc>(context);
     bool valid = formKey.currentState.validate();
     if (valid) {
@@ -404,12 +369,25 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
     }
   }
 
-  void _handleSignupResult(MapEntry<bool, String> result) {
+  void _handleSignupResult(Triple<bool, Artist, String> result) {
+    final appConfig = AppConfig.of(context);
     hudOverlay?.close();
-    if (!result.key) {
+    if (!result.first) {
       // signup failed
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(content: Text(result.third)),
+      );
     } else {
-      // signup succeeded
+      final artist = result.second;
+      // take the user to the activation screen
+      Navigator.of(context).pushReplacement(
+        CupertinoPageRoute(
+          builder: (_) => BlocProvider<UserActivationBloc>(
+                bloc: UserActivationBloc(appConfig, artist: artist),
+                child: UserActivationScreen(artist: artist),
+              ),
+        ),
+      );
     }
   }
 }

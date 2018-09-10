@@ -1,7 +1,13 @@
 abstract class Model<T> {
-  T id;
+  String id;
 
-  void fromJson(Map json);
+  void fromJson(Map json) {
+    this..id = json["id"];
+  }
 
-  Map toJson();
+  Map toJson() {
+    return {
+      "id": id,
+    };
+  }
 }

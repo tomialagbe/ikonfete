@@ -10,6 +10,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_localizations:
     sdk: flutter
+  http:
   flutter_webview_plugin: ^0.2.1+2
 #  twitter:
   shared_preferences: ^0.4.2
@@ -21,10 +22,13 @@ dependencies:
   photo_view:
   palette_generator:
   residemenu:
-  simple_coverflow:
   flutter_swiper:
   rxdart:
   progress_indicators: ^0.1.2
+  image_picker:
+    git:
+      url: git://github.com/tomialagbe/plugins
+      path: packages/image_picker
 
 
 dev_dependencies:
@@ -94,6 +98,9 @@ flutter:
     - family: FontAwesome5Brands
       fonts:
         - asset: assets/fonts/fa-brands-400.ttf
+    - family: LineAwesome
+      fonts:
+        - asset: assets/fonts/line-awesome.ttf
     - family: Bebas
       fonts:
         - asset: assets/fonts/bebas.ttf

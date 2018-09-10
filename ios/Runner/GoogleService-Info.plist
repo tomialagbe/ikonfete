@@ -7,34 +7,34 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>672531851686-ncdadd25mrfdvak2r3u5ufc6jq5pal20.apps.googleusercontent.com</string>
+	<string>504427487731-s6h6enkro6gonvrpkqtadbqqsi6a4t3g.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.672531851686-ncdadd25mrfdvak2r3u5ufc6jq5pal20</string>
+	<string>com.googleusercontent.apps.504427487731-s6h6enkro6gonvrpkqtadbqqsi6a4t3g</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBgqEhhs0wDyeIpq8oDh_1-VYj7_cycmes</string>
+	<string>AIzaSyC6nThEetEAEZ_Om17DuTxy7zWw6m3Gg3Q</string>
 	<key>GCM_SENDER_ID</key>
-	<string>672531851686</string>
+	<string>504427487731</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.ikonfete.ikonfetemobile</string>
 	<key>PROJECT_ID</key>
-	<string>ikonfete-d98b8</string>
+	<string>ikonfete-server</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ikonfete-d98b8.appspot.com</string>
+	<string>ikonfete-server.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:672531851686:ios:75be1ef2cbdac210</string>
+	<string>1:504427487731:ios:75be1ef2cbdac210</string>
 	<key>DATABASE_URL</key>
-	<string>https://ikonfete-d98b8.firebaseio.com</string>
+	<string>https://ikonfete-server.firebaseio.com</string>
 </dict>
 </plist>

@@ -18,6 +18,7 @@ void main() {
       accessToken: "232707493-WuE4AfaUH6FZ4DP23dAFe6Aw4ta8mXD63oIyAXkB",
       accessTokenSecret: "dTdKFRrZScqgERhzLQnQEqrgkWNDag5T5yQF3ncAukS0h",
     ),
+    serverBaseUrl: "https://ikonfete-server.appspot.com",
     child: IkonfeteApp(),
   );
   runApp(configuredApp);

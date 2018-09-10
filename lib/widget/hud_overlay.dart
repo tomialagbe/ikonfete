@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/colors.dart' as colors;
+import 'package:ikonfetemobile/icons.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 
 class HudOverlay {
   OverlayEntry overlayEntry;
@@ -31,5 +34,43 @@ class HudOverlay {
 
   void close() {
     overlayEntry?.remove();
+  }
+
+  static Widget dotsLoadingIndicator() {
+    return Center(
+      child: CollectionSlideTransition(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              FontAwesome5Icons.solidCircle,
+              size: 15.0,
+              color: colors.primaryColor,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              FontAwesome5Icons.solidCircle,
+              size: 15.0,
+              color: colors.primaryColor,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              FontAwesome5Icons.solidCircle,
+              size: 15.0,
+              color: colors.primaryColor,
+            ),
+          ),
+          Icon(
+            FontAwesome5Icons.solidCircle,
+            size: 15.0,
+            color: colors.primaryColor,
+          ),
+        ],
+      ),
+    );
   }
 }

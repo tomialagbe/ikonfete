@@ -42,6 +42,15 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
     
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Ikonfete needs enable you to upload pictures from your device</string>
+    
+    <key>NSCameraUsageDescription</key>
+    <string>Ikonfete needs to enable you to take pictures with your device camer</string>
+    
+    <key>NSMicrophoneUsageDescription</key>
+    <string></string>
+    
     <!-- FACEBOOK SDK -->
     <key>CFBundleURLTypes</key>
     <array>

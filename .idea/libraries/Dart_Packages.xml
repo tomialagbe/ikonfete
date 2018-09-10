@@ -205,6 +205,13 @@
             </list>
           </value>
         </entry>
+        <entry key="image_picker">
+          <value>
+            <list>
+              <option value="$USER_HOME$/flutter/.pub-cache/git/plugins-4bbd94bc542a6bd83726a3e07518f2e404230011/packages/image_picker/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="intl">
           <value>
             <list>
@@ -422,13 +429,6 @@
             </list>
           </value>
         </entry>
-        <entry key="simple_coverflow">
-          <value>
-            <list>
-              <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/simple_coverflow-0.0.6/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="sky_engine">
           <value>
             <list>
@@ -544,6 +544,7 @@
       </option>
     </properties>
     <CLASSES>
+      <root url="file://$USER_HOME$/flutter/.pub-cache/git/plugins-4bbd94bc542a6bd83726a3e07518f2e404230011/packages/image_picker/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/after_layout-1.0.4/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-0.32.4/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.5.0/lib" />
@@ -601,7 +602,6 @@
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_packages_handler-1.0.4/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_static-0.2.8/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_web_socket-0.2.2+4/lib" />
-      <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/simple_coverflow-0.0.6/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-1.1.5/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/source_maps-0.10.7/lib" />
       <root url="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.4.1/lib" />

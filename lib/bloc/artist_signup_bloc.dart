@@ -1,12 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
+import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/auth.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/model/user.dart';
+import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/types/types.dart';
 
 class ArtistSignupBloc implements BlocBase {
+  final AppConfig appConfig;
+
   String _name;
   String _email;
   String _password;
@@ -17,10 +21,10 @@ class ArtistSignupBloc implements BlocBase {
   StreamController<String> _passwordController = StreamController<String>();
   StreamController _actionValidate = StreamController();
   StreamController<MapEntry<bool, String>> _validationResultController =
-      StreamController<MapEntry<bool, String>>();
+      StreamController.broadcast<MapEntry<bool, String>>();
   StreamController _actionSignup = StreamController();
-  StreamController<MapEntry<bool, String>> _signupResultController =
-      StreamController<MapEntry<bool, String>>();
+  StreamController<Triple<bool, Artist, String>> _signupResultController =
+      StreamController.broadcast<Triple<bool, Artist, String>>();
 
   StreamSink<String> get name => _nameController.sink;
 
@@ -38,13 +42,13 @@ class ArtistSignupBloc implements BlocBase {
 
   StreamSink get signup => _actionSignup.sink;
 
-  StreamSink<MapEntry<bool, String>> get _signupResult =>
+  StreamSink<Triple<bool, Artist, String>> get _signupResult =>
       _signupResultController.sink;
 
-  Stream<MapEntry<bool, String>> get signupResult =>
+  Stream<Triple<bool, Artist, String>> get signupResult =>
       _signupResultController.stream;
 
-  ArtistSignupBloc() {
+  ArtistSignupBloc(this.appConfig) {
     _nameController.stream.listen((val) => _name = val.trim());
     _emailController.stream.listen((val) => _email = val.trim());
     _passwordController.stream.listen((val) => _password = val.trim());
@@ -52,7 +56,7 @@ class ArtistSignupBloc implements BlocBase {
       print("VALIDATING");
       _validateData();
     });
-    _actionSignup.stream.listen((_) => _signupUser());
+    _actionSignup.stream.listen((_) => _signupArtist());
   }
 
   @override
@@ -75,28 +79,15 @@ class ArtistSignupBloc implements BlocBase {
     }
   }
 
-  Future _signupUser() async {
+  void _signupArtist() async {
+    final authApi = AuthApi(appConfig.serverBaseUrl);
     try {
-      final firebaseUser = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: _email, password: _password);
-
-      final artistsCollection = Firestore.instance.collection("artists");
-      final TransactionHandler transaction = (Transaction tx) async {
-        final DocumentSnapshot newDoc =
-            await tx.get(artistsCollection.document());
-        final user = Artist()
-          ..uid = firebaseUser.uid
-          ..email = firebaseUser.email
-          ..name = _name;
-        Map data = user.toJson();
-        tx.set(newDoc.reference, data);
-        return data;
-      };
-
-      await Firestore.instance.runTransaction(transaction);
-      _signupResult.add(MapEntry(true, null));
-    } on PlatformException catch (e) {
-      _signupResult.add(MapEntry(false, e.message));
+      final artist = await authApi.signupArtist(_name, _email, _password);
+      _signupResult.add(Triple.from(true, artist, null));
+    } on ApiException catch (e) {
+      _signupResult.add(Triple.from(false, null, e.message));
+    } on Exception catch (e) {
+      _signupResult.add(Triple.from(false, null, e.toString()));
     }
   }
 

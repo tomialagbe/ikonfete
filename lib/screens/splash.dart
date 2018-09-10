@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/localization.dart';
+import 'package:ikonfetemobile/preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,14 +10,12 @@ class SplashScreen extends StatefulWidget {
   SplashScreenState createState() => SplashScreenState();
 }
 
-final kIsOnBoarded = "isOnBoarded";
-
 class SplashScreenState extends State<SplashScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     SharedPreferences.getInstance().then((prefs) {
-      bool isOnBoarded = prefs.getBool(kIsOnBoarded) ?? false;
+      bool isOnBoarded = prefs.getBool(PreferenceKeys.isOnBoarded) ?? false;
       if (isOnBoarded) {
         Navigator.of(context).pushReplacementNamed("/login");
       } else {

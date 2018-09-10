@@ -19,6 +19,7 @@ void main() {
       accessToken: "",
       accessTokenSecret: "",
     ),
+    serverBaseUrl: "",
     child: IkonfeteApp(),
   );
   runApp(configuredApp);
