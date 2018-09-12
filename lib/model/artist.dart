@@ -5,6 +5,7 @@ class Artist extends Model<String> {
   String username;
   String email;
   String name;
+
 //  String phoneNumber;
 //  bool isActivated = false;
 //  String profilePictureUrl;
@@ -15,6 +16,7 @@ class Artist extends Model<String> {
   String deezerUserId;
 
   bool isVerified;
+  bool isPendingVerification;
   String bio;
   String spotifyArtistId;
   String deezerArtistId;
@@ -35,6 +37,7 @@ class Artist extends Model<String> {
       ..deezerUserId = json["deezerUserId"]
       ..feteScore = json["feteScore"]
       ..isVerified = json["isVerified"]
+      ..isPendingVerification = json["isPendingVerification"]
       ..bio = json["bio"]
       ..spotifyArtistId = json["spotifyArtistId"]
       ..deezerArtistId = json["deezerArtistId"];
@@ -48,15 +51,13 @@ class Artist extends Model<String> {
       "username": this.username,
       "email": this.email,
       "name": this.name,
-//      "phoneNumber": this.phoneNumber ?? "",
-//      "isActivated": this.isActivated,
-//      "profilePictureUrl": this.profilePictureUrl ?? "",
       "facebookId": this.facebookId ?? "",
       "twitterId": this.twitterId ?? "",
       "spotifyUserId": this.spotifyUserId ?? "",
       "deezerUserId": this.deezerUserId ?? "",
       "feteScore": this.feteScore ?? "",
       "isVerified": this.isVerified,
+      "isPendingVerification": this.isVerified,
       "bio": this.bio,
       "spotifyArtistId": this.spotifyArtistId ?? "",
       "deezerArtistId": this.deezerArtistId ?? "",

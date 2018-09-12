@@ -199,6 +199,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
     } else {
       SharedPreferences.getInstance().then((prefs) {
         prefs.setBool(PreferenceKeys.isOnBoarded, true);
+        prefs.setBool(PreferenceKeys.isArtist, widget.artist != null);
       });
       showDialog(
         context: context,

@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/preferences.dart';
+import 'package:ikonfetemobile/routes.dart' as routes;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,9 +18,15 @@ class SplashScreenState extends State<SplashScreen> {
     SharedPreferences.getInstance().then((prefs) {
       bool isOnBoarded = prefs.getBool(PreferenceKeys.isOnBoarded) ?? false;
       if (isOnBoarded) {
-        Navigator.of(context).pushReplacementNamed("/login");
+        var route = routes.artistLogin;
+        if (prefs.getBool(PreferenceKeys.isArtist) ?? false) {
+          route = routes.artistLogin;
+        } else {
+          route = routes.fanLogin;
+        }
+        Navigator.of(context).pushReplacementNamed(route);
       } else {
-        Navigator.of(context).pushReplacementNamed("/onboarding");
+        Navigator.of(context).pushReplacementNamed(routes.onBoarding);
       }
     });
   }
