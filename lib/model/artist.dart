@@ -16,6 +16,7 @@ class Artist extends Model<String> {
   String deezerUserId;
 
   bool isVerified;
+  DateTime dateVerified;
   bool isPendingVerification;
   String bio;
   String spotifyArtistId;
@@ -41,6 +42,12 @@ class Artist extends Model<String> {
       ..bio = json["bio"]
       ..spotifyArtistId = json["spotifyArtistId"]
       ..deezerArtistId = json["deezerArtistId"];
+
+    if (json.containsKey("dateVerified") && json["dateVerified"] != null) {
+      final dateVerifiedNum = json["dateVerified"];
+      this.dateVerified =
+          DateTime.fromMillisecondsSinceEpoch(dateVerifiedNum * 1000);
+    }
   }
 
   @override
@@ -57,6 +64,7 @@ class Artist extends Model<String> {
       "deezerUserId": this.deezerUserId ?? "",
       "feteScore": this.feteScore ?? "",
       "isVerified": this.isVerified,
+      "dateVerified": this.dateVerified.millisecondsSinceEpoch / 1000,
       "isPendingVerification": this.isVerified,
       "bio": this.bio,
       "spotifyArtistId": this.spotifyArtistId ?? "",
@@ -65,28 +73,3 @@ class Artist extends Model<String> {
     return map;
   }
 }
-//typedef Team TeamLoader(String teamId);
-
-//class Fan extends User {
-//  Team team;
-//  TeamLoader teamLoader;
-//
-//  Fan({
-//    this.teamLoader,
-//  });
-//
-//  @override
-//  void fromJson(Map json) {
-//    super.fromJson(json);
-//    this..team = teamLoader(json["teamId"]);
-//  }
-//
-//  @override
-//  Map toJson() {
-//    Map json = super.toJson();
-//    json.addAll({
-////      "teamId": this.team.id,
-//    });
-//    return json;
-//  }
-//}

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:meta/meta.dart';
@@ -20,7 +21,7 @@ class LoginBloc extends BlocBase {
   StreamController _loginActionController = StreamController();
   StreamController<Triple<FirebaseUser, Artist, String>>
       _artistLoginResultController =
-      StreamController<Triple<FirebaseUser, Artist, String>>();
+      StreamController.broadcast<Triple<FirebaseUser, Artist, String>>();
 
   Sink<String> get email => _emailStreamController.sink;
 
@@ -52,7 +53,7 @@ class LoginBloc extends BlocBase {
           .signInWithEmailAndPassword(email: _email, password: _password);
       // get the artist
       final querySnapshot = await Firestore.instance
-          .collection("artists")
+          .collection(Collections.artists)
           .where("uid", isEqualTo: firebaseUser.uid)
           .limit(1)
           .getDocuments();

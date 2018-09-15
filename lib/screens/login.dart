@@ -2,13 +2,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/bloc/artist_verification_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
+import 'package:ikonfetemobile/bloc/pending_verification_screen_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/routes.dart' as routes;
+import 'package:ikonfetemobile/screens/artist_verification.dart';
+import 'package:ikonfetemobile/screens/pending_verification.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
@@ -212,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFF3B5998),
+                    color: colors.facebookColor,
                   ),
                   width: 25.0,
                   height: 25.0,
@@ -271,17 +276,43 @@ class _LoginScreenState extends State<LoginScreen> {
     hudOverlay.close();
     if (result.first != null) {
       // login successful
-      var route = routes.artistHome;
-      final artist = result.second;
-      if (!artist.isVerified) {
-        if (artist.isPendingVerification) {
-          // TODO: show pending verification page
-        } else {
-          // TODO: show verification page
-        }
+
+      // check if user's account has been activated
+      if (!result.first.isEmailVerified) {
+        // TODO: handle accounts with no email verification
       } else {
-        // artist is verified go to artist home page
-        Navigator.of(context).pushReplacementNamed(routes.artistHome);
+        final artist = result.second;
+        if (!artist.isVerified) {
+          if (artist.isPendingVerification ?? false) {
+            Navigator.of(context).pushReplacement(
+              CupertinoPageRoute(
+                builder: (_) =>
+                    BlocProvider<ArtistPendingVerificationScreenBloc>(
+                      bloc:
+                          ArtistPendingVerificationScreenBloc(uid: artist.uid),
+                      child: ArtistPendingVerificationScreen(
+                        artist: artist,
+                        newRequest: false,
+                      ),
+                    ),
+              ),
+            );
+          } else {
+            final appConfig = AppConfig.of(context);
+            // show verification page
+            Navigator.of(context).pushReplacement(
+              CupertinoPageRoute(
+                builder: (_) => BlocProvider<ArtistVerificationBloc>(
+                      child: ArtistVerificationScreen(artist: artist),
+                      bloc: ArtistVerificationBloc(appConfig: appConfig),
+                    ),
+              ),
+            );
+          }
+        } else {
+          // artist is verified go to artist home page
+          Navigator.of(context).pushReplacementNamed(routes.artistHome);
+        }
       }
     } else {
       scaffoldKey.currentState.showSnackBar(

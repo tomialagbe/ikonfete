@@ -4,11 +4,13 @@ class ThemifyIcons {
   static final fontFamily = "Themify";
   static final facebook = IconData(0xe741, fontFamily: fontFamily);
   static final close = IconData(0xe646, fontFamily: fontFamily);
+  static final twitter = IconData(0xe74b, fontFamily: fontFamily);
 }
 
 class LineAwesomeIcons {
   static final fontFamily = "LineAwesome";
   static final camera = IconData(0xf162, fontFamily: fontFamily);
+  static final playCircle = IconData(0xf2bf, fontFamily: fontFamily);
 }
 
 class FontAwesome5Icons {

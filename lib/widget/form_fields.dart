@@ -13,6 +13,10 @@ class LoginFormField extends StatelessWidget {
   final TextStyle textStyle;
   final TextAlign textAlign;
   final List<TextInputFormatter> inputFormatters;
+  final int maxLines;
+  final bool enabled;
+  final TextEditingController controller;
+  final Color fillColor;
 
   LoginFormField({
     this.placeholder: "",
@@ -25,7 +29,11 @@ class LoginFormField extends StatelessWidget {
     this.onSaved,
     this.textStyle,
     this.textAlign,
+    this.maxLines: 1,
     this.inputFormatters: const [],
+    this.enabled: true,
+    this.controller,
+    this.fillColor,
   });
 
   @override
@@ -46,6 +54,7 @@ class LoginFormField extends StatelessWidget {
     );
 
     return TextFormField(
+      controller: controller,
       autofocus: false,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
@@ -57,11 +66,13 @@ class LoginFormField extends StatelessWidget {
           Theme.of(context).textTheme.body1.copyWith(fontSize: 15.0),
       textAlign: textAlign ?? TextAlign.start,
       inputFormatters: inputFormatters,
+      maxLines: maxLines,
+      enabled: enabled,
       decoration: InputDecoration(
         hintText: placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),
         filled: true,
-        fillColor: Color(0xFFEFEFEF),
+        fillColor: fillColor ?? Color(0xFFEFEFEF),
         border: inputBorder,
         focusedBorder: inputBorder,
         disabledBorder: inputBorder,

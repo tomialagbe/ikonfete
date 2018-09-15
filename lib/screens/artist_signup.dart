@@ -292,7 +292,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
               Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFF3B5998),
+                    color: colors.facebookColor,
                   ),
                   width: 25.0,
                   height: 25.0,

@@ -1,5 +1,5 @@
 class StringUtils {
-  static bool isNullOrEmpty(String s, [bool removeTrailingSpace]) {
+  static bool isNullOrEmpty(String s, [bool removeTrailingSpace = false]) {
     if (s == null) {
       return true;
     }
