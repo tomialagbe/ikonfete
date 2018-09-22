@@ -4,15 +4,13 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:rxdart/rxdart.dart';
 
-class UserActivationBloc implements BlocBase {
+class ActivationBloc implements BlocBase {
   final AppConfig appConfig;
-  final Artist artist;
-  final Fan fan;
+  final bool isArtist;
+  final String uid;
 
   String _code;
 
@@ -31,12 +29,11 @@ class UserActivationBloc implements BlocBase {
 
   Sink<Pair<bool, String>> get _result => _resultController.sink;
 
-  UserActivationBloc(
+  ActivationBloc(
     this.appConfig, {
-    this.artist,
-    this.fan,
-  })  : assert(!(artist == null && fan == null)),
-        assert(!(artist != null && fan != null)) {
+    this.isArtist,
+    this.uid,
+  }) {
     _activationCodeController.stream.listen((code) => this._code = code);
     _actionController.stream.listen((_) => _handleActivationCode());
   }
@@ -49,7 +46,6 @@ class UserActivationBloc implements BlocBase {
   }
 
   void _handleActivationCode() async {
-    String uid = artist != null ? artist.uid : fan.uid;
     final authApi = AuthApi(appConfig.serverBaseUrl);
 
     try {

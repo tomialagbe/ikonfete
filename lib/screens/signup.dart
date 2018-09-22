@@ -1,28 +1,41 @@
+import 'dart:async';
+
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/artist_signup_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/user_activation_bloc.dart';
+import 'package:ikonfetemobile/bloc/signup_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/routes.dart' as routes;
-import 'package:ikonfetemobile/screens/user_activation.dart';
+import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
-class ArtistSignupScreen extends StatefulWidget {
+class SignupScreen extends StatefulWidget {
+  final bool isArtist;
+  final AppConfig appConfig;
+
+  SignupScreen({
+    @required this.isArtist,
+    @required this.appConfig,
+  });
+
   @override
-  _ArtistSignupScreenState createState() => _ArtistSignupScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
+class _SignupScreenState extends State<SignupScreen> {
+  SignupBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -38,18 +51,21 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
     nameFocusNode = FocusNode();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
-
-    BlocProvider.of<ArtistSignupBloc>(context)
-        .validationResult
-        .listen(_handleValidationResult);
-    BlocProvider.of<ArtistSignupBloc>(context)
-        .signupResult
-        .listen(_handleSignupResult);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _bloc = BlocProvider.of<SignupBloc>(context);
+    _subscriptions
+        .add(_bloc.artistSignupResult.listen(_handleArtistSignupResult));
+    _subscriptions.add(_bloc.fanSignupResult.listen(_handleFanSignupResult));
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    super.dispose();
   }
 
   @override
@@ -115,29 +131,36 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
 
   Widget _buildIntroText() {
     final tapHandler = TapGestureRecognizer();
-    tapHandler.onTap =
-        () => Navigator.of(context).pushNamed(routes.artistLogin);
+    tapHandler.onTap = () => router.navigateTo(
+        context, widget.isArtist ? RouteNames.artistLogin : RouteNames.fanLogin,
+        transition: TransitionType.inFromRight);
 
+    final signInText = TextSpan(
+      text: AppLocalizations.of(context).signIn, //"Sign in",
+      recognizer: tapHandler,
+      style: TextStyle(color: colors.primaryColor),
+    );
+
+    final fanSignupIntroText = "Create an account to connect to\n"
+        "your true favourite artist. Already have\n"
+        "an account? "; // TODO: localize this text
+    final artistSignupIntroText = AppLocalizations.of(context)
+        .artistSignupIntroText; //Create an account to connect to\nyour awesome superfans. Already have\nan account?
+    final signupIntroText =
+        widget.isArtist ? artistSignupIntroText : fanSignupIntroText;
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
         style: TextStyle(fontSize: 14.0, color: Colors.black),
-        //Create an account to connect to\nyour awesome superfans. Already have\nan account?
-        text: AppLocalizations.of(context).artistSignupIntroText,
+        text: signupIntroText,
         children: <TextSpan>[
-          TextSpan(
-            text: AppLocalizations.of(context).signIn, //"Sign in",
-            recognizer: tapHandler,
-            style: TextStyle(color: colors.primaryColor),
-          ),
+          signInText,
         ],
       ),
     );
   }
 
   Widget _buildForm() {
-    final signupBloc = BlocProvider.of<ArtistSignupBloc>(context);
-
     return Form(
       key: formKey,
       child: Padding(
@@ -154,7 +177,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
                 nameFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(emailFocusNode);
               },
-              onSaved: (String val) => signupBloc.name.add(val),
+              onSaved: (String val) => _bloc.name.add(val),
             ),
             SizedBox(height: 20.0),
             LoginFormField(
@@ -166,7 +189,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
                 emailFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(passwordFocusNode);
               },
-              onSaved: (val) => signupBloc.email.add(val),
+              onSaved: (val) => _bloc.email.add(val),
             ),
             SizedBox(height: 20.0),
             LoginPasswordField(
@@ -180,7 +203,7 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
                 passwordFocusNode.unfocus();
                 _formSubmitted();
               },
-              onSaved: (val) => signupBloc.password.add(val),
+              onSaved: (val) => _bloc.password.add(val),
             ),
           ],
         ),
@@ -340,7 +363,6 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
 
   void _formSubmitted() {
     final overlayChild = HudOverlay.dotsLoadingIndicator();
-    final bloc = BlocProvider.of<ArtistSignupBloc>(context);
     bool valid = formKey.currentState.validate();
     if (valid) {
       formKey.currentState.save();
@@ -351,26 +373,11 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
         Colors.white.withOpacity(0.7),
       );
 
-      bloc.validate.add(null);
+      _bloc.signup.add(widget.isArtist ? SignupType.artist : SignupType.fan);
     }
   }
 
-  void _handleValidationResult(MapEntry<bool, String> result) {
-    if (!result.key) {
-      hudOverlay?.close();
-      scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(result.value),
-        ),
-      );
-    } else {
-      BlocProvider.of<ArtistSignupBloc>(context).signup.add(null);
-    }
-  }
-
-  void _handleSignupResult(Triple<bool, Artist, String> result) {
-    final appConfig = AppConfig.of(context);
+  void _handleArtistSignupResult(Triple<bool, Artist, String> result) {
     hudOverlay?.close();
     if (!result.first) {
       // signup failed
@@ -380,13 +387,28 @@ class _ArtistSignupScreenState extends State<ArtistSignupScreen> {
     } else {
       final artist = result.second;
       // take the user to the activation screen
-      Navigator.of(context).pushReplacement(
-        CupertinoPageRoute(
-          builder: (_) => BlocProvider<UserActivationBloc>(
-                bloc: UserActivationBloc(appConfig, artist: artist),
-                child: UserActivationScreen(artist: artist),
-              ),
-        ),
+      router.navigateTo(
+        context,
+        RouteNames.activation(isArtist: true, uid: artist.uid),
+        transition: TransitionType.inFromRight,
+        replace: true,
+      );
+    }
+  }
+
+  void _handleFanSignupResult(Triple<bool, Fan, String> result) {
+    hudOverlay?.close();
+    if (!result.first) {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(content: Text(result.third)),
+      );
+    } else {
+      final fan = result.second;
+      router.navigateTo(
+        context,
+        RouteNames.activation(isArtist: false, uid: fan.uid),
+        transition: TransitionType.inFromRight,
+        replace: true,
       );
     }
   }

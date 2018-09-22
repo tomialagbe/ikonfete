@@ -28,6 +28,11 @@ class BlocProvider<T extends BlocBase> extends StatefulWidget {
 
 class _BlocProviderState<T> extends State<BlocProvider<BlocBase>> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     widget.bloc.dispose();
     super.dispose();

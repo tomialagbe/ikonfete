@@ -3,12 +3,7 @@ import 'package:ikonfetemobile/model/model.dart';
 class Artist extends Model<String> {
   String uid;
   String username;
-  String email;
   String name;
-
-//  String phoneNumber;
-//  bool isActivated = false;
-//  String profilePictureUrl;
 
   String facebookId;
   String twitterId;
@@ -30,13 +25,12 @@ class Artist extends Model<String> {
     this
       ..uid = json["uid"]
       ..username = json["username"]
-      ..email = json["email"]
       ..name = json["name"]
       ..facebookId = json["facebookId"]
       ..twitterId = json["twitterId"]
       ..spotifyUserId = json["spotifyUserId"]
       ..deezerUserId = json["deezerUserId"]
-      ..feteScore = json["feteScore"]
+      ..feteScore = json["feteScore"] ?? 0
       ..isVerified = json["isVerified"]
       ..isPendingVerification = json["isPendingVerification"]
       ..bio = json["bio"]
@@ -51,18 +45,17 @@ class Artist extends Model<String> {
   }
 
   @override
-  Map toJson() {
+  Map<String, dynamic> toJson() {
     final map = super.toJson();
     map.addAll({
       "uid": this.uid,
       "username": this.username,
-      "email": this.email,
       "name": this.name,
       "facebookId": this.facebookId ?? "",
       "twitterId": this.twitterId ?? "",
       "spotifyUserId": this.spotifyUserId ?? "",
       "deezerUserId": this.deezerUserId ?? "",
-      "feteScore": this.feteScore ?? "",
+      "feteScore": this.feteScore ?? 0,
       "isVerified": this.isVerified,
       "dateVerified": this.dateVerified.millisecondsSinceEpoch / 1000,
       "isPendingVerification": this.isVerified,

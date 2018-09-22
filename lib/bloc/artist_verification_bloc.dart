@@ -34,13 +34,15 @@ class TwitterActionResult {
         success = false;
 }
 
-class ArtistVerificationBloc extends BlocBase {
-  String _fbId;
-  String _twitterId;
-  String _twitterUsername;
-  String _bio;
-  String _uid;
+class VerifyParams {
+  String fbId;
+  String twitterId;
+  String twitterUsername;
+  String bio;
+  String uid;
+}
 
+class ArtistVerificationBloc extends BlocBase {
   final AppConfig appConfig;
 
   StreamController _facebookActionController = StreamController();
@@ -51,21 +53,22 @@ class ArtistVerificationBloc extends BlocBase {
   StreamController<TwitterActionResult> _twitterActionResultController =
       StreamController<TwitterActionResult>.broadcast();
 
-  StreamController<String> _bioController = StreamController<String>();
+//  StreamController<String> _bioController = StreamController<String>();
 
-  StreamController _verifyActionController = StreamController();
+  StreamController<VerifyParams> _verifyActionController =
+      StreamController<VerifyParams>();
   StreamController<Pair<bool, String>> _verifyActionResultController =
-      StreamController<Pair<bool, String>>();
+      StreamController.broadcast<Pair<bool, String>>();
 
-  set uid(String val) => _uid = val;
+//  set uid(String val) => _uid = val;
 
   Sink get facebookAction => _facebookActionController.sink;
 
   Sink get twitterAction => _twitterActionController.sink;
 
-  Sink<String> get bio => _bioController.sink;
+//  Sink<String> get bio => _bioController.sink;
 
-  Sink get verifyAction => _verifyActionController.sink;
+  Sink<VerifyParams> get verifyAction => _verifyActionController.sink;
 
   Stream<FacebookActionResult> get facebookActionResult =>
       _facebookActionResultController.stream;
@@ -77,28 +80,28 @@ class ArtistVerificationBloc extends BlocBase {
       _verifyActionResultController.stream;
 
   ArtistVerificationBloc({@required this.appConfig}) {
-    _bioController.stream.listen((val) => _bio = val.trim());
+//    _bioController.stream.listen((val) => _bio = val.trim());
     _facebookActionController.stream.listen((_) => _handleFacebookAction());
-    facebookActionResult.listen((result) {
-      if (!result.canceled && result.success) {
-        _fbId = result.facebookUID;
-      }
-    });
-
     _twitterActionController.stream.listen((_) => _handleTwitterAction());
-    twitterActionResult.listen((result) {
-      if (!result.canceled && result.success) {
-        _twitterId = result.twitterUID;
-        _twitterUsername = result.twitterUsername;
-      }
-    });
+//    facebookActionResult.listen((result) {
+//      if (!result.canceled && result.success) {
+//        _fbId = result.facebookUID;
+//      }
+//    });
 
-    _verifyActionController.stream.listen((_) => _handleVerifyAction());
+//    twitterActionResult.listen((result) {
+//      if (!result.canceled && result.success) {
+//        _twitterId = result.twitterUID;
+//        _twitterUsername = result.twitterUsername;
+//      }
+//    });
+
+    _verifyActionController.stream.listen(_handleVerifyAction);
   }
 
   @override
   void dispose() {
-    _bioController.close();
+//    _bioController.close();
     _facebookActionController.close();
     _facebookActionResultController.close();
     _twitterActionController.close();
@@ -177,21 +180,21 @@ class ArtistVerificationBloc extends BlocBase {
     }
   }
 
-  void _handleVerifyAction() async {
-    assert(_uid != null && _uid.isNotEmpty);
+  void _handleVerifyAction(VerifyParams params) async {
+//    assert(_uid != null && _uid.isNotEmpty);
 
     final pendingVerification = PendingVerification();
     pendingVerification
       ..dateCreated = DateTime.now()
-      ..bio = _bio
-      ..facebookId = _fbId
-      ..twitterId = _twitterId
-      ..twitterUsername = _twitterUsername;
+      ..bio = params.bio
+      ..facebookId = params.fbId
+      ..twitterId = params.twitterId
+      ..twitterUsername = params.twitterUsername;
     // make sure there are no pending verifications for this artist
     final firestore = Firestore.instance;
     final querySnapshot = await firestore
         .collection(Collections.pendingVerifications)
-        .where("uid", isEqualTo: _uid)
+        .where("uid", isEqualTo: params.uid)
         .getDocuments();
     if (querySnapshot.documents.isNotEmpty) {
       _verifyActionResultController.add(Pair.from(
@@ -200,7 +203,7 @@ class ArtistVerificationBloc extends BlocBase {
       try {
         final artistQuerySnapshot = await firestore
             .collection(Collections.artists)
-            .where("uid", isEqualTo: _uid)
+            .where("uid", isEqualTo: params.uid)
             .limit(1)
             .getDocuments();
         if (artistQuerySnapshot.documents.isEmpty) {

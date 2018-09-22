@@ -27,10 +27,12 @@ dependencies:
   flutter_swiper:
   rxdart:
   progress_indicators: ^0.1.2
+  fluro:
   image_picker:
     git:
       url: git://github.com/tomialagbe/plugins
       path: packages/image_picker
+  flutter_svg:
 
 
 dev_dependencies:
@@ -61,6 +63,7 @@ flutter:
     - assets/images/onboard_background2.png
     - assets/images/onboard_background3.png
     - assets/images/onboard_background4.png
+    - assets/images/alert.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

@@ -22,7 +22,7 @@ class PendingVerification extends Model<String> {
   }
 
   @override
-  Map toJson() {
+  Map<String, dynamic> toJson() {
     final map = super.toJson();
     map.addAll({
       "uid": uid,

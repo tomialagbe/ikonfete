@@ -1,19 +1,18 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/artist_verification_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
-import 'package:ikonfetemobile/bloc/pending_verification_screen_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/routes.dart' as routes;
-import 'package:ikonfetemobile/screens/artist_verification.dart';
-import 'package:ikonfetemobile/screens/pending_verification.dart';
+import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
@@ -33,6 +32,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  LoginBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -46,10 +48,26 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+  }
 
-    BlocProvider.of<LoginBloc>(context)
-        .artistLoginResult
-        .listen(_handleArtistLoginResult);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bloc == null) {
+      _bloc = BlocProvider.of<LoginBloc>(context);
+      if (_subscriptions.isEmpty) {
+        _subscriptions
+            .add(_bloc.artistLoginResult.listen(_handleArtistLoginResult));
+        _subscriptions.add(_bloc.fanLoginResult.listen(_handleFanLoginResult));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    _subscriptions.clear();
+    super.dispose();
   }
 
   @override
@@ -111,8 +129,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildIntroText() {
     final tapHandler = TapGestureRecognizer();
-    tapHandler.onTap =
-        () => Navigator.of(context).pushNamed(routes.artistSignup);
+    tapHandler.onTap = () => router.navigateTo(
+        context, RouteNames.signup(isArtist: widget.isArtist),
+        transition: TransitionType.inFromRight);
 
     return RichText(
       textAlign: TextAlign.center,
@@ -133,9 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildForm() {
-    final loginBloc = BlocProvider.of<LoginBloc>(context);
     final forgotPasswordTapHandler = TapGestureRecognizer();
     forgotPasswordTapHandler.onTap = () {}; // TODO: handle password reset
+
     return Form(
       key: formKey,
       child: Padding(
@@ -152,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 emailFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(passwordFocusNode);
               },
-              onSaved: (String val) => loginBloc.email.add(val),
+              onSaved: (String val) => _bloc.email.add(val),
             ),
             SizedBox(height: 20.0),
             LoginPasswordField(
@@ -166,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 passwordFocusNode.unfocus();
                 _formSubmitted();
               },
-              onSaved: (val) => loginBloc.password.add(val),
+              onSaved: (val) => _bloc.password.add(val),
             ),
             SizedBox(height: 10.0),
             Row(
@@ -210,6 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
           defaultColor: Colors.white,
           activeColor: Colors.white70,
           elevation: 3.0,
+          onTap: null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -268,50 +288,49 @@ class _LoginScreenState extends State<LoginScreen> {
       formKey.currentState.save();
       hudOverlay = HudOverlay.show(context, HudOverlay.dotsLoadingIndicator(),
           HudOverlay.defaultColor());
-      BlocProvider.of<LoginBloc>(context).loginAction.add(null);
+      _bloc.loginAction.add(null);
     }
   }
 
   void _handleArtistLoginResult(Triple<FirebaseUser, Artist, String> result) {
-    hudOverlay.close();
+    hudOverlay?.close();
     if (result.first != null) {
       // login successful
 
       // check if user's account has been activated
       if (!result.first.isEmailVerified) {
-        // TODO: handle accounts with no email verification
+        router.navigateTo(
+          context,
+          RouteNames.inactiveUser(uid: result.first.uid),
+          replace: false,
+          transition: TransitionType.inFromRight,
+        );
       } else {
         final artist = result.second;
         if (!artist.isVerified) {
           if (artist.isPendingVerification ?? false) {
-            Navigator.of(context).pushReplacement(
-              CupertinoPageRoute(
-                builder: (_) =>
-                    BlocProvider<ArtistPendingVerificationScreenBloc>(
-                      bloc:
-                          ArtistPendingVerificationScreenBloc(uid: artist.uid),
-                      child: ArtistPendingVerificationScreen(
-                        artist: artist,
-                        newRequest: false,
-                      ),
-                    ),
-              ),
+            router.navigateTo(
+              context,
+              RouteNames.artistPendingVerification(uid: artist.uid),
+              replace: false,
+              transition: TransitionType.inFromRight,
             );
           } else {
-            final appConfig = AppConfig.of(context);
-            // show verification page
-            Navigator.of(context).pushReplacement(
-              CupertinoPageRoute(
-                builder: (_) => BlocProvider<ArtistVerificationBloc>(
-                      child: ArtistVerificationScreen(artist: artist),
-                      bloc: ArtistVerificationBloc(appConfig: appConfig),
-                    ),
-              ),
+            router.navigateTo(
+              context,
+              RouteNames.artistVerification(uid: artist.uid),
+              replace: false,
+              transition: TransitionType.inFromRight,
             );
           }
         } else {
           // artist is verified go to artist home page
-          Navigator.of(context).pushReplacementNamed(routes.artistHome);
+          router.navigateTo(
+            context,
+            RouteNames.artistHome,
+            transition: TransitionType.inFromRight,
+            replace: false,
+          );
         }
       }
     } else {
@@ -320,6 +339,22 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text(result.third),
         ),
       );
+    }
+  }
+
+  void _handleFanLoginResult(Triple<FirebaseUser, Fan, String> result) {
+    hudOverlay?.close();
+    if (result.first != null) {
+      if (!result.first.isEmailVerified) {
+        // TODO: handle accounts with no email activation
+      } else {
+        router.navigateTo(
+          context,
+          RouteNames.fanHome,
+          replace: false,
+          transition: TransitionType.inFromRight,
+        );
+      }
     }
   }
 }

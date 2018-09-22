@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-class ArtistHome extends StatelessWidget {
+class ArtistHomeScreen extends StatefulWidget {
+  @override
+  _ArtistHomeScreenState createState() => _ArtistHomeScreenState();
+}
+
+class _ArtistHomeScreenState extends State<ArtistHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Container(
+        color: Colors.white,
         width: double.infinity,
         height: double.infinity,
       ),

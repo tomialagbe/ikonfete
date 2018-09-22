@@ -1,10 +1,11 @@
 import 'dart:ui' as ui;
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/localization.dart';
-import 'package:ikonfetemobile/routes.dart' as routes;
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -50,6 +51,21 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
           children: <Widget>[
             _buildSlider(),
             _buildButtons(),
+            Positioned(
+              top: MediaQuery.of(context).viewInsets.top + 60.0,
+              right: 40.0,
+              child: GestureDetector(
+                onTap: () {
+                  swiperController.move(sliderLength - 1);
+                },
+                child: Text(
+                  currentSliderIndex == sliderLength - 1
+                      ? ""
+                      : AppLocalizations.of(context).skip, //"Skip",
+                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -94,21 +110,6 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 ),
               ),
             ),
-            Positioned(
-              top: MediaQuery.of(context).viewInsets.top + 60.0,
-              right: 40.0,
-              child: GestureDetector(
-                onTap: () {
-                  swiperController.move(sliderLength - 1);
-                },
-                child: Text(
-                  currentSliderIndex == sliderLength - 1
-                      ? ""
-                      : AppLocalizations.of(context).skip, //"Skip",
-                  style: TextStyle(color: Colors.white, fontSize: 16.0),
-                ),
-              ),
-            )
           ],
         );
       },
@@ -134,7 +135,9 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             PrimaryButton(
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
-              onTap: () => Navigator.of(context).pushNamed(routes.artistSignup),
+              onTap: () => router.navigateTo(
+                  context, RouteNames.signup(isArtist: true),
+                  replace: false, transition: TransitionType.inFromRight),
               text: AppLocalizations.of(context).artistSignupButtonText,
               // I'M AN ARTIST
               defaultColor: colors.primaryButtonColor,
@@ -144,7 +147,9 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             PrimaryButton(
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
-              onTap: () => Navigator.of(context).pushNamed(routes.fanSignup),
+              onTap: () => router.navigateTo(
+                  context, RouteNames.signup(isArtist: false),
+                  replace: false, transition: TransitionType.inFromRight),
               text: AppLocalizations.of(context).fanSignupButtonText,
               //"I'M A FAN",
               defaultColor: Colors.transparent,

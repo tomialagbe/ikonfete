@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/preferences.dart';
-import 'package:ikonfetemobile/routes.dart' as routes;
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
@@ -19,14 +18,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSignupProfileScreen extends StatefulWidget {
-  final Artist artist;
-  final Fan fan;
+  final bool isArtist;
 
   UserSignupProfileScreen({
-    this.artist,
-    this.fan,
-  })  : assert(!(artist == null && fan == null)),
-        assert(!(artist != null && fan != null));
+    this.isArtist,
+  });
 
   @override
   _UserSignupProfileScreenState createState() =>
@@ -34,6 +30,9 @@ class UserSignupProfileScreen extends StatefulWidget {
 }
 
 class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
+  UserSignupProfileBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   File _displayPicture;
@@ -42,14 +41,29 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
 
   FocusNode usernameFocusNode;
 
-  UserSignupProfileBloc bloc;
-
   @override
   void initState() {
     super.initState();
     usernameFocusNode = FocusNode();
-    bloc = BlocProvider.of<UserSignupProfileBloc>(context);
-    bloc.actionResult.listen(_handleProfileUpdateResult);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bloc == null) {
+      _bloc = BlocProvider.of<UserSignupProfileBloc>(context);
+      if (_subscriptions.isEmpty) {
+        _subscriptions
+            .add(_bloc.actionResult.listen(_handleProfileUpdateResult));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    _subscriptions.clear();
+    super.dispose();
   }
 
   @override
@@ -144,7 +158,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
               textAlign: TextAlign.center,
               textInputAction: TextInputAction.done,
               onSaved: (val) {
-                bloc.username.add(val);
+                _bloc.username.add(val);
               },
               onFieldSubmitted: (val) {
                 usernameFocusNode.unfocus();
@@ -174,7 +188,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
               formKey.currentState.save();
               hudOverlay = HudOverlay.show(context,
                   HudOverlay.dotsLoadingIndicator(), HudOverlay.defaultColor());
-              bloc.action.add(null);
+              _bloc.action.add(null);
             }
           },
         ),
@@ -186,7 +200,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
     final im = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       _displayPicture = im;
-      bloc.profilePicture.add(im);
+      _bloc.profilePicture.add(im);
     });
   }
 
@@ -199,7 +213,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
     } else {
       SharedPreferences.getInstance().then((prefs) {
         prefs.setBool(PreferenceKeys.isOnBoarded, true);
-        prefs.setBool(PreferenceKeys.isArtist, widget.artist != null);
+        prefs.setBool(PreferenceKeys.isArtist, widget.isArtist);
       });
       showDialog(
         context: context,
@@ -219,8 +233,14 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacementNamed(routes.artistLogin);
+                  router.navigateTo(
+                    context,
+                    widget.isArtist
+                        ? RouteNames.artistLogin
+                        : RouteNames.fanLogin,
+                    replace: true,
+                    transition: TransitionType.inFromRight,
+                  );
                 },
                 child: Text(
                   "LOGIN",

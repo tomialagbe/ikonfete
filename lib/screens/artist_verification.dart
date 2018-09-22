@@ -1,22 +1,24 @@
+import 'dart:async';
+
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/bloc/artist_verification_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/pending_verification_screen_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/screens/pending_verification.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
 class ArtistVerificationScreen extends StatefulWidget {
-  final Artist artist;
+  final String uid;
 
   ArtistVerificationScreen({
-    @required this.artist,
+    @required this.uid,
   });
 
   @override
@@ -32,15 +34,36 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
   final twitterTextController = TextEditingController();
 
   HudOverlay hudOverlay;
-  ArtistVerificationBloc artistVerificationBloc;
+
+  ArtistVerificationBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
+  String _facebookId;
+  String _twitterId;
+  String _twitterUsername;
+  String _bio;
 
   @override
-  void initState() {
-    super.initState();
-    artistVerificationBloc = BlocProvider.of<ArtistVerificationBloc>(context);
-    artistVerificationBloc.facebookActionResult.listen(_handleFacebookResult);
-    artistVerificationBloc.twitterActionResult.listen(_handleTwitterResult);
-    artistVerificationBloc.verifyActionResult.listen(_handleVerificationResult);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bloc == null) {
+      _bloc = BlocProvider.of<ArtistVerificationBloc>(context);
+      if (_subscriptions.isEmpty) {
+        _subscriptions
+            .add(_bloc.facebookActionResult.listen(_handleFacebookResult));
+        _subscriptions
+            .add(_bloc.twitterActionResult.listen(_handleTwitterResult));
+        _subscriptions
+            .add(_bloc.verifyActionResult.listen(_handleVerificationResult));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    _subscriptions.clear();
+    super.dispose();
   }
 
   @override
@@ -131,7 +154,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.none,
               maxLines: 3,
-              onSaved: (String val) => artistVerificationBloc.bio.add(val),
+              onSaved: (String val) => _bio = val,
             ),
             SizedBox(height: 20.0),
           ],
@@ -142,7 +165,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
 
   Widget _buildFacebookFormItem() {
     return StreamBuilder<FacebookActionResult>(
-      stream: artistVerificationBloc.facebookActionResult,
+      stream: _bloc.facebookActionResult,
       initialData: FacebookActionResult(),
       builder: (ctx, snapshot) {
         return Row(
@@ -156,7 +179,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
               activeColor: colors.facebookColor.withOpacity(0.7),
               child: Icon(ThemifyIcons.facebook, color: Colors.white),
               // REGISTER
-              onTap: () => artistVerificationBloc.facebookAction.add(null),
+              onTap: () => _bloc.facebookAction.add(null),
             ),
             Padding(padding: EdgeInsets.only(right: 10.0)),
             Expanded(
@@ -178,7 +201,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
 
   Widget _buildTwitterFormItem() {
     return StreamBuilder<TwitterActionResult>(
-      stream: artistVerificationBloc.twitterActionResult,
+      stream: _bloc.twitterActionResult,
       initialData: TwitterActionResult(),
       builder: (ctx, snapshot) {
         return Row(
@@ -192,7 +215,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
               activeColor: colors.twitterColor.withOpacity(0.7),
               child: Icon(ThemifyIcons.twitter, color: Colors.white),
               // REGISTER
-              onTap: () => artistVerificationBloc.twitterAction.add(null),
+              onTap: () => _bloc.twitterAction.add(null),
             ),
             Padding(padding: EdgeInsets.only(right: 10.0)),
             Expanded(
@@ -237,6 +260,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
 
     if (result.success) {
       facebookTextController.text = result.facebookUID;
+      _facebookId = result.facebookUID;
     } else {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(content: Text(result.errorMessage)),
@@ -251,6 +275,8 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
 
     if (result.success) {
       twitterTextController.text = result.twitterUsername;
+      _twitterId = result.twitterUID;
+      _twitterUsername = result.twitterUsername;
     } else {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -264,30 +290,38 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
     if (!formKey.currentState.validate()) {
       return;
     }
+    if (StringUtils.isNullOrEmpty(_facebookId) ||
+        StringUtils.isNullOrEmpty(_twitterId) ||
+        StringUtils.isNullOrEmpty(_twitterUsername)) {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content:
+              Text("Your Facebook and Twitter accounts have not been setup"),
+        ),
+      );
+      return;
+    }
 
     formKey.currentState.save();
     hudOverlay = HudOverlay.show(
         context, HudOverlay.dotsLoadingIndicator(), HudOverlay.defaultColor());
-    artistVerificationBloc.uid = widget.artist.uid;
-    artistVerificationBloc.verifyAction.add(null);
+
+    final params = VerifyParams()
+      ..uid = widget.uid
+      ..fbId = _facebookId
+      ..twitterId = _twitterId
+      ..twitterUsername = _twitterUsername
+      ..bio = _bio;
+    _bloc.verifyAction.add(params);
   }
 
   void _handleVerificationResult(Pair<bool, String> result) {
     hudOverlay?.close();
     if (result.first) {
       // take the user to the pending verification screen
-      Navigator.of(context).pushReplacement(
-        CupertinoPageRoute(
-          builder: (_) => BlocProvider<ArtistPendingVerificationScreenBloc>(
-                bloc:
-                    ArtistPendingVerificationScreenBloc(uid: widget.artist.uid),
-                child: ArtistPendingVerificationScreen(
-                  artist: widget.artist,
-                  newRequest: true,
-                ),
-              ),
-        ),
-      );
+      router.navigateTo(
+          context, RouteNames.artistPendingVerification(uid: widget.uid),
+          replace: true, transition: TransitionType.inFromRight);
     } else {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(content: Text(result.second)),

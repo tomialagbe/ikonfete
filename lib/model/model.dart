@@ -5,7 +5,7 @@ abstract class Model<T> {
     this..id = json["id"];
   }
 
-  Map toJson() {
+  Map<String, dynamic> toJson() {
     return {
       "id": id,
     };

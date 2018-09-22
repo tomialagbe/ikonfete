@@ -15,7 +15,7 @@ class ApiError extends Model {
   }
 
   @override
-  Map toJson() {
+  Map<String, dynamic> toJson() {
     return {
       "error": this.error,
     };

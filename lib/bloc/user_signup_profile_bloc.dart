@@ -7,6 +7,7 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
@@ -18,12 +19,13 @@ class UserSignupProfileBloc extends BlocBase {
 
   final AppConfig appConfig;
   final String uid;
+  final bool isArtist;
 
   StreamController<String> _usernameController = StreamController<String>();
   StreamController<File> _profilePictureController = StreamController<File>();
   StreamController _actionController = StreamController();
   StreamController<Pair<bool, String>> _actionResultController =
-      StreamController<Pair<bool, String>>();
+      StreamController.broadcast<Pair<bool, String>>();
 
   Stream<String> get _username => _usernameController.stream;
 
@@ -43,12 +45,16 @@ class UserSignupProfileBloc extends BlocBase {
 
   UserSignupProfileBloc({
     @required this.appConfig,
+    @required this.isArtist,
     @required this.uid,
   }) {
     _username.listen((val) => _uname = val);
     _profilePicture.listen((val) => _profilePic = val);
     _action.listen((_) => _handleProfileUpdate());
   }
+
+  @override
+  void init() {}
 
   @override
   void dispose() {
@@ -60,7 +66,7 @@ class UserSignupProfileBloc extends BlocBase {
 
   void _handleProfileUpdate() async {
     final querySnapshots = await Firestore.instance
-        .collection("artists")
+        .collection(isArtist ? Collections.artists : Collections.fans)
         .where("username", isEqualTo: _uname)
         .limit(1)
         .getDocuments();
@@ -69,12 +75,13 @@ class UserSignupProfileBloc extends BlocBase {
       _actionResult.add(Pair.from(false, "This username is already taken"));
     } else {
       String profilePicUrl = "";
+      StorageReference ref;
       if (_profilePic != null) {
         // save the profile picture, make api call to update the firebase user with the username and profile picture url
         final imageId = Uuid().v1();
         final fileExtension = extension(_profilePic.path);
 
-        StorageReference ref = appConfig.firebaseStorage
+        ref = appConfig.firebaseStorage
             .ref()
             .child("profile_pictures")
             .child("${uid}_$imageId$fileExtension");
@@ -86,15 +93,31 @@ class UserSignupProfileBloc extends BlocBase {
       // make api call to update firebase user with username and profile picture url
       final authApi = AuthApi(appConfig.serverBaseUrl);
       try {
-        final ok = await authApi.setupArtistProfile(uid, _uname, profilePicUrl);
+        final ok = await authApi.setupUserProfile(
+          uid,
+          _uname,
+          profilePicUrl,
+          isArtist,
+        );
         if (ok) {
           _actionResult.add(Pair.from(true, null));
         } else {
+          _deleteFile(ref);
           _actionResult.add(Pair.from(false, "An unknown error occrurred"));
         }
       } on ApiException catch (e) {
+        _deleteFile(ref);
         _actionResult.add(Pair.from(false, e.message));
+      } on Exception catch (e) {
+        _deleteFile(ref);
+        _actionResult.add(Pair.from(false, e.toString()));
       }
+    }
+  }
+
+  void _deleteFile(StorageReference ref) async {
+    if (ref != null) {
+      await ref.delete();
     }
   }
 }

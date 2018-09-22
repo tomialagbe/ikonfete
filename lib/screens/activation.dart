@@ -1,50 +1,60 @@
+import 'dart:async';
+
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/bloc/activation_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/user_activation_bloc.dart';
-import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
-import 'package:ikonfetemobile/screens/user_signup_profile.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
-class UserActivationScreen extends StatefulWidget {
-  final Artist artist;
-  final Fan fan;
+class ActivationScreen extends StatefulWidget {
+  final bool isArtist;
+  final String uid;
 
-  UserActivationScreen({
-    this.artist,
-    this.fan,
-  })  : assert(!(artist == null && fan == null)),
-        assert(!(artist != null && fan != null));
+  ActivationScreen({
+    @required this.isArtist,
+    @required this.uid,
+  });
 
   @override
-  _ArtistActivationScreenState createState() => _ArtistActivationScreenState();
+  _ActivationScreenState createState() => _ActivationScreenState();
 }
 
-class _ArtistActivationScreenState extends State<UserActivationScreen> {
+class _ActivationScreenState extends State<ActivationScreen> {
+  ActivationBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   HudOverlay hudOverlay;
   FocusNode codeFocusNode;
   bool resultListenerSet = false;
-  UserActivationBloc bloc;
 
   @override
   void initState() {
     super.initState();
     codeFocusNode = FocusNode();
+  }
 
-    bloc = BlocProvider.of<UserActivationBloc>(context);
-    bloc.result.listen(_handleActivationResult);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bloc = BlocProvider.of<ActivationBloc>(context);
+    _subscriptions.add(_bloc.result.listen(_handleActivationResult));
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    super.dispose();
   }
 
   @override
@@ -98,7 +108,7 @@ class _ArtistActivationScreenState extends State<UserActivationScreen> {
           children: <Widget>[
             IconButton(
               icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).maybePop(),
             ),
           ],
         )
@@ -141,7 +151,7 @@ class _ArtistActivationScreenState extends State<UserActivationScreen> {
                     letterSpacing: 10.0,
                   ),
               onSaved: (val) {
-                bloc.activationCode.add(val);
+                _bloc.activationCode.add(val);
               },
               onFieldSubmitted: (_) {
                 codeFocusNode.unfocus();
@@ -207,26 +217,19 @@ class _ArtistActivationScreenState extends State<UserActivationScreen> {
         Colors.white.withOpacity(0.7),
       );
 
-      bloc.activate.add(null);
+      _bloc.activate.add(null);
     }
   }
 
   void _handleActivationResult(Pair<bool, String> result) {
-    final appConfig = AppConfig.of(context);
-    final uid = widget.artist != null ? widget.artist.uid : widget.fan.uid;
     hudOverlay?.close();
     if (result.first) {
       // take the user to the profile setup page
-      Navigator.of(context).pushReplacement(
-        CupertinoPageRoute(
-          builder: (_) => BlocProvider<UserSignupProfileBloc>(
-                bloc: UserSignupProfileBloc(appConfig: appConfig, uid: uid),
-                child: UserSignupProfileScreen(
-                  artist: widget.artist,
-                  fan: widget.fan,
-                ),
-              ),
-        ),
+      router.navigateTo(
+        context,
+        RouteNames.signupProfile(isArtist: widget.isArtist, uid: widget.uid),
+        transition: TransitionType.inFromRight,
+        replace: true,
       );
     } else {
       scaffoldKey.currentState.showSnackBar(
