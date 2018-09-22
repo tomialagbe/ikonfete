@@ -301,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!result.first.isEmailVerified) {
         router.navigateTo(
           context,
-          RouteNames.inactiveUser(uid: result.first.uid),
+          RouteNames.inactiveUser(uid: result.first.uid, isArtist: true),
           replace: false,
           transition: TransitionType.inFromRight,
         );
@@ -346,7 +346,12 @@ class _LoginScreenState extends State<LoginScreen> {
     hudOverlay?.close();
     if (result.first != null) {
       if (!result.first.isEmailVerified) {
-        // TODO: handle accounts with no email activation
+        router.navigateTo(
+          context,
+          RouteNames.inactiveUser(uid: result.first.uid, isArtist: false),
+          replace: false,
+          transition: TransitionType.inFromRight,
+        );
       } else {
         router.navigateTo(
           context,
