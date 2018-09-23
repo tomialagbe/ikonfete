@@ -80,28 +80,13 @@ class ArtistVerificationBloc extends BlocBase {
       _verifyActionResultController.stream;
 
   ArtistVerificationBloc({@required this.appConfig}) {
-//    _bioController.stream.listen((val) => _bio = val.trim());
     _facebookActionController.stream.listen((_) => _handleFacebookAction());
     _twitterActionController.stream.listen((_) => _handleTwitterAction());
-//    facebookActionResult.listen((result) {
-//      if (!result.canceled && result.success) {
-//        _fbId = result.facebookUID;
-//      }
-//    });
-
-//    twitterActionResult.listen((result) {
-//      if (!result.canceled && result.success) {
-//        _twitterId = result.twitterUID;
-//        _twitterUsername = result.twitterUsername;
-//      }
-//    });
-
     _verifyActionController.stream.listen(_handleVerifyAction);
   }
 
   @override
   void dispose() {
-//    _bioController.close();
     _facebookActionController.close();
     _facebookActionResultController.close();
     _twitterActionController.close();
@@ -181,8 +166,6 @@ class ArtistVerificationBloc extends BlocBase {
   }
 
   void _handleVerifyAction(VerifyParams params) async {
-//    assert(_uid != null && _uid.isNotEmpty);
-
     final pendingVerification = PendingVerification();
     pendingVerification
       ..dateCreated = DateTime.now()

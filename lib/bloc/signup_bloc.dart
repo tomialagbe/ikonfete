@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
@@ -26,6 +29,14 @@ class SignupBloc implements BlocBase {
       StreamController.broadcast<Triple<bool, Artist, String>>();
   StreamController<Triple<bool, Fan, String>> _fanSignupResultController =
       StreamController.broadcast<Triple<bool, Fan, String>>();
+  StreamController<SignupType> _actionFacebookSignup =
+      StreamController<SignupType>();
+  StreamController<Triple<bool, Artist, String>>
+      _artistFacebookSignupResultController =
+      StreamController<Triple<bool, Artist, String>>();
+  StreamController<Triple<bool, Fan, String>>
+      _fanFacebookSignupResultController =
+      StreamController<Triple<bool, Fan, String>>();
 
   StreamSink<String> get name => _nameController.sink;
 
@@ -47,6 +58,12 @@ class SignupBloc implements BlocBase {
   Stream<Triple<bool, Fan, String>> get fanSignupResult =>
       _fanSignupResultController.stream;
 
+  Stream<Triple<bool, Artist, String>> get artistFacebookSignupResult =>
+      _artistFacebookSignupResultController.stream;
+
+  Stream<Triple<bool, Fan, String>> get fanFacebookSignupResult =>
+      _fanFacebookSignupResultController.stream;
+
   SignupBloc(this.appConfig) {
     _nameController.stream.listen((val) => _name = val.trim());
     _emailController.stream.listen((val) => _email = val.trim());
@@ -58,6 +75,7 @@ class SignupBloc implements BlocBase {
         _signupFan();
       }
     });
+    _actionFacebookSignup.stream.listen(_handleFacebookSignup);
   }
 
   @override
@@ -68,6 +86,9 @@ class SignupBloc implements BlocBase {
     _actionSignup.close();
     _artistSignupResultController.close();
     _fanSignupResultController.close();
+    _actionFacebookSignup.close();
+    _artistFacebookSignupResultController.close();
+    _fanFacebookSignupResultController.close();
   }
 
   void _signupArtist() async {
@@ -92,5 +113,24 @@ class SignupBloc implements BlocBase {
     } on Exception catch (e) {
       _fanSignupResult.add(Triple.from(false, null, e.toString()));
     }
+  }
+
+  void _handleFacebookSignup(SignupType signupType) async {
+    try {
+      final facebookLogin = FacebookLogin();
+      facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+      await facebookLogin.logOut();
+      final result = await facebookLogin.logInWithReadPermissions(
+        [
+          'email',
+          'public_profile',
+          'user_posts',
+          'user_events',
+        ],
+      );
+      final firebaseUser = await FirebaseAuth.instance
+          .signInWithFacebook(accessToken: result.accessToken.token);
+      // TODO: create the artist on firestore
+    } on PlatformException catch (e) {}
   }
 }
