@@ -4,6 +4,7 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -46,7 +47,8 @@ class ActivationBloc implements BlocBase {
   }
 
   void _handleActivationCode() async {
-    final authApi = AuthApi(appConfig.serverBaseUrl);
+    final authApi = AuthApiFactory.authApi(appConfig.serverBaseUrl,
+        isArtist ? AuthUserType.artist : AuthUserType.fan);
 
     try {
       bool ok = await authApi.activateUser(uid, _code);

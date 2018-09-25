@@ -1,7 +1,7 @@
 import 'package:ikonfetemobile/model/model.dart';
 
 abstract class Api {
-  final String apiBaseUrl;
+  String apiBaseUrl;
 
   Api(this.apiBaseUrl);
 }
@@ -24,6 +24,7 @@ class ApiError extends Model {
 
 class ApiException implements Exception {
   final String message;
+
   ApiException(this.message);
 
   @override

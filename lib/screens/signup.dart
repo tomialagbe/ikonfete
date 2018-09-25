@@ -11,10 +11,8 @@ import 'package:ikonfetemobile/bloc/signup_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/routes.dart';
-import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -57,9 +55,11 @@ class _SignupScreenState extends State<SignupScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc = BlocProvider.of<SignupBloc>(context);
-    _subscriptions
-        .add(_bloc.artistSignupResult.listen(_handleArtistSignupResult));
-    _subscriptions.add(_bloc.fanSignupResult.listen(_handleFanSignupResult));
+    _subscriptions.add(_bloc.signupResult.listen(_handleSignupResult));
+//    _subscriptions.add(_bloc.artistSignupResult.listen(_handleArtistSignupResult));
+//    _subscriptions.add(_bloc.fanSignupResult.listen(_handleFanSignupResult));
+//    _subscriptions.add(_bloc.artistFacebookSignupResult.listen(_handleArtistFacebookSignupResult));
+//    _subscriptions.add(_bloc.fanFacebookSignupResult.listen(_handleFanFacebookSignupResult));
   }
 
   @override
@@ -308,6 +308,10 @@ class _SignupScreenState extends State<SignupScreen> {
           defaultColor: Colors.white,
           activeColor: Colors.white70,
           elevation: 3.0,
+          onTap: () => _bloc.signup.add(SignupActionRequest(
+              userType:
+                  widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
+              provider: AuthProvider.facebook)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -373,43 +377,113 @@ class _SignupScreenState extends State<SignupScreen> {
         Colors.white.withOpacity(0.7),
       );
 
-      _bloc.signup.add(widget.isArtist ? SignupType.artist : SignupType.fan);
+      final request = SignupActionRequest(
+          userType: widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
+          provider: AuthProvider.email);
+      _bloc.signup.add(request);
     }
   }
 
-  void _handleArtistSignupResult(Triple<bool, Artist, String> result) {
+  void _handleSignupResult(SignupResult result) {
     hudOverlay?.close();
-    if (!result.first) {
-      // signup failed
+    if (!result.success) {
       scaffoldKey.currentState.showSnackBar(
-        SnackBar(content: Text(result.third)),
+        SnackBar(
+          content: Text(result.errorMessage),
+        ),
       );
     } else {
-      final artist = result.second;
-      // take the user to the activation screen
-      router.navigateTo(
-        context,
-        RouteNames.activation(isArtist: true, uid: artist.uid),
-        transition: TransitionType.inFromRight,
-        replace: true,
-      );
+      final uid = result.isArtist ? result.artist.uid : result.fan.uid;
+      if (result.request.isEmailProvider) {
+        // email signup
+        router.navigateTo(
+          context,
+          RouteNames.activation(isArtist: result.isArtist, uid: uid),
+          transition: TransitionType.inFromRight,
+          replace: true,
+        );
+      } else {
+        // facebook signup, no need for activation
+        router.navigateTo(
+          context,
+          RouteNames.signupProfile(isArtist: result.isArtist, uid: uid),
+          transition: TransitionType.inFromRight,
+        );
+      }
     }
   }
 
-  void _handleFanSignupResult(Triple<bool, Fan, String> result) {
-    hudOverlay?.close();
-    if (!result.first) {
-      scaffoldKey.currentState.showSnackBar(
-        SnackBar(content: Text(result.third)),
-      );
-    } else {
-      final fan = result.second;
-      router.navigateTo(
-        context,
-        RouteNames.activation(isArtist: false, uid: fan.uid),
-        transition: TransitionType.inFromRight,
-        replace: true,
-      );
-    }
-  }
+//  void _handleArtistSignupResult(Triple<bool, Artist, String> result) {
+//    hudOverlay?.close();
+//    if (!result.first) {
+//      // signup failed
+//      scaffoldKey.currentState.showSnackBar(
+//        SnackBar(content: Text(result.third)),
+//      );
+//    } else {
+//      final artist = result.second;
+//      // take the user to the activation screen
+//      router.navigateTo(
+//        context,
+//        RouteNames.activation(isArtist: true, uid: artist.uid),
+//        transition: TransitionType.inFromRight,
+//        replace: true,
+//      );
+//    }
+//  }
+//
+//  void _handleFanSignupResult(Triple<bool, Fan, String> result) {
+//    hudOverlay?.close();
+//    if (!result.first) {
+//      scaffoldKey.currentState.showSnackBar(
+//        SnackBar(content: Text(result.third)),
+//      );
+//    } else {
+//      final fan = result.second;
+//      router.navigateTo(
+//        context,
+//        RouteNames.activation(isArtist: false, uid: fan.uid),
+//        transition: TransitionType.inFromRight,
+//        replace: true,
+//      );
+//    }
+//  }
+//
+//  void _handleArtistFacebookSignupResult(Triple<bool, Artist, String> result) {
+//    hudOverlay?.close();
+//    if (!result.first) {
+//      scaffoldKey.currentState.showSnackBar(
+//        SnackBar(
+//          content: Text(result.third),
+//        ),
+//      );
+//    } else {
+//      final artist = result.second;
+//      // no need for email activation, navigate to profile setup
+//      router.navigateTo(
+//        context,
+//        RouteNames.signupProfile(isArtist: true, uid: artist.uid),
+//        transition: TransitionType.inFromRight,
+//      );
+//    }
+//  }
+//
+//  void _handleFanFacebookSignupResult(Triple<bool, Fan, String> result) {
+//    hudOverlay?.close();
+//    if (!result.first) {
+//      scaffoldKey.currentState.showSnackBar(
+//        SnackBar(
+//          content: Text(result.third),
+//        ),
+//      );
+//    } else {
+//      final fan = result.second;
+//      // no need for email activation, navigate to profile setup
+//      router.navigateTo(
+//        context,
+//        RouteNames.signupProfile(isArtist: false, uid: fan.uid),
+//        transition: TransitionType.inFromRight,
+//      );
+//    }
+//  }
 }

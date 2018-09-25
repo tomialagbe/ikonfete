@@ -132,7 +132,8 @@ void defineRoutes(Router router, AppConfig appConfig) {
     handler: Handler(handlerFunc: (ctx, params) {
       return BlocProvider<InactiveUserScreenBloc>(
         child: InactiveUserScreen(uid: params["uid"][0], isArtist: true),
-        bloc: InactiveUserScreenBloc(appConfig: AppConfig.of(ctx)),
+        bloc: InactiveUserScreenBloc(
+            appConfig: AppConfig.of(ctx), isArtist: true),
       );
     }),
   );
@@ -141,7 +142,8 @@ void defineRoutes(Router router, AppConfig appConfig) {
     handler: Handler(handlerFunc: (ctx, params) {
       return BlocProvider<InactiveUserScreenBloc>(
         child: InactiveUserScreen(uid: params["uid"][0], isArtist: false),
-        bloc: InactiveUserScreenBloc(appConfig: AppConfig.of(ctx)),
+        bloc: InactiveUserScreenBloc(
+            appConfig: AppConfig.of(ctx), isArtist: false),
       );
     }),
   );

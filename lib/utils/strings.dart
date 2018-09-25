@@ -1,10 +1,10 @@
 class StringUtils {
-  static bool isNullOrEmpty(String s, [bool removeTrailingSpace = false]) {
+  static bool isNullOrEmpty(String s, [bool ignoreTrailingSpace = false]) {
     if (s == null) {
       return true;
     }
 
-    if (!removeTrailingSpace && s.trim().isEmpty) {
+    if (!ignoreTrailingSpace && s.trim().isEmpty) {
       return true;
     }
 

@@ -8,6 +8,7 @@ import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/collections.dart';
+import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
@@ -91,7 +92,8 @@ class UserSignupProfileBloc extends BlocBase {
       }
 
       // make api call to update firebase user with username and profile picture url
-      final authApi = AuthApi(appConfig.serverBaseUrl);
+      final authApi = AuthApiFactory.authApi(appConfig.serverBaseUrl,
+          isArtist ? AuthUserType.artist : AuthUserType.fan);
       try {
         final ok = await authApi.setupUserProfile(
           uid,

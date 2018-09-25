@@ -4,10 +4,13 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/types/types.dart';
+import 'package:meta/meta.dart';
 
 class InactiveUserScreenBloc extends BlocBase {
   final AppConfig appConfig;
+  final bool isArtist;
 
   StreamController<String> _resendActivationActionController =
       StreamController<String>();
@@ -19,7 +22,10 @@ class InactiveUserScreenBloc extends BlocBase {
   Stream<Pair<bool, String>> get resendActivationResult =>
       _resendActivationResultController.stream;
 
-  InactiveUserScreenBloc({this.appConfig}) {
+  InactiveUserScreenBloc({
+    @required this.appConfig,
+    @required this.isArtist,
+  }) {
     _resendActivationActionController.stream
         .listen(_handleResendActivationAction);
   }
@@ -32,8 +38,9 @@ class InactiveUserScreenBloc extends BlocBase {
 
   void _handleResendActivationAction(String uid) async {
     try {
-      final api = AuthApi(appConfig.serverBaseUrl);
-      final success = await api.resendActivationCode(uid);
+      final authApi = AuthApiFactory.authApi(appConfig.serverBaseUrl,
+          isArtist ? AuthUserType.artist : AuthUserType.fan);
+      final success = await authApi.resendActivationCode(uid);
       _resendActivationResultController.add(Pair.from(success, null));
     } on ApiException catch (e) {
       _resendActivationResultController.add(Pair.from(false, e.message));
