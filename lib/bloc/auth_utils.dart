@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/model/fan.dart';
@@ -21,13 +22,13 @@ class AuthActionRequest {
   bool get isFacebookProvider => provider == AuthProvider.facebook;
 }
 
-class SignupResult {
+class AuthResult {
   Artist _artist;
   Fan _fan;
   String _errorMessage;
   AuthActionRequest request;
 
-  SignupResult({@required this.request});
+  AuthResult({@required this.request});
 
   set errorMessage(String val) {
     _errorMessage = val;
@@ -58,4 +59,10 @@ class SignupResult {
   bool get isArtist => _artist != null;
 
   bool get isFan => _fan != null;
+}
+
+class LoginResult extends AuthResult {
+  FirebaseUser firebaseUser;
+
+  LoginResult(AuthActionRequest request) : super(request: request);
 }

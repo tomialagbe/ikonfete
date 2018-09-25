@@ -235,11 +235,9 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
                 onPressed: () {
                   router.navigateTo(
                     context,
-                    widget.isArtist
-                        ? RouteNames.artistLogin
-                        : RouteNames.fanLogin,
-                    replace: true,
+                    RouteNames.login(isArtist: widget.isArtist),
                     transition: TransitionType.inFromRight,
+                    replace: true,
                   );
                 },
                 child: Text(

@@ -111,8 +111,10 @@ void defineRoutes(Router router, AppConfig appConfig) {
       handler: signupHandler(isArtist: true));
   router.define(RouteNames.signup(isArtist: false),
       handler: signupHandler(isArtist: false));
-  router.define(RouteNames.artistLogin, handler: loginHandler());
-  router.define(RouteNames.fanLogin, handler: loginHandler(isArtist: false));
+  router.define(RouteNames.login(isArtist: true),
+      handler: loginHandler(isArtist: true));
+  router.define(RouteNames.login(isArtist: false),
+      handler: loginHandler(isArtist: false));
   router.define(RouteNames.activation(isArtist: true),
       handler: activationHandler(isArtist: true));
   router.define(RouteNames.activation(isArtist: false),
@@ -152,10 +154,12 @@ void defineRoutes(Router router, AppConfig appConfig) {
 class RouteNames {
   static final splash = "/splash";
   static final onBoarding = "/onboarding";
-  static final artistLogin = "/artist_login";
-  static final fanLogin = "/fan_login";
   static final artistHome = "/artist_home";
   static final fanHome = "/fan_home";
+
+  static String login({bool isArtist: true}) {
+    return isArtist ? "/artist_signup" : "/fan_signup";
+  }
 
   static String signup({bool isArtist: true}) {
     final s = isArtist ? "/artist_signup" : "/fan_signup";

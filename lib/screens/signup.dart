@@ -129,7 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget _buildIntroText() {
     final tapHandler = TapGestureRecognizer();
     tapHandler.onTap = () => router.navigateTo(
-        context, widget.isArtist ? RouteNames.artistLogin : RouteNames.fanLogin,
+        context, RouteNames.login(isArtist: widget.isArtist),
         transition: TransitionType.inFromRight);
 
     final signInText = TextSpan(
@@ -381,7 +381,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  void _handleSignupResult(SignupResult result) {
+  void _handleSignupResult(AuthResult result) {
     hudOverlay?.close();
     if (!result.success) {
       scaffoldKey.currentState.showSnackBar(
@@ -401,10 +401,42 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       } else {
         // facebook signup, no need for activation
-        router.navigateTo(
-          context,
-          RouteNames.signupProfile(isArtist: result.isArtist, uid: uid),
-          transition: TransitionType.inFromRight,
+        // take user to login
+        showDialog(
+          context: context,
+          builder: (c) {
+            return AlertDialog(
+              title: Text("Signup Successful"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      "Congratulations. You have been successfuly signed up",
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    // TODO: to home page
+//                    router.navigateTo(
+//                      context,
+//                      RouteNames.login(isArtist: result.isArtist),
+//                      transition: TransitionType.inFromRight,
+//                      replace: true,
+//                    );
+                  },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: colors.primaryColor),
+                  ),
+                ),
+              ],
+            );
+          },
+          barrierDismissible: false,
         );
       }
     }

@@ -27,8 +27,8 @@ class SignupBloc implements BlocBase {
   StreamController<AuthActionRequest> _actionSignup =
       StreamController<AuthActionRequest>();
 
-  StreamController<SignupResult> _signupResultController =
-      StreamController.broadcast<SignupResult>();
+  StreamController<AuthResult> _signupResultController =
+      StreamController.broadcast<AuthResult>();
 
   StreamSink<String> get name => _nameController.sink;
 
@@ -38,9 +38,9 @@ class SignupBloc implements BlocBase {
 
   StreamSink<AuthActionRequest> get signup => _actionSignup.sink;
 
-  Sink<SignupResult> get _signupResult => _signupResultController.sink;
+  Sink<AuthResult> get _signupResult => _signupResultController.sink;
 
-  Stream<SignupResult> get signupResult => _signupResultController.stream;
+  Stream<AuthResult> get signupResult => _signupResultController.stream;
 
   SignupBloc(this.appConfig) {
     _nameController.stream.listen((val) => _name = val.trim());
@@ -59,7 +59,7 @@ class SignupBloc implements BlocBase {
   }
 
   void _handleSignupRequest(AuthActionRequest request) async {
-    SignupResult result;
+    AuthResult result;
     if (request.isEmailProvider) {
       result = await _emailSignup(request);
     } else {
@@ -68,10 +68,10 @@ class SignupBloc implements BlocBase {
     _signupResult.add(result);
   }
 
-  Future<SignupResult> _emailSignup(AuthActionRequest request) async {
+  Future<AuthResult> _emailSignup(AuthActionRequest request) async {
     final authApi =
         AuthApiFactory.authApi(appConfig.serverBaseUrl, request.userType);
-    final signupResult = SignupResult(request: request);
+    final signupResult = AuthResult(request: request);
     try {
       final authResult = await authApi.signup(_name, _email, _password);
       if (request.isArtist) {
@@ -89,7 +89,7 @@ class SignupBloc implements BlocBase {
     }
   }
 
-  Future<SignupResult> _facebookSignup(AuthActionRequest request) async {
+  Future<AuthResult> _facebookSignup(AuthActionRequest request) async {
     final _createArtist = (String docId, FirebaseUser firebaseUser,
         FacebookLoginResult facebookLoginResult) {
       return Artist()
@@ -126,7 +126,6 @@ class SignupBloc implements BlocBase {
       );
       final firebaseUser = await FirebaseAuth.instance
           .signInWithFacebook(accessToken: result.accessToken.token);
-
       final coll = Firestore.instance.collection(
           request.isArtist ? Collections.artists : Collections.fans);
       // check if user has signed up with facebook before
@@ -134,7 +133,7 @@ class SignupBloc implements BlocBase {
           .where("facebookId", isEqualTo: result.accessToken.userId)
           .getDocuments();
       bool isSignedUp = querySnapshot.documents.isNotEmpty;
-      final signupResult = SignupResult(request: request);
+      final signupResult = AuthResult(request: request);
       if (!isSignedUp) {
         final doc = coll.document();
         final user = request.isArtist
@@ -151,9 +150,9 @@ class SignupBloc implements BlocBase {
         return signupResult;
       }
     } on PlatformException catch (e) {
-      return SignupResult(request: request)..errorMessage = e.message;
+      return AuthResult(request: request)..errorMessage = e.message;
     } on Exception catch (e) {
-      return SignupResult(request: request)..errorMessage = e.toString();
+      return AuthResult(request: request)..errorMessage = e.toString();
     }
   }
 }

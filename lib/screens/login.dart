@@ -1,19 +1,17 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/routes.dart';
-import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -56,9 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_bloc == null) {
       _bloc = BlocProvider.of<LoginBloc>(context);
       if (_subscriptions.isEmpty) {
-        _subscriptions
-            .add(_bloc.artistLoginResult.listen(_handleArtistLoginResult));
-        _subscriptions.add(_bloc.fanLoginResult.listen(_handleFanLoginResult));
+        _subscriptions.add(_bloc.loginResult.listen(_handleLoginResult));
       }
     }
   }
@@ -229,7 +225,10 @@ class _LoginScreenState extends State<LoginScreen> {
           defaultColor: Colors.white,
           activeColor: Colors.white70,
           elevation: 3.0,
-          onTap: null,
+          onTap: () => _bloc.loginAction.add(AuthActionRequest(
+              userType:
+                  widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
+              provider: AuthProvider.facebook)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -288,77 +287,61 @@ class _LoginScreenState extends State<LoginScreen> {
       formKey.currentState.save();
       hudOverlay = HudOverlay.show(context, HudOverlay.dotsLoadingIndicator(),
           HudOverlay.defaultColor());
-      _bloc.loginAction.add(null);
+      _bloc.loginAction.add(AuthActionRequest(
+          userType: widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
+          provider: AuthProvider.email));
     }
   }
 
-  void _handleArtistLoginResult(Triple<FirebaseUser, Artist, String> result) {
+  void _handleLoginResult(LoginResult result) {
     hudOverlay?.close();
-    if (result.first != null) {
-      // login successful
+    if (!result.success) {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(result.errorMessage),
+        ),
+      );
+    } else {
+      final uid = result.isArtist ? result.artist.uid : result.fan.uid;
+      bool isEmailActivated = result.request.isFacebookProvider ||
+          (result.request.isEmailProvider &&
+              result.firebaseUser.isEmailVerified);
 
-      // check if user's account has been activated
-      if (!result.first.isEmailVerified) {
+      if (!isEmailActivated) {
         router.navigateTo(
           context,
-          RouteNames.inactiveUser(uid: result.first.uid, isArtist: true),
+          RouteNames.inactiveUser(uid: uid, isArtist: result.isArtist),
           replace: false,
           transition: TransitionType.inFromRight,
         );
       } else {
-        final artist = result.second;
-        if (!artist.isVerified) {
-          if (artist.isPendingVerification ?? false) {
+        bool isAccountVerified =
+            result.isFan || (result.isArtist && result.artist.isVerified);
+        if (!isAccountVerified) {
+          if (result.artist.isPendingVerification) {
             router.navigateTo(
               context,
-              RouteNames.artistPendingVerification(uid: artist.uid),
+              RouteNames.artistPendingVerification(uid: uid),
               replace: false,
               transition: TransitionType.inFromRight,
             );
           } else {
             router.navigateTo(
               context,
-              RouteNames.artistVerification(uid: artist.uid),
+              RouteNames.artistVerification(uid: uid),
               replace: false,
               transition: TransitionType.inFromRight,
             );
           }
         } else {
-          // artist is verified go to artist home page
+          // account is verified
           router.navigateTo(
             context,
-            RouteNames.artistHome,
+            result.isArtist ? RouteNames.artistHome : RouteNames.fanHome,
             transition: TransitionType.inFromRight,
             replace: false,
           );
         }
-      }
-    } else {
-      scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text(result.third),
-        ),
-      );
-    }
-  }
-
-  void _handleFanLoginResult(Triple<FirebaseUser, Fan, String> result) {
-    hudOverlay?.close();
-    if (result.first != null) {
-      if (!result.first.isEmailVerified) {
-        router.navigateTo(
-          context,
-          RouteNames.inactiveUser(uid: result.first.uid, isArtist: false),
-          replace: false,
-          transition: TransitionType.inFromRight,
-        );
-      } else {
-        router.navigateTo(
-          context,
-          RouteNames.fanHome,
-          replace: false,
-          transition: TransitionType.inFromRight,
-        );
       }
     }
   }
