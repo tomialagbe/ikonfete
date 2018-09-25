@@ -7,69 +7,11 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/model/fan.dart';
-import 'package:meta/meta.dart';
-
-class SignupResult {
-  Artist _artist;
-  Fan _fan;
-  String _errorMessage;
-  SignupActionRequest request;
-
-  SignupResult({@required this.request});
-
-  set errorMessage(String val) {
-    _errorMessage = val;
-    _artist = null;
-    _fan = null;
-  }
-
-  set fan(Fan val) {
-    assert(val != null);
-    _fan = val;
-    _artist = null;
-  }
-
-  set artist(Artist val) {
-    assert(val != null);
-    _artist = val;
-    _fan = null;
-  }
-
-  bool get success => _artist != null || _fan != null;
-
-  String get errorMessage => _errorMessage;
-
-  Artist get artist => _artist;
-
-  Fan get fan => _fan;
-
-  bool get isArtist => _artist != null;
-
-  bool get isFan => _fan != null;
-}
-
-class SignupActionRequest {
-  AuthUserType userType;
-  AuthProvider provider;
-
-  SignupActionRequest({
-    @required this.userType,
-    @required this.provider,
-  });
-
-  bool get isArtist => userType == AuthUserType.artist;
-
-  bool get isFan => userType == AuthUserType.fan;
-
-  bool get isEmailProvider => provider == AuthProvider.email;
-
-  bool get isFacebookProvider => provider == AuthProvider.facebook;
-}
 
 class SignupBloc implements BlocBase {
   final AppConfig appConfig;
@@ -82,8 +24,8 @@ class SignupBloc implements BlocBase {
   StreamController<String> _nameController = StreamController<String>();
   StreamController<String> _emailController = StreamController<String>();
   StreamController<String> _passwordController = StreamController<String>();
-  StreamController<SignupActionRequest> _actionSignup =
-      StreamController<SignupActionRequest>();
+  StreamController<AuthActionRequest> _actionSignup =
+      StreamController<AuthActionRequest>();
 
   StreamController<SignupResult> _signupResultController =
       StreamController.broadcast<SignupResult>();
@@ -94,7 +36,7 @@ class SignupBloc implements BlocBase {
 
   StreamSink<String> get password => _passwordController.sink;
 
-  StreamSink<SignupActionRequest> get signup => _actionSignup.sink;
+  StreamSink<AuthActionRequest> get signup => _actionSignup.sink;
 
   Sink<SignupResult> get _signupResult => _signupResultController.sink;
 
@@ -116,7 +58,7 @@ class SignupBloc implements BlocBase {
     _signupResultController.close();
   }
 
-  void _handleSignupRequest(SignupActionRequest request) async {
+  void _handleSignupRequest(AuthActionRequest request) async {
     SignupResult result;
     if (request.isEmailProvider) {
       result = await _emailSignup(request);
@@ -126,7 +68,7 @@ class SignupBloc implements BlocBase {
     _signupResult.add(result);
   }
 
-  Future<SignupResult> _emailSignup(SignupActionRequest request) async {
+  Future<SignupResult> _emailSignup(AuthActionRequest request) async {
     final authApi =
         AuthApiFactory.authApi(appConfig.serverBaseUrl, request.userType);
     final signupResult = SignupResult(request: request);
@@ -147,7 +89,7 @@ class SignupBloc implements BlocBase {
     }
   }
 
-  Future<SignupResult> _facebookSignup(SignupActionRequest request) async {
+  Future<SignupResult> _facebookSignup(AuthActionRequest request) async {
     final _createArtist = (String docId, FirebaseUser firebaseUser,
         FacebookLoginResult facebookLoginResult) {
       return Artist()

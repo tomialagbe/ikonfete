@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/signup_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
@@ -56,10 +57,6 @@ class _SignupScreenState extends State<SignupScreen> {
     super.didChangeDependencies();
     _bloc = BlocProvider.of<SignupBloc>(context);
     _subscriptions.add(_bloc.signupResult.listen(_handleSignupResult));
-//    _subscriptions.add(_bloc.artistSignupResult.listen(_handleArtistSignupResult));
-//    _subscriptions.add(_bloc.fanSignupResult.listen(_handleFanSignupResult));
-//    _subscriptions.add(_bloc.artistFacebookSignupResult.listen(_handleArtistFacebookSignupResult));
-//    _subscriptions.add(_bloc.fanFacebookSignupResult.listen(_handleFanFacebookSignupResult));
   }
 
   @override
@@ -308,7 +305,7 @@ class _SignupScreenState extends State<SignupScreen> {
           defaultColor: Colors.white,
           activeColor: Colors.white70,
           elevation: 3.0,
-          onTap: () => _bloc.signup.add(SignupActionRequest(
+          onTap: () => _bloc.signup.add(AuthActionRequest(
               userType:
                   widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
               provider: AuthProvider.facebook)),
@@ -377,7 +374,7 @@ class _SignupScreenState extends State<SignupScreen> {
         Colors.white.withOpacity(0.7),
       );
 
-      final request = SignupActionRequest(
+      final request = AuthActionRequest(
           userType: widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
           provider: AuthProvider.email);
       _bloc.signup.add(request);
@@ -412,78 +409,4 @@ class _SignupScreenState extends State<SignupScreen> {
       }
     }
   }
-
-//  void _handleArtistSignupResult(Triple<bool, Artist, String> result) {
-//    hudOverlay?.close();
-//    if (!result.first) {
-//      // signup failed
-//      scaffoldKey.currentState.showSnackBar(
-//        SnackBar(content: Text(result.third)),
-//      );
-//    } else {
-//      final artist = result.second;
-//      // take the user to the activation screen
-//      router.navigateTo(
-//        context,
-//        RouteNames.activation(isArtist: true, uid: artist.uid),
-//        transition: TransitionType.inFromRight,
-//        replace: true,
-//      );
-//    }
-//  }
-//
-//  void _handleFanSignupResult(Triple<bool, Fan, String> result) {
-//    hudOverlay?.close();
-//    if (!result.first) {
-//      scaffoldKey.currentState.showSnackBar(
-//        SnackBar(content: Text(result.third)),
-//      );
-//    } else {
-//      final fan = result.second;
-//      router.navigateTo(
-//        context,
-//        RouteNames.activation(isArtist: false, uid: fan.uid),
-//        transition: TransitionType.inFromRight,
-//        replace: true,
-//      );
-//    }
-//  }
-//
-//  void _handleArtistFacebookSignupResult(Triple<bool, Artist, String> result) {
-//    hudOverlay?.close();
-//    if (!result.first) {
-//      scaffoldKey.currentState.showSnackBar(
-//        SnackBar(
-//          content: Text(result.third),
-//        ),
-//      );
-//    } else {
-//      final artist = result.second;
-//      // no need for email activation, navigate to profile setup
-//      router.navigateTo(
-//        context,
-//        RouteNames.signupProfile(isArtist: true, uid: artist.uid),
-//        transition: TransitionType.inFromRight,
-//      );
-//    }
-//  }
-//
-//  void _handleFanFacebookSignupResult(Triple<bool, Fan, String> result) {
-//    hudOverlay?.close();
-//    if (!result.first) {
-//      scaffoldKey.currentState.showSnackBar(
-//        SnackBar(
-//          content: Text(result.third),
-//        ),
-//      );
-//    } else {
-//      final fan = result.second;
-//      // no need for email activation, navigate to profile setup
-//      router.navigateTo(
-//        context,
-//        RouteNames.signupProfile(isArtist: false, uid: fan.uid),
-//        transition: TransitionType.inFromRight,
-//      );
-//    }
-//  }
 }
