@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: <Widget>[
             IconButton(
               icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).maybePop(),
             ),
           ],
         )

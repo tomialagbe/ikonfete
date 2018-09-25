@@ -108,6 +108,7 @@ class LoginBloc extends BlocBase {
 
   Future<LoginResult> _facebookLogin(AuthActionRequest request) async {
     try {
+      final authResult = LoginResult(request);
       final facebookLogin = FacebookLogin();
       facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
       await facebookLogin.logOut();
@@ -119,6 +120,14 @@ class LoginBloc extends BlocBase {
           'user_events',
         ],
       );
+      if (result.status != FacebookLoginStatus.loggedIn) {
+        authResult.errorMessage =
+            result.status == FacebookLoginStatus.cancelledByUser
+                ? "Login Cancelled"
+                : result.errorMessage;
+        return authResult;
+      }
+
       final firebaseUser = await FirebaseAuth.instance
           .signInWithFacebook(accessToken: result.accessToken.token);
       final coll = Firestore.instance.collection(
@@ -128,10 +137,9 @@ class LoginBloc extends BlocBase {
           .where("facebookId", isEqualTo: result.accessToken.userId)
           .getDocuments();
       bool isSignedUp = querySnapshot.documents.isNotEmpty;
-      final snapshot = querySnapshot.documents[0];
 
-      final authResult = LoginResult(request);
       if (isSignedUp) {
+        final snapshot = querySnapshot.documents[0];
         final user = request.isArtist
             ? _artistFromSnapshot(snapshot)
             : _fanFromSnapshot(snapshot);

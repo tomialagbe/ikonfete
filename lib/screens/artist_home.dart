@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/bloc/application_bloc.dart';
+import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/routes.dart';
 
 class ArtistHomeScreen extends StatefulWidget {
   @override
@@ -13,7 +16,17 @@ class _ArtistHomeScreenState extends State<ArtistHomeScreen> {
         color: Colors.white,
         width: double.infinity,
         height: double.infinity,
+        child: Center(
+          child: FlatButton(onPressed: _logout, child: Text("LOGOUT")),
+        ),
       ),
     );
+  }
+
+  void _logout() async {
+    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+    await appBloc.doLogout();
+    Navigator.popUntil(
+        context, ModalRoute.withName(RouteNames.login(isArtist: true)));
   }
 }

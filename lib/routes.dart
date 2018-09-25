@@ -12,6 +12,7 @@ import 'package:ikonfetemobile/screens/activation.dart';
 import 'package:ikonfetemobile/screens/artist_home.dart';
 import 'package:ikonfetemobile/screens/artist_verification.dart';
 import 'package:ikonfetemobile/screens/fan_home.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/inactive_user.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
@@ -100,6 +101,10 @@ final artistHomeHandler = Handler(handlerFunc: (ctx, params) {
   return ArtistHomeScreen();
 });
 
+final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
+  return FanTeamSelectionScreen();
+});
+
 final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
   return FanHomeScreen();
 });
@@ -149,6 +154,7 @@ void defineRoutes(Router router, AppConfig appConfig) {
       );
     }),
   );
+  router.define(RouteNames.teamSelection(), handler: fanTeamSelectionHandler);
 }
 
 class RouteNames {
@@ -157,8 +163,12 @@ class RouteNames {
   static final artistHome = "/artist_home";
   static final fanHome = "/fan_home";
 
+  static String teamSelection({String uid: ""}) {
+    return "/team_selection/${uid.isEmpty ? ":uid" : uid}";
+  }
+
   static String login({bool isArtist: true}) {
-    return isArtist ? "/artist_signup" : "/fan_signup";
+    return isArtist ? "/artist_login" : "/fan_login";
   }
 
   static String signup({bool isArtist: true}) {
@@ -180,7 +190,8 @@ class RouteNames {
     return "/artist_verification/${uid.trim().isEmpty ? ":uid" : uid}";
   }
 
-  static String artistPendingVerification({String uid: ""}) {
+  static String artistPendingVerification(
+      {String uid: "", String facebookLoginId}) {
     return "/artist_pending_verification/${uid.trim().isEmpty ? ":uid" : uid}";
   }
 

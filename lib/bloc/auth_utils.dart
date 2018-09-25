@@ -48,7 +48,7 @@ class AuthResult {
     _fan = null;
   }
 
-  bool get success => _artist != null || _fan != null;
+  bool get success => !(_artist == null && _fan == null);
 
   String get errorMessage => _errorMessage;
 

@@ -16,9 +16,12 @@ import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
 class ArtistVerificationScreen extends StatefulWidget {
   final String uid;
+  final String
+      facebookLoginId; // the facebookLoginId for user's that sign up with facebook
 
   ArtistVerificationScreen({
     @required this.uid,
+    this.facebookLoginId: "",
   });
 
   @override

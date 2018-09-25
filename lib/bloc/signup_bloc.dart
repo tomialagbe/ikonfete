@@ -12,6 +12,7 @@ import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/model/model.dart';
 
 class SignupBloc implements BlocBase {
   final AppConfig appConfig;
@@ -113,6 +114,7 @@ class SignupBloc implements BlocBase {
     };
 
     try {
+      final signupResult = AuthResult(request: request);
       final facebookLogin = FacebookLogin();
       facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
       await facebookLogin.logOut();
@@ -124,6 +126,14 @@ class SignupBloc implements BlocBase {
           'user_events',
         ],
       );
+      if (result.status != FacebookLoginStatus.loggedIn) {
+        signupResult.errorMessage =
+            result.status == FacebookLoginStatus.cancelledByUser
+                ? "Login Cancelled"
+                : result.errorMessage;
+        return signupResult;
+      }
+
       final firebaseUser = await FirebaseAuth.instance
           .signInWithFacebook(accessToken: result.accessToken.token);
       final coll = Firestore.instance.collection(
@@ -133,12 +143,13 @@ class SignupBloc implements BlocBase {
           .where("facebookId", isEqualTo: result.accessToken.userId)
           .getDocuments();
       bool isSignedUp = querySnapshot.documents.isNotEmpty;
-      final signupResult = AuthResult(request: request);
+
       if (!isSignedUp) {
         final doc = coll.document();
-        final user = request.isArtist
+        final Model user = request.isArtist
             ? _createArtist(doc.documentID, firebaseUser, result)
             : _createFan(doc.documentID, firebaseUser, result);
+        await doc.setData(user.toJson());
         if (request.isArtist) {
           signupResult.artist = user;
         } else {

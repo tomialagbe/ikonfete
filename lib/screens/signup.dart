@@ -118,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
           children: <Widget>[
             IconButton(
               icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).maybePop(),
             ),
           ],
         )
@@ -130,7 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
     final tapHandler = TapGestureRecognizer();
     tapHandler.onTap = () => router.navigateTo(
         context, RouteNames.login(isArtist: widget.isArtist),
-        transition: TransitionType.inFromRight);
+        transition: TransitionType.inFromRight, replace: true);
 
     final signInText = TextSpan(
       text: AppLocalizations.of(context).signIn, //"Sign in",
@@ -305,10 +305,7 @@ class _SignupScreenState extends State<SignupScreen> {
           defaultColor: Colors.white,
           activeColor: Colors.white70,
           elevation: 3.0,
-          onTap: () => _bloc.signup.add(AuthActionRequest(
-              userType:
-                  widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
-              provider: AuthProvider.facebook)),
+          onTap: _doFacebookSignup,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -371,7 +368,7 @@ class _SignupScreenState extends State<SignupScreen> {
       hudOverlay = HudOverlay.show(
         context,
         overlayChild,
-        Colors.white.withOpacity(0.7),
+        HudOverlay.defaultColor(),
       );
 
       final request = AuthActionRequest(
@@ -379,6 +376,17 @@ class _SignupScreenState extends State<SignupScreen> {
           provider: AuthProvider.email);
       _bloc.signup.add(request);
     }
+  }
+
+  void _doFacebookSignup() {
+    hudOverlay = HudOverlay.show(
+      context,
+      HudOverlay.dotsLoadingIndicator(),
+      HudOverlay.defaultColor(),
+    );
+    _bloc.signup.add(AuthActionRequest(
+        userType: widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
+        provider: AuthProvider.facebook));
   }
 
   void _handleSignupResult(AuthResult result) {
@@ -420,13 +428,24 @@ class _SignupScreenState extends State<SignupScreen> {
               actions: <Widget>[
                 FlatButton(
                   onPressed: () {
-                    // TODO: to home page
-//                    router.navigateTo(
-//                      context,
-//                      RouteNames.login(isArtist: result.isArtist),
-//                      transition: TransitionType.inFromRight,
-//                      replace: true,
-//                    );
+                    // take artist to login page
+                    if (result.request.isArtist) {
+                      // to artist home page
+                      router.navigateTo(
+                        context,
+                        RouteNames.login(isArtist: true),
+                        replace: true,
+                        transition: TransitionType.inFromRight,
+                      );
+                    } else {
+                      // to team selection page
+                      router.navigateTo(
+                        context,
+                        RouteNames.teamSelection(uid: uid),
+                        replace: true,
+                        transition: TransitionType.inFromRight,
+                      );
+                    }
                   },
                   child: Text(
                     "OK",
