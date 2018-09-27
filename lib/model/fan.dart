@@ -6,6 +6,7 @@ class Fan extends Model<String> {
   String name;
   String facebookId;
   String twitterId;
+  String currentTeamId;
   int feteScore = 0;
 
   @override
@@ -17,7 +18,8 @@ class Fan extends Model<String> {
       ..name = json["name"]
       ..facebookId = json["facebookId"]
       ..twitterId = json["twitterId"]
-      ..feteScore = json["feteScore"] ?? 0;
+      ..feteScore = json["feteScore"] ?? 0
+      ..currentTeamId = json["currentTeamId"] ?? "";
   }
 
   @override
@@ -30,6 +32,7 @@ class Fan extends Model<String> {
       "facebookId": this.facebookId ?? "",
       "twitterId": this.twitterId ?? "",
       "feteScore": this.feteScore ?? 0,
+      "currentTeamId": this.currentTeamId ?? "",
     });
     return map;
   }

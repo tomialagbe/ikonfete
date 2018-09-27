@@ -1,5 +1,5 @@
 abstract class Model<T> {
-  String id;
+  T id;
 
   void fromJson(Map json) {
     this..id = json["id"];

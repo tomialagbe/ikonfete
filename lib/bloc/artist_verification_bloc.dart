@@ -166,13 +166,6 @@ class ArtistVerificationBloc extends BlocBase {
   }
 
   void _handleVerifyAction(VerifyParams params) async {
-    final pendingVerification = PendingVerification();
-    pendingVerification
-      ..dateCreated = DateTime.now()
-      ..bio = params.bio
-      ..facebookId = params.fbId
-      ..twitterId = params.twitterId
-      ..twitterUsername = params.twitterUsername;
     // make sure there are no pending verifications for this artist
     final firestore = Firestore.instance;
     final querySnapshot = await firestore
@@ -202,6 +195,15 @@ class ArtistVerificationBloc extends BlocBase {
 
         final newPendingVerificationRef =
             firestore.collection(Collections.pendingVerifications).document();
+        final pendingVerification = PendingVerification();
+        pendingVerification
+          ..id = newPendingVerificationRef.documentID
+          ..uid = params.uid
+          ..dateCreated = DateTime.now()
+          ..bio = params.bio
+          ..facebookId = params.fbId
+          ..twitterId = params.twitterId
+          ..twitterUsername = params.twitterUsername;
         await newPendingVerificationRef.setData(pendingVerification.toJson());
         _verifyActionResultController.add(Pair.from(true, null));
       } on PlatformException catch (e) {

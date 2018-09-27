@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,12 +6,13 @@ import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
-import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/routes.dart';
+import 'package:ikonfetemobile/screens/fan_home.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
+import 'package:ikonfetemobile/screens/profile/artist_profile.dart';
+import 'package:ikonfetemobile/screens/profile/artist_profile_screen_bloc.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations(
@@ -31,6 +30,8 @@ class IkonfeteApp extends StatefulWidget {
 }
 
 class IkonfeteAppState extends State<IkonfeteApp> {
+  ApplicationBloc _bloc;
+
   @override
   void initState() {
     super.initState();
@@ -38,9 +39,17 @@ class IkonfeteAppState extends State<IkonfeteApp> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bloc == null) {
+      _bloc = ApplicationBloc();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider<ApplicationBloc>(
-      bloc: ApplicationBloc(),
+      bloc: _bloc,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -59,17 +68,30 @@ class IkonfeteAppState extends State<IkonfeteApp> {
         onGenerateTitle: (context) {
           return AppLocalizations.of(context).title;
         },
-        home: FutureBuilder<OnBoardState>(
+        home: FutureBuilder<AppInitState>(
           initialData: null,
-          future: _getOnBoardState(),
+          future: _bloc.getAppInitState(),
           builder: (ctx, snapshot) {
             if (snapshot.hasData) {
-              if (snapshot.data.isOnBoarded) {
+              final initState = snapshot.data;
+              if (initState.isOnBoarded) {
                 // check if the user has signed up
-                return BlocProvider<LoginBloc>(
-                  child: LoginScreen(isArtist: snapshot.data.isArtist),
-                  bloc: LoginBloc(isArtist: snapshot.data.isArtist),
-                );
+                if (initState.isLoggedIn) {
+                  if (initState.isArtist) {
+                    return BlocProvider<ArtistProfileScreenBloc>(
+                      bloc: ArtistProfileScreenBloc(),
+                      child: ArtistProfileScreen(uid: initState.uid),
+                    );
+                  } else {
+                    // TODO: seek better alternatives
+                    return FanHomeScreen();
+                  }
+                } else {
+                  return BlocProvider<LoginBloc>(
+                    child: LoginScreen(isArtist: initState.isArtist),
+                    bloc: LoginBloc(isArtist: initState.isArtist),
+                  );
+                }
               } else {
                 // user not onboarded, show onboarding screen
                 return OnBoardingScreen();
@@ -82,19 +104,4 @@ class IkonfeteAppState extends State<IkonfeteApp> {
       ),
     );
   }
-
-  Future<OnBoardState> _getOnBoardState() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isOnBoarded = prefs.getBool(PreferenceKeys.isOnBoarded) ?? false;
-    final isArtist = prefs.getBool(PreferenceKeys.isArtist) ?? false;
-    final state = OnBoardState()
-      ..isArtist = isArtist
-      ..isOnBoarded = isOnBoarded;
-    return state;
-  }
-}
-
-class OnBoardState {
-  bool isOnBoarded = false;
-  bool isArtist = false;
 }

@@ -6,6 +6,13 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/model/fan.dart';
+import 'package:meta/meta.dart';
+
+class UserData {
+  String uid;
+  String photoUrl;
+  String email;
+}
 
 class AuthApiFactory {
   static AuthApi authApi(String apiBaseUrl, AuthUserType type) {
@@ -83,6 +90,10 @@ abstract class AuthApi<T> extends Api {
         final err = ApiError()..fromJson(json.decode(response.body));
         throw ApiException(err.error);
     }
+  }
+
+  Future<UserData> getUserByUid({@required String uid}) async {
+    return null; // TODO: implement this on the server side
   }
 }
 

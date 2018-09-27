@@ -99,7 +99,10 @@ class SignupBloc implements BlocBase {
         ..facebookId = facebookLoginResult.accessToken.userId
         ..twitterId = ""
         ..username = ""
-        ..name = firebaseUser.displayName;
+        ..name = firebaseUser.displayName
+        ..isVerified = false
+        ..isPendingVerification = false
+        ..dateVerified = DateTime.now();
     };
 
     final _createFan = (String docId, FirebaseUser firebaseUser,

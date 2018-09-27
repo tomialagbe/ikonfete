@@ -17,6 +17,8 @@ import 'package:ikonfetemobile/screens/inactive_user.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification.dart';
+import 'package:ikonfetemobile/screens/profile/artist_profile.dart';
+import 'package:ikonfetemobile/screens/profile/artist_profile_screen_bloc.dart';
 import 'package:ikonfetemobile/screens/signup.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
 import 'package:ikonfetemobile/screens/user_signup_profile.dart';
@@ -109,6 +111,14 @@ final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
   return FanHomeScreen();
 });
 
+final artistProfileHandler = Handler(handlerFunc: (ctx, params) {
+  final uid = params["uid"][0];
+  return BlocProvider<ArtistProfileScreenBloc>(
+    bloc: ArtistProfileScreenBloc(),
+    child: ArtistProfileScreen(uid: uid),
+  );
+});
+
 void defineRoutes(Router router, AppConfig appConfig) {
   router.define(RouteNames.splash, handler: splashHandler);
   router.define(RouteNames.onBoarding, handler: onBoardingHandler);
@@ -155,6 +165,7 @@ void defineRoutes(Router router, AppConfig appConfig) {
     }),
   );
   router.define(RouteNames.teamSelection(), handler: fanTeamSelectionHandler);
+  router.define(RouteNames.artistProfile(), handler: artistProfileHandler);
 }
 
 class RouteNames {
@@ -198,5 +209,9 @@ class RouteNames {
   static String inactiveUser({String uid: "", bool isArtist: true}) {
     final s = isArtist ? "/inactive_artist" : "/inactive_fan";
     return "$s/${uid.trim().isEmpty ? ":uid" : uid}";
+  }
+
+  static String artistProfile({String uid: ""}) {
+    return "/artist_profile/${uid.trim().isEmpty ? ":uid" : uid}";
   }
 }

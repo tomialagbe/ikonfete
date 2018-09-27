@@ -33,6 +33,7 @@ dependencies:
       url: git://github.com/tomialagbe/plugins
       path: packages/image_picker
   flutter_svg:
+  transparent_image:
 
 
 dev_dependencies:

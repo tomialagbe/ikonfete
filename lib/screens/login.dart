@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
@@ -294,8 +295,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLoginResult(LoginResult result) {
+    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+
     hudOverlay?.close();
     if (!result.success) {
+      appBloc.doLogout();
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content: Text(result.errorMessage),
@@ -337,7 +341,9 @@ class _LoginScreenState extends State<LoginScreen> {
           // account is verified
           router.navigateTo(
             context,
-            result.isArtist ? RouteNames.artistHome : RouteNames.fanHome,
+            result.isArtist
+                ? RouteNames.artistProfile(uid: uid)
+                : RouteNames.fanHome,
             transition: TransitionType.inFromRight,
             replace: false,
           );
