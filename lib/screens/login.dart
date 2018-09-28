@@ -150,6 +150,16 @@ class _LoginScreenState extends State<LoginScreen> {
     final forgotPasswordTapHandler = TapGestureRecognizer();
     forgotPasswordTapHandler.onTap = () {}; // TODO: handle password reset
 
+    final switchModeTapHandler = TapGestureRecognizer();
+    switchModeTapHandler.onTap = () {
+      router.navigateTo(
+        context,
+        RouteNames.login(isArtist: !widget.isArtist),
+        replace: true,
+        transition: TransitionType.inFromRight,
+      );
+    };
+
     return Form(
       key: formKey,
       child: Padding(
@@ -184,14 +194,34 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 10.0),
             Row(
+              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 RichText(
                   text: TextSpan(
                     recognizer: forgotPasswordTapHandler,
-                    style: TextStyle(color: Color(0xFF999999), fontSize: 12.0),
+                    style: TextStyle(
+                      color: Color(0xFF999999),
+                      fontSize: 12.0,
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.solid,
+                    ),
                     text: "Forgotten Password?",
+                  ),
+                ),
+                Expanded(child: Container()),
+                RichText(
+                  text: TextSpan(
+                    recognizer: switchModeTapHandler,
+                    style: TextStyle(
+                      color: Color(0xFF999999),
+                      fontSize: 12.0,
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.solid,
+                    ),
+                    text:
+                        "Switch to ${widget.isArtist ? "Fan" : "Artist"} mode",
                   ),
                 ),
               ],

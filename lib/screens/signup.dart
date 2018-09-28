@@ -156,6 +156,16 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildForm() {
+    final switchModeTapHandler = TapGestureRecognizer();
+    switchModeTapHandler.onTap = () {
+      router.navigateTo(
+        context,
+        RouteNames.signup(isArtist: !widget.isArtist),
+        replace: true,
+        transition: TransitionType.inFromRight,
+      );
+    };
+
     return Form(
       key: formKey,
       child: Padding(
@@ -199,6 +209,28 @@ class _SignupScreenState extends State<SignupScreen> {
                 _formSubmitted();
               },
               onSaved: (val) => _bloc.password.add(val),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(child: Container()),
+                RichText(
+                  text: TextSpan(
+                    recognizer: switchModeTapHandler,
+                    style: TextStyle(
+                      color: Color(0xFF999999),
+                      fontSize: 12.0,
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.solid,
+                    ),
+                    text:
+                        "Switch to ${widget.isArtist ? "Fan" : "Artist"} mode",
+                  ),
+                ),
+              ],
             ),
           ],
         ),
