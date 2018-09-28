@@ -73,6 +73,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       body: Container(
         width: double.infinity,
         height: double.infinity,

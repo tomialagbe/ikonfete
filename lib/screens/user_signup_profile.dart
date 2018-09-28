@@ -69,6 +69,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       key: scaffoldKey,
       body: Container(
         color: Colors.white,

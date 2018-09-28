@@ -9,6 +9,7 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Container(
         width: double.infinity,

@@ -48,6 +48,7 @@ class _ArtistPendingVerificationScreenState
     tapHandler.onTap = () {};
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         width: double.infinity,
         height: double.infinity,

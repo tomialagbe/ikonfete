@@ -61,6 +61,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       body: Container(
         color: Colors.white,
         width: double.infinity,

@@ -54,6 +54,7 @@ class _InactiveUserScreenState extends State<InactiveUserScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         key: scaffoldKey,
         backgroundColor: Colors.white,
         body: Container(

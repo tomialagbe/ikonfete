@@ -12,6 +12,7 @@ class _ArtistHomeScreenState extends State<ArtistHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         color: Colors.white,
         width: double.infinity,
