@@ -45,6 +45,7 @@ class ArtistProfileHeader implements SliverPersistentHeaderDelegate {
       overflow: Overflow.visible,
       fit: StackFit.expand,
       children: [
+        
         //REPLACE WITH NETWORK IMAGE FOR ARTIST
         StringUtils.isNullOrEmpty(headerImageUrl)
             ? Image.memory(kTransparentImage)
@@ -53,6 +54,7 @@ class ArtistProfileHeader implements SliverPersistentHeaderDelegate {
                 image: headerImageUrl,
                 fit: BoxFit.cover,
               ),
+
         //OVERLAY GRADIENT
         Container(
           decoration: BoxDecoration(
@@ -98,7 +100,7 @@ class ArtistProfileHeader implements SliverPersistentHeaderDelegate {
             ],
             centerTitle: true,
             title: Opacity(
-              opacity: _fadeIn(shrinkOffset),
+              opacity: _fadeIn(shrinkOffset, context),
               child: Text(
                 artistName,
                 style: TextStyle(
@@ -117,7 +119,7 @@ class ArtistProfileHeader implements SliverPersistentHeaderDelegate {
           child: Container(
             width: MediaQuery.of(context).size.width,
             child: Opacity(
-              opacity: _fadeOut(shrinkOffset),
+              opacity: _fadeOut(shrinkOffset, context),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -160,14 +162,18 @@ class ArtistProfileHeader implements SliverPersistentHeaderDelegate {
     );
   }
 
-  double _fadeOut(double shrinkOffset) {
-    double _opacity = -(shrinkOffset / 200.0) + 1.0;
-    return (_opacity < 0 ? 0.0 : _opacity.toDouble()) ?? 1.0;
+  double _fadeOut(double shrinkOffset, BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+      double _opacity = -(shrinkOffset / (screenHeight / 4.55)) + 1.0;
+      //if scrolled to top
+      if ((maxExtent - minExtent).toInt() == shrinkOffset.toInt()) return 0.0; 
+      return (_opacity < 0 ? 0.0 : _opacity.toDouble()) ?? 1.0;
   }
 
-  double _fadeIn(double shrinkOffset) {
-    if (shrinkOffset < 150) return 0.0;
-    double _opacity = shrinkOffset / 250.0;
+  double _fadeIn(double shrinkOffset, BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    if (shrinkOffset < screenHeight / 6.0) return 0.0;
+    double _opacity = shrinkOffset / (screenHeight / 3.7);
     return (_opacity > 1 ? 1.0 : _opacity.toDouble()) ?? 1.0;
   }
 
@@ -178,7 +184,7 @@ class ArtistProfileHeader implements SliverPersistentHeaderDelegate {
       left: 25.0,
       width: MediaQuery.of(context).size.width - 50.0,
       child: Opacity(
-        opacity: _fadeOut(shrinkOffset),
+        opacity: _fadeOut(shrinkOffset, context),
         child: Container(
           height: 102.0,
           padding: EdgeInsets.symmetric(horizontal: 25.0),
