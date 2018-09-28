@@ -78,20 +78,18 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.only(
             top: MediaQuery.of(context).viewInsets.top + 40.0,
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                _buildTitleAndBackButton(),
-                SizedBox(height: 20.0),
-                _buildIntroText(),
-                SizedBox(height: 30.0),
-                _buildForm(),
-                SizedBox(height: 60.0),
-                _buildButtons(),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              _buildTitleAndBackButton(),
+              SizedBox(height: 20.0),
+              _buildIntroText(),
+              SizedBox(height: 30.0),
+              _buildForm(),
+              Expanded(child: Container()),
+              _buildButtons(),
+              SizedBox(height: 40.0),
+            ],
           )),
     );
   }
@@ -341,9 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // account is verified
           router.navigateTo(
             context,
-            result.isArtist
-                ? RouteNames.artistProfile(uid: uid)
-                : RouteNames.fanHome,
+            result.isArtist ? RouteNames.artistHome : RouteNames.fanHome,
             transition: TransitionType.inFromRight,
             replace: false,
           );

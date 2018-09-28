@@ -80,20 +80,18 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).viewInsets.top + 40.0,
         ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              _buildTitleAndBackButton(),
-              SizedBox(height: 20.0),
-              _buildIntroText(),
-              SizedBox(height: 30.0),
-              _buildForm(),
-              SizedBox(height: 40.0),
-              _buildButtons(),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            _buildTitleAndBackButton(),
+            SizedBox(height: 20.0),
+            _buildIntroText(),
+            SizedBox(height: 30.0),
+            _buildForm(),
+            Expanded(child: Container()),
+            _buildButtons(),
+            SizedBox(height: 40.0)
+          ],
         ),
       ),
     );

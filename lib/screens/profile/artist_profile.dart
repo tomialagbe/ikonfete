@@ -10,6 +10,7 @@ import 'package:ikonfetemobile/screens/logout_helper.dart';
 import 'package:ikonfetemobile/screens/profile/artist_profile_header.dart';
 import 'package:ikonfetemobile/screens/profile/artist_profile_screen_bloc.dart';
 
+// TODO: implement this
 class ArtistProfileScreen extends StatefulWidget {
   final String uid;
 

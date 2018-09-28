@@ -26,7 +26,8 @@ class _ArtistHomeScreenState extends State<ArtistHomeScreen> {
   void _logout() async {
     final appBloc = BlocProvider.of<ApplicationBloc>(context);
     await appBloc.doLogout();
-    Navigator.popUntil(
-        context, ModalRoute.withName(RouteNames.login(isArtist: true)));
+    final loginRoute = RouteNames.login(isArtist: true);
+    Navigator.pop(context);
+//    Navigator.popUntil(context, ModalRoute.withName(loginRoute));
   }
 }

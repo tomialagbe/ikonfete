@@ -121,29 +121,43 @@ final artistProfileHandler = Handler(handlerFunc: (ctx, params) {
 
 void defineRoutes(Router router, AppConfig appConfig) {
   router.define(RouteNames.splash, handler: splashHandler);
+
   router.define(RouteNames.onBoarding, handler: onBoardingHandler);
+
   router.define(RouteNames.signup(isArtist: true),
       handler: signupHandler(isArtist: true));
+
   router.define(RouteNames.signup(isArtist: false),
       handler: signupHandler(isArtist: false));
+
   router.define(RouteNames.login(isArtist: true),
       handler: loginHandler(isArtist: true));
+
   router.define(RouteNames.login(isArtist: false),
       handler: loginHandler(isArtist: false));
+
   router.define(RouteNames.activation(isArtist: true),
       handler: activationHandler(isArtist: true));
+
   router.define(RouteNames.activation(isArtist: false),
       handler: activationHandler(isArtist: false));
+
   router.define(RouteNames.signupProfile(isArtist: true),
       handler: signupProfileHandler(isArtist: true));
+
   router.define(RouteNames.signupProfile(isArtist: false),
       handler: signupProfileHandler(isArtist: false));
+
   router.define(RouteNames.artistVerification(),
       handler: artistVerificationHandler);
+
   router.define(RouteNames.artistPendingVerification(),
       handler: artistPendingVerificationHandler);
+
   router.define(RouteNames.artistHome, handler: artistHomeHandler);
+
   router.define(RouteNames.fanHome, handler: fanHomeHandler);
+
   router.define(
     RouteNames.inactiveUser(isArtist: true),
     handler: Handler(handlerFunc: (ctx, params) {
@@ -154,6 +168,7 @@ void defineRoutes(Router router, AppConfig appConfig) {
       );
     }),
   );
+
   router.define(
     RouteNames.inactiveUser(isArtist: false),
     handler: Handler(handlerFunc: (ctx, params) {
@@ -164,7 +179,9 @@ void defineRoutes(Router router, AppConfig appConfig) {
       );
     }),
   );
+
   router.define(RouteNames.teamSelection(), handler: fanTeamSelectionHandler);
+
   router.define(RouteNames.artistProfile(), handler: artistProfileHandler);
 }
 

@@ -3,12 +3,20 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/facebook/facebook.dart';
 import 'package:ikonfetemobile/main.dart';
 import 'package:ikonfetemobile/twitter/twitter_config.dart';
 
 void main() async {
+  SystemChrome.setPreferredOrientations(
+    <DeviceOrientation>[
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ],
+  );
+
   final firebaseApp = await FirebaseApp.configure(
     name: "ikonfete",
     options: FirebaseOptions(
