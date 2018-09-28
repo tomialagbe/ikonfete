@@ -12,7 +12,8 @@ import 'package:ikonfetemobile/screens/activation.dart';
 import 'package:ikonfetemobile/screens/artist_home.dart';
 import 'package:ikonfetemobile/screens/artist_verification.dart';
 import 'package:ikonfetemobile/screens/fan_home.dart';
-import 'package:ikonfetemobile/screens/fan_team_selection.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
 import 'package:ikonfetemobile/screens/inactive_user.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
@@ -104,7 +105,12 @@ final artistHomeHandler = Handler(handlerFunc: (ctx, params) {
 });
 
 final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
-  return FanTeamSelectionScreen();
+  final uid = params["uid"][0];
+  final name = params["name"][0];
+  return BlocProvider<FanTeamSelectionBloc>(
+    bloc: FanTeamSelectionBloc(),
+    child: FanTeamSelectionScreen(uid: uid),
+  );
 });
 
 final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
@@ -191,8 +197,8 @@ class RouteNames {
   static final artistHome = "/artist_home";
   static final fanHome = "/fan_home";
 
-  static String teamSelection({String uid: ""}) {
-    return "/team_selection/${uid.isEmpty ? ":uid" : uid}";
+  static String teamSelection({String uid: "", String name: ""}) {
+    return "/fan_team_selection/${uid.isEmpty ? ":uid" : uid}/${name.isEmpty ? ":name" : name}";
   }
 
   static String login({bool isArtist: true}) {

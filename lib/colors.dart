@@ -5,7 +5,7 @@ final primaryActiveColor = Color(0xFFBA161C);
 
 final primaryButtonColor = primaryColor;
 final primaryButtonActiveColor = primaryActiveColor;
-final textBoxColor = Color(0xFF707070);
+final textBoxColor = Color(0xFF5466AE).withOpacity(0.1);
 
 final bodyColor = Color(0xff181D28);
 final blueOverlay = Color(0xff181D28);

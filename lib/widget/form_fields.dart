@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ikonfetemobile/colors.dart';
 
 class LoginFormField extends StatelessWidget {
   final String placeholder;
@@ -72,7 +73,8 @@ class LoginFormField extends StatelessWidget {
         hintText: placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),
         filled: true,
-        fillColor: fillColor ?? Color(0xFFEFEFEF),
+//        fillColor: fillColor ?? Color(0xFFEFEFEF),
+        fillColor: fillColor ?? textBoxColor,
         border: inputBorder,
         focusedBorder: inputBorder,
         disabledBorder: inputBorder,
@@ -102,6 +104,7 @@ class LoginPasswordField extends StatefulWidget {
   final FormFieldValidator<String> validator;
   final Function(String) onSaved;
   final TextStyle textStyle;
+  final Color fillColor;
 
   LoginPasswordField({
     this.placeholder: "",
@@ -114,6 +117,7 @@ class LoginPasswordField extends StatefulWidget {
     this.validator,
     this.onSaved,
     this.textStyle,
+    this.fillColor,
   })  : assert(!(revealIcon != null && hideIcon == null)),
         assert(!(revealIcon == null && hideIcon != null));
 
@@ -157,7 +161,7 @@ class _LoginPasswordFieldState extends State<LoginPasswordField> {
         hintText: widget.placeholder,
         hintStyle: TextStyle(color: Color(0xFF8F8F8F)),
         filled: true,
-        fillColor: Color(0xFFEFEFEF),
+        fillColor: widget.fillColor ?? textBoxColor,
         border: inputBorder,
         focusedBorder: inputBorder,
         disabledBorder: inputBorder,
@@ -179,6 +183,115 @@ class _LoginPasswordFieldState extends State<LoginPasswordField> {
                 },
               )
             : null,
+      ),
+    );
+  }
+}
+
+class SearchField extends StatefulWidget {
+  final String placeholder;
+  final keyboardType;
+  final textInputAction;
+  final focusNode;
+  final Function(String) onChanged;
+  final FormFieldValidator<String> validator;
+  final Function(String) onSaved;
+  final TextStyle textStyle;
+
+  SearchField({
+    this.placeholder: "",
+    this.keyboardType: TextInputType.text,
+    this.focusNode,
+    this.textInputAction,
+    this.onChanged,
+    this.validator,
+    this.onSaved,
+    this.textStyle,
+  });
+
+  @override
+  _SearchFieldState createState() {
+    return new _SearchFieldState();
+  }
+}
+
+class _SearchFieldState extends State<SearchField> {
+  bool _isTyping;
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    _isTyping = false;
+    _controller = new TextEditingController();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final inputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5.0),
+      borderSide: BorderSide(
+        color: Colors.transparent,
+        style: BorderStyle.none,
+      ),
+    );
+    final errorInputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5.0),
+      borderSide: BorderSide(
+        color: Colors.red,
+        style: BorderStyle.solid,
+      ),
+    );
+
+    return TextField(
+      controller: _controller,
+      autofocus: false,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      focusNode: widget.focusNode,
+      onChanged: (String text) {
+        setState(() {
+          text.length > 1 ? _isTyping = true : _isTyping = false;
+        });
+        widget.onChanged(text);
+      },
+      style: widget.textStyle ?? Theme.of(context).textTheme.body1,
+      decoration: InputDecoration(
+        hintText: "Search",
+        hintStyle: TextStyle(
+          fontSize: 16.0,
+          color: Color(0xFF8F8F8F),
+        ),
+        filled: true,
+        fillColor: textBoxColor,
+        border: inputBorder,
+        focusedBorder: inputBorder,
+        disabledBorder: inputBorder,
+        enabledBorder: inputBorder,
+        errorBorder: errorInputBorder,
+        contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+        errorMaxLines: 2,
+        suffixStyle: TextStyle(color: Colors.red),
+        suffixIcon: _isTyping
+            ? GestureDetector(
+                child: Icon(
+                  Icons.close,
+                  color: Color(0xff181D28),
+                  size: 20.0,
+                ),
+                onTap: () {
+                  setState(() {
+                    _isTyping = false;
+                    _controller.clear();
+                  });
+                },
+              )
+            : Icon(
+                Icons.search,
+                size: 20.0,
+                color: Color(0xff181D28),
+              ),
       ),
     );
   }

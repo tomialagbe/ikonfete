@@ -13,6 +13,7 @@ import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/routes.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -255,10 +256,14 @@ class _LoginScreenState extends State<LoginScreen> {
           defaultColor: Colors.white,
           activeColor: Colors.white70,
           elevation: 3.0,
-          onTap: () => _bloc.loginAction.add(AuthActionRequest(
-              userType:
-                  widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
-              provider: AuthProvider.facebook)),
+          onTap: () {
+            hudOverlay = HudOverlay.show(context,
+                HudOverlay.dotsLoadingIndicator(), HudOverlay.defaultColor());
+            _bloc.loginAction.add(AuthActionRequest(
+                userType:
+                    widget.isArtist ? AuthUserType.artist : AuthUserType.fan,
+                provider: AuthProvider.facebook));
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -368,9 +373,15 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         } else {
           // account is verified
+          String routeName = widget.isArtist
+              ? RouteNames.artistHome
+              : (StringUtils.isNullOrEmpty(result
+                      .fan.currentTeamId) // check if fan belongs to a team
+                  ? RouteNames.teamSelection(uid: uid)
+                  : RouteNames.fanHome);
           router.navigateTo(
             context,
-            result.isArtist ? RouteNames.artistHome : RouteNames.fanHome,
+            routeName,
             transition: TransitionType.inFromRight,
             replace: false,
           );
