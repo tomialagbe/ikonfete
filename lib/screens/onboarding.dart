@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/localization.dart';
+import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   @override
@@ -136,9 +138,12 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             PrimaryButton(
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
-              onTap: () => router.navigateTo(
-                  context, RouteNames.signup(isArtist: true),
-                  replace: false, transition: TransitionType.inFromRight),
+              onTap: () {
+                SharedPreferences.getInstance().then(
+                    (prefs) => prefs.setBool(PreferenceKeys.isOnBoarded, true));
+                router.navigateTo(context, RouteNames.signup(isArtist: true),
+                    replace: false, transition: TransitionType.inFromRight);
+              },
               text: AppLocalizations.of(context).artistSignupButtonText,
               // I'M AN ARTIST
               defaultColor: colors.primaryButtonColor,
@@ -148,9 +153,12 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             PrimaryButton(
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
-              onTap: () => router.navigateTo(
-                  context, RouteNames.signup(isArtist: false),
-                  replace: false, transition: TransitionType.inFromRight),
+              onTap: () {
+                SharedPreferences.getInstance().then(
+                    (prefs) => prefs.setBool(PreferenceKeys.isOnBoarded, true));
+                router.navigateTo(context, RouteNames.signup(isArtist: false),
+                    replace: false, transition: TransitionType.inFromRight);
+              },
               text: AppLocalizations.of(context).fanSignupButtonText,
               //"I'M A FAN",
               defaultColor: Colors.transparent,

@@ -13,7 +13,9 @@ class AppInitState {
   bool isLoggedIn = false;
   bool isArtistVerified = false;
   bool isArtistPendingVerification = false;
+  bool isFanTeamSetup = false;
   String uid;
+  String name;
 }
 
 class ApplicationBloc implements BlocBase {
@@ -57,12 +59,13 @@ class ApplicationBloc implements BlocBase {
     final prefs = await SharedPreferences.getInstance();
     final isOnBoarded = prefs.getBool(PreferenceKeys.isOnBoarded) ?? false;
     final isArtist = prefs.getBool(PreferenceKeys.isArtist) ?? false;
+    final isFanTeamSetup =
+        prefs.getBool(PreferenceKeys.isFanTeamSetup) ?? false;
     final state = AppInitState()
       ..isArtist = isArtist
       ..isOnBoarded = isOnBoarded;
     final currUser = await FirebaseAuth.instance.currentUser();
-    state.isLoggedIn =
-        currUser != null && !currUser.isAnonymous && currUser.isEmailVerified;
+    state.isLoggedIn = currUser != null;
 
     final artistRepo = ArtistRepository();
     bool isArtistVerified = false;
@@ -75,6 +78,8 @@ class ApplicationBloc implements BlocBase {
             artist != null && artist.isPendingVerification;
       }
     }
+    state.name = currUser != null ? currUser.displayName : "";
+    state.isFanTeamSetup = isFanTeamSetup;
     state.uid = currUser != null ? currUser.uid : null;
     state.isArtistVerified = isArtistVerified;
     state.isArtistPendingVerification = isArtistPendingVerification;

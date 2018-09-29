@@ -28,7 +28,7 @@ class _ArtistHomeScreenState extends State<ArtistHomeScreen> {
     final appBloc = BlocProvider.of<ApplicationBloc>(context);
     await appBloc.doLogout();
     final loginRoute = RouteNames.login(isArtist: true);
-    Navigator.pop(context);
+    Navigator.maybePop(context);
 //    Navigator.popUntil(context, ModalRoute.withName(loginRoute));
   }
 }

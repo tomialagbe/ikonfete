@@ -15,9 +15,9 @@ class Team extends Model<String> {
       ..teamPictureUrl = json["teamPictureUrl"] ?? ""
       ..dateCreated = json["dateCreated"] == null
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(json["dateCreated"] * 1000)
-      ..artist = Artist()
-      ..fromJson(json["artist"]);
+          : DateTime.fromMillisecondsSinceEpoch(json["dateCreated"] * 1000);
+    final artistMap = json["artist"];
+    this.artist = Artist()..fromJson(artistMap);
   }
 
   @override

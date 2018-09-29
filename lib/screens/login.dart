@@ -12,11 +12,13 @@ import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
+import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   final bool isArtist;
@@ -154,6 +156,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final switchModeTapHandler = TapGestureRecognizer();
     switchModeTapHandler.onTap = () {
+      SharedPreferences.getInstance().then(
+          (prefs) => prefs.setBool(PreferenceKeys.isArtist, !widget.isArtist));
       router.navigateTo(
         context,
         RouteNames.login(isArtist: !widget.isArtist),

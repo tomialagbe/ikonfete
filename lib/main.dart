@@ -8,6 +8,8 @@ import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/artist_home.dart';
 import 'package:ikonfetemobile/screens/fan_home.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
@@ -72,7 +74,15 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                     return ArtistHomeScreen();
                   } else {
                     // TODO: seek better alternatives
-                    return FanHomeScreen();
+                    if (initState.isFanTeamSetup) {
+                      return FanHomeScreen();
+                    } else {
+                      return BlocProvider<FanTeamSelectionBloc>(
+                        bloc: FanTeamSelectionBloc(),
+                        child: FanTeamSelectionScreen(
+                            uid: initState.uid, name: initState.name),
+                      );
+                    }
                   }
                 } else {
                   return BlocProvider<LoginBloc>(
