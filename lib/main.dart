@@ -6,11 +6,10 @@ import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart';
+import 'package:ikonfetemobile/screens/artist_home.dart';
 import 'package:ikonfetemobile/screens/fan_home.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
-import 'package:ikonfetemobile/screens/profile/artist_profile.dart';
-import 'package:ikonfetemobile/screens/profile/artist_profile_screen_bloc.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
 
 class IkonfeteApp extends StatefulWidget {
@@ -70,10 +69,7 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                 // check if the user has signed up
                 if (initState.isLoggedIn) {
                   if (initState.isArtist) {
-                    return BlocProvider<ArtistProfileScreenBloc>(
-                      bloc: ArtistProfileScreenBloc(),
-                      child: ArtistProfileScreen(uid: initState.uid),
-                    );
+                    return ArtistHomeScreen();
                   } else {
                     // TODO: seek better alternatives
                     return FanHomeScreen();

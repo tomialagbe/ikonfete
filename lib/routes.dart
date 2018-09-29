@@ -109,7 +109,7 @@ final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
   final name = params["name"][0];
   return BlocProvider<FanTeamSelectionBloc>(
     bloc: FanTeamSelectionBloc(),
-    child: FanTeamSelectionScreen(uid: uid),
+    child: FanTeamSelectionScreen(uid: uid, name: name),
   );
 });
 

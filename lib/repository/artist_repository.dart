@@ -47,6 +47,7 @@ class ArtistRepository {
 
   Future<List<Artist>> searchArtistsByName(String searchQuery, int resultSize,
       {Artist lastFetched}) async {
+    // TODO: change to fetch only verified users
     final collection = Firestore.instance.collection(Collections.artists);
     var query = collection.orderBy("name", descending: true).startAt([
       {"name": searchQuery}

@@ -13,8 +13,12 @@ import 'package:ikonfetemobile/widget/form_fields.dart';
 class FanTeamSelectionScreen extends StatefulWidget {
   /// The fan's uid
   final String uid;
+  final String name;
 
-  FanTeamSelectionScreen({this.uid});
+  FanTeamSelectionScreen({
+    @required this.uid,
+    @required this.name,
+  });
 
   @override
   FanTeamSelectionScreenState createState() => FanTeamSelectionScreenState();
@@ -70,7 +74,7 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
                     children: <Widget>[
                       SizedBox(height: 30.0),
                       Text(
-                        "Hello, Jane!\nJoin your favourite Artist",
+                        "Hello, ${widget.name}!\nJoin your favourite Artist",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           height: 1.4,

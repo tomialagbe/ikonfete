@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
+import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/routes.dart';
@@ -137,6 +139,11 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   }
 
   Widget _buildForm() {
+    final uploadImageHandler = TapGestureRecognizer();
+    uploadImageHandler.onTap = () {
+      _chooseDisplayPicture(ImageSource.gallery);
+    };
+
     return Form(
       key: formKey,
       child: Padding(
@@ -147,9 +154,23 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
           children: <Widget>[
             ProfilePictureChooser(
               onTap: () {
-                _chooseDisplayPicture();
+                _chooseDisplayPicture(ImageSource.camera);
               },
               image: _displayPicture,
+            ),
+            SizedBox(height: 10.0),
+            Text("OR"),
+            SizedBox(height: 10.0),
+            RichText(
+              text: TextSpan(
+                text: "Upload Image",
+                style: TextStyle(
+                  color: primaryColor,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: uploadImageHandler,
+              ),
             ),
             SizedBox(height: 40.0),
             LoginFormField(
@@ -197,8 +218,8 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
     );
   }
 
-  Future _chooseDisplayPicture() async {
-    final im = await ImagePicker.pickImage(source: ImageSource.camera);
+  Future _chooseDisplayPicture(ImageSource imageSource) async {
+    final im = await ImagePicker.pickImage(source: imageSource);
     setState(() {
       _displayPicture = im;
       _bloc.profilePicture.add(im);

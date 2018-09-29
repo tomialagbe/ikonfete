@@ -377,7 +377,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ? RouteNames.artistHome
               : (StringUtils.isNullOrEmpty(result
                       .fan.currentTeamId) // check if fan belongs to a team
-                  ? RouteNames.teamSelection(uid: uid)
+                  ? RouteNames.teamSelection(uid: uid, name: result.fan.name)
                   : RouteNames.fanHome);
           router.navigateTo(
             context,
