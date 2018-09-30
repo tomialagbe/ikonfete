@@ -29,9 +29,7 @@ class TeamRepository {
     final documentSnapshots = querySnapshot.documents;
     List<Team> artistTeams = documentSnapshots.map((docsnapshot) {
       final d = docsnapshot.data;
-      return Team()
-        ..fromJson(docsnapshot.data)
-        ..artist;
+      return Team()..fromJson(docsnapshot.data);
     }).toList();
     return Page.from(items: artistTeams, pageSize: pageSize);
   }
@@ -40,11 +38,18 @@ class TeamRepository {
       String searchQuery, int resultSize) async {
     // TODO: change to fetch only verified users
     final collection = Firestore.instance.collection(Collections.teams);
-    var query = collection.orderBy("artist.name", descending: true).startAt([
-      {"artist.name": searchQuery}
-    ]).endAt([
-      {"artist.name": searchQuery + '\uf8ff'}
-    ]).limit(resultSize);
+//    var query = collection.orderBy("a", descending: true).startAt([
+//      {"artist.name": searchQuery}
+//    ]).endAt([
+//      {"artist.name": searchQuery + '\uf8ff'}
+//    ]).limit(resultSize);
+    var query = collection
+        .orderBy("artist.name")
+        .startAt([searchQuery]).endAt([searchQuery + '\uf8ff']);
+//    var query = collection
+//        .where("artist.name", isEqualTo: searchQuery)
+//        .orderBy("teamSize", descending: true)
+//        .limit(resultSize);
     final querySnapshot = await query.getDocuments();
     return querySnapshot.documents
         .map((docsnapshot) => Team()..fromJson(docsnapshot.data))

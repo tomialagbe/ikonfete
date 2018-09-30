@@ -124,8 +124,15 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
               return ListTile(
                 contentPadding: EdgeInsets.all(0.0),
                 leading: StringUtils.isNullOrEmpty(team.teamPictureUrl)
-                    ? _buildRandomGradientImage()
-                    : _buildArtistTeamImage(team.teamPictureUrl),
+                    ? RandomGradientImage()
+                    : RandomGradientImage(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.transparent,
+                          backgroundImage:
+                              CachedNetworkImageProvider(team.teamPictureUrl),
+                        ),
+                      ),
                 title: Text(
                   team.artist.name,
                   style: TextStyle(
@@ -134,90 +141,26 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
                   ),
                 ),
                 trailing: Text(
+                  //followers
                   team.teamSize.toString(), //500k
                   style: TextStyle(
                     fontSize: 13.0,
                     color: Color(0xFF707070),
                   ),
                 ),
-                //followers
-                subtitle: Text(
-                  '',
-//                  'Country',
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    color: Color(0xFF707070),
-                  ),
-                ),
+//                subtitle: Text(
+//                  '',// Country
+//                  style: TextStyle(
+//                    fontSize: 13.0,
+//                    color: Color(0xFF707070),
+//                  ),
+//                ),
                 enabled: true,
-                onTap: () {
-                  /* react to the tile being tapped */
-                },
+                onTap: () => _teamSelected(team),
               );
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildArtistTeamImage(String imageUrl) {
-//    return CircleAvatar(
-//      radius: 32.0,
-//      backgroundColor: Colors.transparent,
-//      backgroundImage: CachedNetworkImageProvider(imageUrl),
-//    );
-    return Container(
-      height: 64.0,
-      width: 64.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-//        borderRadius: BorderRadius.all(
-//          Radius.circular(32.0),
-//        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            Color.fromARGB(
-              200,
-              Random().nextInt(255),
-              Random().nextInt(255),
-              Random().nextInt(255),
-            ).withOpacity(.8),
-            Colors.grey.withOpacity(.8),
-          ],
-        ),
-      ),
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.transparent,
-        backgroundImage: CachedNetworkImageProvider(imageUrl),
-      ),
-    );
-  }
-
-  Widget _buildRandomGradientImage() {
-    return Container(
-      height: 64.0,
-      width: 64.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(32.0),
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            Color.fromARGB(
-              200,
-              Random().nextInt(255),
-              Random().nextInt(255),
-              Random().nextInt(255),
-            ).withOpacity(.8),
-            Colors.grey.withOpacity(.8),
-          ],
-        ),
       ),
     );
   }
@@ -247,6 +190,41 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
           ],
         )
       ],
+    );
+  }
+
+  void _teamSelected(Team team) {}
+}
+
+class RandomGradientImage extends StatelessWidget {
+  final Widget child;
+
+  RandomGradientImage({this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 64.0,
+      width: 64.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(32.0),
+        ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Color.fromARGB(
+              200,
+              Random().nextInt(255),
+              Random().nextInt(255),
+              Random().nextInt(255),
+            ).withOpacity(.8),
+            Colors.grey.withOpacity(.8),
+          ],
+        ),
+      ),
+      child: child ?? Container(),
     );
   }
 }
