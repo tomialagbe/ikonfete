@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -9,10 +8,6 @@ import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/collections.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
-import 'package:ikonfetemobile/model/model.dart';
 
 class SignupBloc implements BlocBase {
   final AppConfig appConfig;
@@ -91,37 +86,12 @@ class SignupBloc implements BlocBase {
   }
 
   Future<AuthResult> _facebookSignup(AuthActionRequest request) async {
-    final _createArtist = (String docId, FirebaseUser firebaseUser,
-        FacebookLoginResult facebookLoginResult) {
-      return Artist()
-        ..id = docId
-        ..uid = firebaseUser.uid
-        ..facebookId = facebookLoginResult.accessToken.userId
-        ..twitterId = ""
-        ..username = ""
-        ..name = firebaseUser.displayName
-        ..isVerified = false
-        ..isPendingVerification = false
-        ..dateVerified = DateTime.now();
-    };
-
-    final _createFan = (String docId, FirebaseUser firebaseUser,
-        FacebookLoginResult facebookLoginResult) {
-      return Fan()
-        ..id = docId
-        ..uid = firebaseUser.uid
-        ..facebookId = facebookLoginResult.accessToken.userId
-        ..twitterId = ""
-        ..username = ""
-        ..name = firebaseUser.displayName;
-    };
-
     try {
       final signupResult = AuthResult(request: request);
       final facebookLogin = FacebookLogin();
       facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
       await facebookLogin.logOut();
-      final result = await facebookLogin.logInWithReadPermissions(
+      final facebookLoginResult = await facebookLogin.logInWithReadPermissions(
         [
           'email',
           'public_profile',
@@ -129,40 +99,31 @@ class SignupBloc implements BlocBase {
           'user_events',
         ],
       );
-      if (result.status != FacebookLoginStatus.loggedIn) {
+      if (facebookLoginResult.status != FacebookLoginStatus.loggedIn) {
         signupResult.errorMessage =
-            result.status == FacebookLoginStatus.cancelledByUser
+            facebookLoginResult.status == FacebookLoginStatus.cancelledByUser
                 ? "Login Cancelled"
-                : result.errorMessage;
+                : facebookLoginResult.errorMessage;
         return signupResult;
       }
 
-      final firebaseUser = await FirebaseAuth.instance
-          .signInWithFacebook(accessToken: result.accessToken.token);
-      final coll = Firestore.instance.collection(
-          request.isArtist ? Collections.artists : Collections.fans);
-      // check if user has signed up with facebook before
-      final querySnapshot = await coll
-          .where("facebookId", isEqualTo: result.accessToken.userId)
-          .getDocuments();
-      bool isSignedUp = querySnapshot.documents.isNotEmpty;
+      final firebaseUser = await FirebaseAuth.instance.signInWithFacebook(
+          accessToken: facebookLoginResult.accessToken.token);
+      if (firebaseUser == null) {
+        throw Exception("Sign up failed");
+      }
 
-      if (!isSignedUp) {
-        final doc = coll.document();
-        final Model user = request.isArtist
-            ? _createArtist(doc.documentID, firebaseUser, result)
-            : _createFan(doc.documentID, firebaseUser, result);
-        await doc.setData(user.toJson());
-        if (request.isArtist) {
-          signupResult.artist = user;
-        } else {
-          signupResult.fan = user;
-        }
-        return signupResult;
+      final authApi =
+          AuthApiFactory.authApi(appConfig.serverBaseUrl, request.userType);
+      final artistOrFan = await authApi.facebookSignup(
+          firebaseUser.uid, facebookLoginResult.accessToken.userId);
+      if (artistOrFan.isFirst) {
+        signupResult.artist = artistOrFan.first;
       } else {
-        signupResult.errorMessage = "This account already exists";
-        return signupResult;
+        signupResult.fan = artistOrFan.second;
       }
+
+      return signupResult;
     } on PlatformException catch (e) {
       return AuthResult(request: request)..errorMessage = e.message;
     } on Exception catch (e) {

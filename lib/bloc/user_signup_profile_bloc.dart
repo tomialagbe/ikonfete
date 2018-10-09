@@ -55,9 +55,6 @@ class UserSignupProfileBloc extends BlocBase {
   }
 
   @override
-  void init() {}
-
-  @override
   void dispose() {
     _usernameController.close();
     _profilePictureController.close();

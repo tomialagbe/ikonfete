@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/artist.dart';
+import 'package:ikonfetemobile/api/fan.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/collections.dart';
@@ -13,6 +16,8 @@ import 'package:ikonfetemobile/model/fan.dart';
 import 'package:meta/meta.dart';
 
 class LoginBloc extends BlocBase {
+  final AppConfig appConfig;
+
   String _email;
   String _password;
 
@@ -36,7 +41,10 @@ class LoginBloc extends BlocBase {
 
   Sink<LoginResult> get _loginResult => _loginResultController.sink;
 
-  LoginBloc({@required this.isArtist}) {
+  LoginBloc({
+    @required this.isArtist,
+    @required this.appConfig,
+  }) {
     _emailController.stream.listen((val) => _email = val.trim());
     _passwordController.stream.listen((val) => _password = val.trim());
     _loginActionController.stream.listen(_handleLoginRequest);
@@ -130,30 +138,21 @@ class LoginBloc extends BlocBase {
 
       final firebaseUser = await FirebaseAuth.instance
           .signInWithFacebook(accessToken: result.accessToken.token);
-      final coll = Firestore.instance.collection(
-          request.isArtist ? Collections.artists : Collections.fans);
-      // check if user has signed up with facebook before
-      final querySnapshot = await coll
-          .where("facebookId", isEqualTo: result.accessToken.userId)
-          .getDocuments();
-      bool isSignedUp = querySnapshot.documents.isNotEmpty;
 
-      if (isSignedUp) {
-        final snapshot = querySnapshot.documents[0];
-        final user = request.isArtist
-            ? _artistFromSnapshot(snapshot)
-            : _fanFromSnapshot(snapshot);
-        if (request.isArtist) {
-          authResult.artist = user;
-        } else {
-          authResult.fan = user;
-        }
-        authResult.firebaseUser = firebaseUser;
-        return authResult;
+      // find the user
+      if (request.isArtist) {
+        final artistApi = ArtistApi(appConfig.serverBaseUrl);
+        final artist = await artistApi.findByUID(firebaseUser.uid);
+        authResult.artist = artist;
       } else {
-        authResult.errorMessage = "You have not signed up yet.";
-        return authResult;
+        final fanApi = FanApi(appConfig.serverBaseUrl);
+        final fan = await fanApi.findByUID(firebaseUser.uid);
+        authResult.fan = fan;
       }
+      authResult.firebaseUser = firebaseUser;
+      return authResult;
+    } on ApiException catch (e) {
+      return LoginResult(request)..errorMessage = e.message;
     } on PlatformException catch (e) {
       return LoginResult(request)..errorMessage = e.message;
     } on Exception catch (e) {

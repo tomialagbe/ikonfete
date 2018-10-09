@@ -49,7 +49,10 @@ Handler loginHandler({bool isArtist: true}) {
   return Handler(handlerFunc: (ctx, params) {
     return BlocProvider<LoginBloc>(
       child: LoginScreen(isArtist: isArtist),
-      bloc: LoginBloc(isArtist: isArtist),
+      bloc: LoginBloc(
+        isArtist: isArtist,
+        appConfig: AppConfig.of(ctx),
+      ),
     );
   });
 }

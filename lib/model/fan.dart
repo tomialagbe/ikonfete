@@ -4,6 +4,7 @@ class Fan extends Model<String> {
   String uid;
   String username;
   String name;
+  String email;
   String facebookId;
   String twitterId;
   String currentTeamId;
@@ -16,6 +17,7 @@ class Fan extends Model<String> {
       ..uid = json["uid"]
       ..username = json["username"]
       ..name = json["name"]
+      ..email = json["email"]
       ..facebookId = json["facebookId"]
       ..twitterId = json["twitterId"]
       ..feteScore = json["feteScore"] ?? 0
@@ -28,6 +30,7 @@ class Fan extends Model<String> {
     map.addAll({
       "uid": this.uid,
       "username": this.username,
+      "email": this.email,
       "name": this.name,
       "facebookId": this.facebookId ?? "",
       "twitterId": this.twitterId ?? "",

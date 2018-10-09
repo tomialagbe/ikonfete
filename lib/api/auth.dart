@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/model/fan.dart';
-import 'package:meta/meta.dart';
+import 'package:ikonfetemobile/types/types.dart';
 
 class UserData {
   String uid;
@@ -92,9 +93,44 @@ abstract class AuthApi<T> extends Api {
     }
   }
 
-  Future<UserData> getUserByUid({@required String uid}) async {
-    return null; // TODO: implement this on the server side
+  Future<ExclusivePair<Artist, Fan>> _facebookSignup(
+      String uid, String facebookId, bool isArtist) async {
+    uid = Uri.encodeComponent(uid);
+    facebookId = Uri.encodeComponent(facebookId);
+    String isArtistStr = Uri.encodeComponent(isArtist.toString());
+    final url =
+        "${this.apiBaseUrl}/facebook_signup?facebookId=$facebookId&uid=$uid&isArtist=$isArtistStr";
+    final headers = {"Content-Type": "application/x-www-form-urlencoded"};
+    try {
+      http.Response response = await http.post(url, headers: headers);
+      switch (response.statusCode) {
+        case 200:
+          Map responseData = json.decode(response.body);
+          if (responseData["success"] == true) {
+            if (isArtist) {
+              final artist = new Artist()..fromJson(responseData["artist"]);
+              return ExclusivePair.withFirst<Artist, Fan>(artist);
+            } else {
+              final fan = new Fan()..fromJson(responseData["fan"]);
+              return ExclusivePair.withSecond<Artist, Fan>(fan);
+            }
+          } else {
+            throw ApiException("Facebook Signup failed");
+          }
+          break;
+        default:
+          final err = ApiError()..fromJson(json.decode(response.body));
+          throw ApiException(err.error);
+      }
+    } on PlatformException catch (e) {
+      throw ApiException(e.message);
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
+
+  Future<ExclusivePair<Artist, Fan>> facebookSignup(
+      String uid, String facebookId);
 }
 
 class ArtistAuthApi extends AuthApi<Artist> {
@@ -135,6 +171,12 @@ class ArtistAuthApi extends AuthApi<Artist> {
   Future<Artist> signup(String name, String email, String password) {
     return _signupArtist(name, email, password);
   }
+
+  @override
+  Future<ExclusivePair<Artist, Fan>> facebookSignup(
+      String uid, String facebookId) {
+    return _facebookSignup(uid, facebookId, true);
+  }
 }
 
 class FanAuthApi extends AuthApi<Fan> {
@@ -173,5 +215,11 @@ class FanAuthApi extends AuthApi<Fan> {
     } on Exception {
       throw ApiException("A network error occurred.");
     }
+  }
+
+  @override
+  Future<ExclusivePair<Artist, Fan>> facebookSignup(
+      String uid, String facebookId) {
+    return _facebookSignup(uid, facebookId, false);
   }
 }

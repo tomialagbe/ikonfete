@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/login_bloc.dart';
@@ -87,7 +88,10 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                 } else {
                   return BlocProvider<LoginBloc>(
                     child: LoginScreen(isArtist: initState.isArtist),
-                    bloc: LoginBloc(isArtist: initState.isArtist),
+                    bloc: LoginBloc(
+                      isArtist: initState.isArtist,
+                      appConfig: AppConfig.of(context),
+                    ),
                   );
                 }
               } else {
