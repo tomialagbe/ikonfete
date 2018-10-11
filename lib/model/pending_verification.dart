@@ -18,7 +18,8 @@ class PendingVerification extends Model<String> {
       ..twitterUsername = json["twitterUsername"] ?? ""
       ..dateCreated = json["dateCreated"] != null
           ? DateTime.fromMillisecondsSinceEpoch(json["dateCreated"])
-          : null;
+          : null
+      ..bio = json["bio"] ?? "";
   }
 
   @override
@@ -26,11 +27,12 @@ class PendingVerification extends Model<String> {
     final map = super.toJson();
     map.addAll({
       "uid": uid,
-      "dateCreated": dateCreated.millisecondsSinceEpoch / 1000,
+      "dateCreated":
+          dateCreated != null ? dateCreated.millisecondsSinceEpoch / 1000 : 0,
       "facebookId": facebookId ?? "",
       "twitterId": twitterId ?? "",
       "twitterUsername": twitterUsername ?? "",
-      "bio": bio,
+      "bio": bio ?? "",
     });
     return map;
   }

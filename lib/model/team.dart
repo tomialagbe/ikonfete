@@ -1,35 +1,43 @@
-import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/model.dart';
 
 class Team extends Model<String> {
-  Artist artist;
-  int teamSize = 0;
+  String artistId;
+  String artistUid;
+  String artistName;
   String teamPictureUrl;
   DateTime dateCreated;
+  DateTime dateUpdated;
 
   @override
   void fromJson(Map json) {
     super.fromJson(json);
     this
-      ..teamSize = json["teamSize"] ?? 0
+      ..artistId = json["artistId"] ?? ""
+      ..artistUid = json["artistUid"] ?? ""
+      ..artistName = json["artistName"] ?? ""
       ..teamPictureUrl = json["teamPictureUrl"] ?? ""
-      ..dateCreated = json["dateCreated"] == null
+      ..dateCreated = json["dateCreated"] == null || json["dateCreated"] == 0
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(json["dateCreated"] * 1000);
-    final artistMap = json["artist"];
-    this.artist = Artist()..fromJson(artistMap);
+          : DateTime.fromMillisecondsSinceEpoch(json["dateCreated"] * 1000)
+      ..dateUpdated = json["dateUpdated"] == null || json["dateUpdated"] == 0
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(json["dateUpdated"] * 1000);
   }
 
   @override
   Map<String, dynamic> toJson() {
     final map = super.toJson();
     map.addAll({
-      "teamSize": teamSize ?? 0,
+      "artistId": artistId ?? "",
+      "artistUid": artistUid ?? "",
+      "artistName": artistName ?? "",
       "teamPictureUrl": teamPictureUrl ?? "",
       "dateCreated": dateCreated == null
           ? null
           : dateCreated.millisecondsSinceEpoch / 1000,
-      "artist": artist.toJson(),
+      "dateUpdated": dateUpdated == null
+          ? null
+          : dateUpdated.millisecondsSinceEpoch / 1000,
     });
     return map;
   }

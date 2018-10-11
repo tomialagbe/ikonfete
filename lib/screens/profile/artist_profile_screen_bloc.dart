@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/artist.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/repository/artist_repository.dart';
+import 'package:meta/meta.dart';
 
 class ArtistData {
   Artist artist;
@@ -11,6 +14,8 @@ class ArtistData {
 }
 
 class ArtistProfileScreenBloc extends BlocBase {
+  final AppConfig appConfig;
+
   /// StreamController that handles artist UIDs
   StreamController<String> _loadArtistActionController =
       StreamController<String>();
@@ -23,7 +28,9 @@ class ArtistProfileScreenBloc extends BlocBase {
 
   Stream<ArtistData> get loadArtistResult => _loadArtistResultController.stream;
 
-  ArtistProfileScreenBloc() {
+  ArtistProfileScreenBloc({
+    @required this.appConfig,
+  }) {
     _loadArtistActionController.stream.listen(_loadArtist);
   }
 
@@ -34,12 +41,16 @@ class ArtistProfileScreenBloc extends BlocBase {
   }
 
   void _loadArtist(String uid) async {
-    final artistRepo = ArtistRepository();
-    final artist = await artistRepo.findByUid(uid);
-    final currentUser = await FirebaseAuth.instance.currentUser();
-    final artistData = ArtistData()
-      ..artist = artist
-      ..user = currentUser;
-    _loadArtistResultController.add(artistData);
+    try {
+      final artistApi = ArtistApi(appConfig.serverBaseUrl);
+      final artist = await artistApi.findByUID(uid);
+      final currentUser = await FirebaseAuth.instance.currentUser();
+      final artistData = ArtistData()
+        ..artist = artist
+        ..user = currentUser;
+      _loadArtistResultController.add(artistData);
+    } on ApiException catch (e) {
+      _loadArtistResultController.addError(e.message);
+    }
   }
 }

@@ -10,7 +10,6 @@ import 'package:ikonfetemobile/api/fan.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/fan.dart';
 import 'package:meta/meta.dart';
@@ -73,26 +72,17 @@ class LoginBloc extends BlocBase {
     try {
       final firebaseUser = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
-      // get the artist
-      final querySnapshot = await Firestore.instance
-          .collection(request.isArtist ? Collections.artists : Collections.fans)
-          .where("uid", isEqualTo: firebaseUser.uid)
-          .limit(1)
-          .getDocuments();
-      if (querySnapshot.documents.isEmpty) {
-        throw ApiException("User not found");
-      }
-      final snapshot = querySnapshot.documents[0];
-
-      authResult.firebaseUser = firebaseUser;
-      final user = request.isArtist
-          ? _artistFromSnapshot(snapshot)
-          : _fanFromSnapshot(snapshot);
+      // get the artist or fan
       if (request.isArtist) {
-        authResult.artist = user;
+        final artistApi = ArtistApi(appConfig.serverBaseUrl);
+        final artist = await artistApi.findByUID(firebaseUser.uid);
+        authResult.artist = artist;
       } else {
-        authResult.fan = user;
+        final fanApi = FanApi(appConfig.serverBaseUrl);
+        final fan = await fanApi.findByUID(firebaseUser.uid);
+        authResult.fan = fan;
       }
+      authResult.firebaseUser = firebaseUser;
       return authResult;
     } on PlatformException catch (e) {
       switch (e.code) {

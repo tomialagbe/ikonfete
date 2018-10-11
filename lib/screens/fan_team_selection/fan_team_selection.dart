@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
+import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/team.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
 import 'package:ikonfetemobile/screens/logout_helper.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
 
 class FanTeamSelectionScreen extends StatefulWidget {
   /// The fan's uid
@@ -31,14 +33,30 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   FanTeamSelectionBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
+  HudOverlay hudOverlay;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_bloc == null) {
       _bloc = BlocProvider.of<FanTeamSelectionBloc>(context);
+      final sub = _bloc.loadArtistForTeamResult.listen((result) {
+        _artistForTeamLoaded(true, result.first, result.second, null);
+      });
+      sub.onError((err) {
+        _artistForTeamLoaded(false, null, null, err);
+      });
+      _subscriptions.add(sub);
     }
     _bloc.searchArtistTeam.add("");
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    super.dispose();
   }
 
   Future<bool> _canLogout() async {
@@ -78,7 +96,7 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
                     children: <Widget>[
                       SizedBox(height: 30.0),
                       Text(
-                        "Hello, ${widget.name}!\nJoin your favourite Artist",
+                        "Hello, ${widget.name}!\nJoin your favourite Artist's Team",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           height: 1.4,
@@ -111,43 +129,45 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
         stream: _bloc.searchArtistTeamResult,
         initialData: <Team>[],
         builder: (context, snapshot) {
-          return ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: snapshot.data.length,
-            itemExtent: 84.0,
-            itemBuilder: (BuildContext context, int index) {
-              final team = snapshot.data.isEmpty ? null : snapshot.data[index];
-              if (team == null) {
-                return Container();
-              }
+          if (snapshot.hasData) {
+            return ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: snapshot.data.length,
+              itemExtent: 84.0,
+              itemBuilder: (BuildContext context, int index) {
+                final team =
+                    snapshot.data.isEmpty ? null : snapshot.data[index];
+                if (team == null) {
+                  return Container();
+                }
 
-              return ListTile(
-                contentPadding: EdgeInsets.all(0.0),
-                leading: StringUtils.isNullOrEmpty(team.teamPictureUrl)
-                    ? RandomGradientImage()
-                    : RandomGradientImage(
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.transparent,
-                          backgroundImage:
-                              CachedNetworkImageProvider(team.teamPictureUrl),
+                return ListTile(
+                  contentPadding: EdgeInsets.all(0.0),
+                  leading: StringUtils.isNullOrEmpty(team.teamPictureUrl)
+                      ? RandomGradientImage()
+                      : RandomGradientImage(
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.transparent,
+                            backgroundImage:
+                                CachedNetworkImageProvider(team.teamPictureUrl),
+                          ),
                         ),
-                      ),
-                title: Text(
-                  team.artist.name,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
+                  title: Text(
+                    team.artistName,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                trailing: Text(
-                  //followers
-                  team.teamSize.toString(), //500k
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    color: Color(0xFF707070),
-                  ),
-                ),
+//                trailing: Text(
+//                  //followers
+//                  team.teamSize.toString(), //500k
+//                  style: TextStyle(
+//                    fontSize: 13.0,
+//                    color: Color(0xFF707070),
+//                  ),
+//                ),
 //                subtitle: Text(
 //                  '',// Country
 //                  style: TextStyle(
@@ -155,11 +175,18 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
 //                    color: Color(0xFF707070),
 //                  ),
 //                ),
-                enabled: true,
-                onTap: () => _teamSelected(team),
-              );
-            },
-          );
+                  enabled: true,
+                  onTap: () => _teamSelected(team),
+                );
+              },
+            );
+          } else {
+            Container(
+              child: Center(
+                child: Text("No artists available"),
+              ),
+            );
+          }
         },
       ),
     );
@@ -193,7 +220,83 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
     );
   }
 
-  void _teamSelected(Team team) {}
+  void _teamSelected(Team team) {
+    hudOverlay = HudOverlay.show(
+        context, HudOverlay.dotsLoadingIndicator(), HudOverlay.defaultColor());
+    _bloc.loadArtistForTeam.add(team);
+  }
+
+  void _artistForTeamLoaded(
+      bool success, Team team, Artist artist, String error) {
+    hudOverlay?.close();
+    if (!success) {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (c) {
+            return AlertDialog(
+              title: Text("Error"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      error,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(c);
+                  },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ),
+              ],
+            );
+          });
+    } else {
+      // show team details
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => TeamPreviewDialog(
+              team: team,
+              artist: artist,
+            ),
+      );
+    }
+  }
+}
+
+class TeamPreviewDialog extends StatelessWidget {
+  final Team team;
+  final Artist artist;
+
+  TeamPreviewDialog({
+    this.team,
+    this.artist,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          Text("TEAM VIEW"),
+          FlatButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class RandomGradientImage extends StatelessWidget {

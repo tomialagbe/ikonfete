@@ -177,12 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
             LoginFormField(
               placeholder: "Email",
               focusNode: emailFocusNode,
+              keyboardType: TextInputType.emailAddress,
               validator: FormFieldValidators.isValidEmail(),
               onFieldSubmitted: (newVal) {
                 emailFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(passwordFocusNode);
               },
-              onSaved: (String val) => _bloc.email.add(val),
+              onSaved: (String val) => _bloc.email.add(val.trim()),
             ),
             SizedBox(height: 20.0),
             LoginPasswordField(
@@ -359,6 +360,9 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         bool isAccountVerified =
             result.isFan || (result.isArtist && result.artist.isVerified);
+        bool isProfileSetup = isAccountVerified &&
+            !StringUtils.isNullOrEmpty(
+                result.isArtist ? result.artist.username : result.fan.username);
         if (!isAccountVerified) {
           if (result.artist.isPendingVerification) {
             router.navigateTo(
@@ -375,6 +379,13 @@ class _LoginScreenState extends State<LoginScreen> {
               transition: TransitionType.inFromRight,
             );
           }
+        } else if (!isProfileSetup) {
+          // profile has not been setup
+          router.navigateTo(
+            context,
+            RouteNames.signupProfile(
+                isArtist: result.isArtist, uid: result.firebaseUser.uid),
+          );
         } else {
           // account is verified
           String routeName = widget.isArtist

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
@@ -9,6 +10,7 @@ import 'package:ikonfetemobile/bloc/pending_verification_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -63,82 +65,95 @@ class _ArtistPendingVerificationScreenState
                 stream: _bloc.loadUserResult,
                 initialData: null,
                 builder: (ctx, snapshot) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: colors.primaryColor,
-                    ),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        snapshot.hasData &&
-                                !StringUtils.isNullOrEmpty(
-                                    snapshot.data.first.photoUrl)
-                            ? Image(
-                                image:
-                                    NetworkImage(snapshot.data.first.photoUrl),
-                                fit: BoxFit.cover,
-                              )
-                            : Container(),
-                        snapshot.hasData &&
-                                !StringUtils.isNullOrEmpty(
-                                    snapshot.data.first.photoUrl)
-                            ? BackdropFilter(
-                                filter: ui.ImageFilter.blur(
-                                    sigmaX: 10.0, sigmaY: 10.0),
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.2),
-                                  child: Container(),
-                                ),
-                              )
-                            : Container(),
-                        Positioned(
-                          top: MediaQuery.of(context).padding.top + 20.0,
-                          right: MediaQuery.of(context).padding.right + 20.0,
-                          child: IconButton(
-                            icon: Icon(
-                              LineAwesomeIcons.signOut,
-                              color: Colors.white,
+                  if (snapshot.hasError) {
+                    return Container(
+                        child: Center(
+                            child: Text(
+                      snapshot.error,
+                      style: TextStyle(fontSize: 18.0),
+                    )));
+                  } else {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: colors.primaryColor,
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          snapshot.hasData &&
+                                  !StringUtils.isNullOrEmpty(
+                                      snapshot.data.first.photoUrl)
+                              ? Image(
+                                  image: NetworkImage(
+                                      snapshot.data.first.photoUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(),
+                          snapshot.hasData &&
+                                  !StringUtils.isNullOrEmpty(
+                                      snapshot.data.first.photoUrl)
+                              ? BackdropFilter(
+                                  filter: ui.ImageFilter.blur(
+                                      sigmaX: 10.0, sigmaY: 10.0),
+                                  child: Container(
+                                    color: Colors.black.withOpacity(0.2),
+                                    child: Container(),
+                                  ),
+                                )
+                              : Container(),
+                          Positioned(
+                            top: MediaQuery.of(context).padding.top + 20.0,
+                            right: MediaQuery.of(context).padding.right + 20.0,
+                            child: IconButton(
+                              icon: Icon(
+                                LineAwesomeIcons.signOut,
+                                color: Colors.white,
+                              ),
+                              onPressed: () => _bloc.logoutAction.add(null),
                             ),
-                            onPressed: () => _bloc.logoutAction.add(null),
                           ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            CircleAvatar(
-                              backgroundColor: Colors.white.withOpacity(0.5),
-                              radius: 45.0,
-                              backgroundImage: snapshot.hasData &&
-                                      snapshot.data.first.photoUrl != null
-                                  ? NetworkImage(snapshot.data.first.photoUrl)
-                                  : null,
-                              child: !snapshot.hasData ||
-                                      snapshot.data.first.photoUrl == null
-                                  ? Icon(
-                                      FontAwesome5Icons.solidUser,
-                                      size: 40.0,
-                                      color: Colors.white,
-                                    )
-                                  : null,
-                            ),
-                            SizedBox(height: 10.0),
-                            Text(
-                              snapshot.hasData ? snapshot.data.second.name : "",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 22.0),
-                            ),
-                            Text(
-                              snapshot.hasData ? snapshot.data.first.email : "",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundColor: Colors.white.withOpacity(0.5),
+                                radius: 45.0,
+                                backgroundImage: snapshot.hasData &&
+                                        snapshot.data.first.photoUrl != null
+                                    ? NetworkImage(snapshot.data.first.photoUrl)
+                                    : null,
+                                child: !snapshot.hasData ||
+                                        snapshot.data.first.photoUrl == null
+                                    ? Icon(
+                                        FontAwesome5Icons.solidUser,
+                                        size: 40.0,
+                                        color: Colors.white,
+                                      )
+                                    : null,
+                              ),
+                              SizedBox(height: 10.0),
+                              Text(
+                                snapshot.hasData
+                                    ? snapshot.data.second.name
+                                    : "",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 22.0),
+                              ),
+                              Text(
+                                snapshot.hasData
+                                    ? snapshot.data.first.email
+                                    : "",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
               ),
             ),
@@ -213,6 +228,11 @@ class _ArtistPendingVerificationScreenState
   }
 
   void _handleLogoutResult(bool result) {
-    Navigator.of(context).pop();
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    } else {
+      router.navigateTo(context, RouteNames.login(isArtist: true),
+          transition: TransitionType.inFromRight);
+    }
   }
 }

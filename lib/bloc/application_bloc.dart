@@ -2,15 +2,21 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/artist.dart';
+import 'package:ikonfetemobile/api/fan.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/preferences.dart';
-import 'package:ikonfetemobile/repository/artist_repository.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
+import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppInitState {
   bool isOnBoarded = false;
   bool isArtist = false;
   bool isLoggedIn = false;
+  bool isProfileSetup = false;
   bool isArtistVerified = false;
   bool isArtistPendingVerification = false;
   bool isFanTeamSetup = false;
@@ -19,6 +25,7 @@ class AppInitState {
 }
 
 class ApplicationBloc implements BlocBase {
+  final AppConfig appConfig;
   StreamController _logoutActionController = StreamController.broadcast();
   StreamController<bool> _logoutResultController =
       StreamController.broadcast<bool>();
@@ -33,7 +40,7 @@ class ApplicationBloc implements BlocBase {
     _logoutResultController.close();
   }
 
-  ApplicationBloc() {
+  ApplicationBloc({@required this.appConfig}) {
     _logoutActionController.stream.listen((_) => _handleLogout());
   }
 
@@ -59,30 +66,41 @@ class ApplicationBloc implements BlocBase {
     final prefs = await SharedPreferences.getInstance();
     final isOnBoarded = prefs.getBool(PreferenceKeys.isOnBoarded) ?? false;
     final isArtist = prefs.getBool(PreferenceKeys.isArtist) ?? false;
-    final isFanTeamSetup =
-        prefs.getBool(PreferenceKeys.isFanTeamSetup) ?? false;
     final state = AppInitState()
       ..isArtist = isArtist
       ..isOnBoarded = isOnBoarded;
     final currUser = await FirebaseAuth.instance.currentUser();
     state.isLoggedIn = currUser != null;
 
-    final artistRepo = ArtistRepository();
+    bool isFanTeamSetup = false;
     bool isArtistVerified = false;
     bool isArtistPendingVerification = false;
-    if (isArtist) {
-      if (currUser != null) {
-        final artist = await artistRepo.findByUid(currUser.uid);
-        isArtistVerified = artist != null && artist.isVerified;
-        isArtistPendingVerification =
-            artist != null && artist.isPendingVerification;
+    bool isProfileSetup = false;
+    try {
+      if (state.isLoggedIn) {
+        if (isArtist) {
+          final artist =
+              await ArtistApi(appConfig.serverBaseUrl).findByUID(currUser.uid);
+          isArtistVerified = artist.isVerified;
+          isArtistPendingVerification = artist.isPendingVerification;
+          isProfileSetup = !StringUtils.isNullOrEmpty(artist.username);
+        } else {
+          final fan =
+              await FanApi(appConfig.serverBaseUrl).findByUID(currUser.uid);
+          isFanTeamSetup = fan.currentTeamId.trim().isNotEmpty;
+          isProfileSetup = !StringUtils.isNullOrEmpty(fan.username);
+        }
       }
+    } on ApiException catch (e) {
+      throw e;
     }
+
     state.name = currUser != null ? currUser.displayName : "";
     state.isFanTeamSetup = isFanTeamSetup;
     state.uid = currUser != null ? currUser.uid : null;
     state.isArtistVerified = isArtistVerified;
     state.isArtistPendingVerification = isArtistPendingVerification;
+    state.isProfileSetup = isProfileSetup;
     return state;
   }
 }

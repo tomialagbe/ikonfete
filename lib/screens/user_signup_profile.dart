@@ -180,7 +180,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
               textAlign: TextAlign.center,
               textInputAction: TextInputAction.done,
               onSaved: (val) {
-                _bloc.username.add(val);
+                _bloc.username.add(val.trim());
               },
               onFieldSubmitted: (val) {
                 usernameFocusNode.unfocus();

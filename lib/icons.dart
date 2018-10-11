@@ -24,4 +24,6 @@ class FontAwesome5Icons {
   static final times = IconData(0xf00d, fontFamily: fontFamilySolid);
   static final solidCircle = IconData(0xf111, fontFamily: fontFamilySolid);
   static final solidUser = IconData(0xf007, fontFamily: fontFamilySolid);
+  static final exclamationTriangle =
+      IconData(0xf071, fontFamily: fontFamilySolid);
 }

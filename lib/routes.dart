@@ -98,7 +98,10 @@ final artistVerificationHandler = Handler(handlerFunc: (ctx, params) {
 final artistPendingVerificationHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
   return BlocProvider<ArtistPendingVerificationBloc>(
-    bloc: ArtistPendingVerificationBloc(uid: uid),
+    bloc: ArtistPendingVerificationBloc(
+      uid: uid,
+      appConfig: AppConfig.of(ctx),
+    ),
     child: ArtistPendingVerificationScreen(uid: uid),
   );
 });
@@ -111,7 +114,7 @@ final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
   final name = params["name"][0];
   return BlocProvider<FanTeamSelectionBloc>(
-    bloc: FanTeamSelectionBloc(),
+    bloc: FanTeamSelectionBloc(appConfig: AppConfig.of(ctx)),
     child: FanTeamSelectionScreen(uid: uid, name: name),
   );
 });
@@ -123,7 +126,9 @@ final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
 final artistProfileHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
   return BlocProvider<ArtistProfileScreenBloc>(
-    bloc: ArtistProfileScreenBloc(),
+    bloc: ArtistProfileScreenBloc(
+      appConfig: AppConfig.of(ctx),
+    ),
     child: ArtistProfileScreen(uid: uid),
   );
 });

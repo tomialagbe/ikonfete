@@ -187,7 +187,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 nameFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(emailFocusNode);
               },
-              onSaved: (String val) => _bloc.name.add(val),
+              onSaved: (String val) => _bloc.name.add(val.trim()),
             ),
             SizedBox(height: 20.0),
             LoginFormField(
@@ -199,7 +199,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 emailFocusNode.unfocus();
                 FocusScope.of(context).requestFocus(passwordFocusNode);
               },
-              onSaved: (val) => _bloc.email.add(val),
+              onSaved: (val) => _bloc.email.add(val.trim()),
             ),
             SizedBox(height: 20.0),
             LoginPasswordField(
@@ -213,7 +213,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 passwordFocusNode.unfocus();
                 _formSubmitted();
               },
-              onSaved: (val) => _bloc.password.add(val),
+              onSaved: (val) => _bloc.password.add(val.trim()),
             ),
             SizedBox(height: 10.0),
             Row(

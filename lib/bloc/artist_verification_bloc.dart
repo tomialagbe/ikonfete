@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
+import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/pending_verification.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/model/pending_verification.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:meta/meta.dart';
@@ -53,20 +52,14 @@ class ArtistVerificationBloc extends BlocBase {
   StreamController<TwitterActionResult> _twitterActionResultController =
       StreamController<TwitterActionResult>.broadcast();
 
-//  StreamController<String> _bioController = StreamController<String>();
-
   StreamController<VerifyParams> _verifyActionController =
       StreamController<VerifyParams>();
   StreamController<Pair<bool, String>> _verifyActionResultController =
       StreamController.broadcast<Pair<bool, String>>();
 
-//  set uid(String val) => _uid = val;
-
   Sink get facebookAction => _facebookActionController.sink;
 
   Sink get twitterAction => _twitterActionController.sink;
-
-//  Sink<String> get bio => _bioController.sink;
 
   Sink<VerifyParams> get verifyAction => _verifyActionController.sink;
 
@@ -166,49 +159,21 @@ class ArtistVerificationBloc extends BlocBase {
   }
 
   void _handleVerifyAction(VerifyParams params) async {
-    // make sure there are no pending verifications for this artist
-    final firestore = Firestore.instance;
-    final querySnapshot = await firestore
-        .collection(Collections.pendingVerifications)
-        .where("uid", isEqualTo: params.uid)
-        .getDocuments();
-    if (querySnapshot.documents.isNotEmpty) {
-      _verifyActionResultController.add(Pair.from(
-          false, "Your account has already been submitted for verification"));
-    } else {
-      try {
-        final artistQuerySnapshot = await firestore
-            .collection(Collections.artists)
-            .where("uid", isEqualTo: params.uid)
-            .limit(1)
-            .getDocuments();
-        if (artistQuerySnapshot.documents.isEmpty) {
-          _verifyActionResultController
-              .add(Pair.from(false, "This account does not exist"));
-          return;
-        }
+    try {
+      final pendingVerification = PendingVerification()
+        ..uid = params.uid
+        ..bio = params.bio
+        ..facebookId = params.fbId
+        ..twitterId = params.twitterId;
+      final pendingVerificationApi =
+          PendingVerificationApi(appConfig.serverBaseUrl);
 
-        final artistDocSnapshot = artistQuerySnapshot.documents.first;
-        await artistDocSnapshot.reference.updateData({
-          "isPendingVerification": true,
-        });
+      final success = await pendingVerificationApi
+          .createPendingVerification(pendingVerification);
 
-        final newPendingVerificationRef =
-            firestore.collection(Collections.pendingVerifications).document();
-        final pendingVerification = PendingVerification();
-        pendingVerification
-          ..id = newPendingVerificationRef.documentID
-          ..uid = params.uid
-          ..dateCreated = DateTime.now()
-          ..bio = params.bio
-          ..facebookId = params.fbId
-          ..twitterId = params.twitterId
-          ..twitterUsername = params.twitterUsername;
-        await newPendingVerificationRef.setData(pendingVerification.toJson());
-        _verifyActionResultController.add(Pair.from(true, null));
-      } on PlatformException catch (e) {
-        _verifyActionResultController.add(Pair.from(false, e.message));
-      }
+      _verifyActionResultController.add(Pair.from(success, null));
+    } on ApiException catch (e) {
+      _verifyActionResultController.add(Pair.from(false, e.message));
     }
   }
 }

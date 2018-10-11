@@ -1,15 +1,17 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/artist.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/collections.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:meta/meta.dart';
 
 class ArtistPendingVerificationBloc extends BlocBase {
+  final AppConfig appConfig;
   final String uid;
 
   StreamController _loadUserActionController = StreamController();
@@ -29,7 +31,10 @@ class ArtistPendingVerificationBloc extends BlocBase {
   Stream<Pair<FirebaseUser, Artist>> get loadUserResult =>
       _loadUserResultController.stream;
 
-  ArtistPendingVerificationBloc({@required this.uid}) {
+  ArtistPendingVerificationBloc({
+    @required this.uid,
+    @required this.appConfig,
+  }) {
     _loadUserActionController.stream.listen((_) => _handleLoadUserAction());
     _logoutActionController.stream.listen((_) => _handleLogout());
   }
@@ -43,16 +48,16 @@ class ArtistPendingVerificationBloc extends BlocBase {
   }
 
   void _handleLoadUserAction() async {
-    final user = await FirebaseAuth.instance.currentUser();
-    final querySnapshot = await Firestore.instance
-        .collection(Collections.artists)
-        .where("uid", isEqualTo: user.uid)
-        .limit(1)
-        .getDocuments();
-    final docSnapshot = querySnapshot.documents.first;
-    final artist = Artist();
-    artist.fromJson(docSnapshot.data);
-    _loadUserResultController.add(Pair.from(user, artist));
+    try {
+      final firebaseUser = await FirebaseAuth.instance.currentUser();
+      if (firebaseUser != null) {
+        final artistApi = ArtistApi(appConfig.serverBaseUrl);
+        final artist = await artistApi.findByUID(firebaseUser.uid);
+        _loadUserResultController.add(Pair.from(firebaseUser, artist));
+      }
+    } on ApiException catch (e) {
+      _loadUserResultController.addError(e.message);
+    }
   }
 
   void _handleLogout() async {

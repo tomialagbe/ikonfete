@@ -152,7 +152,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                     letterSpacing: 10.0,
                   ),
               onSaved: (val) {
-                _bloc.activationCode.add(val);
+                _bloc.activationCode.add(val.trim());
               },
               onFieldSubmitted: (_) {
                 codeFocusNode.unfocus();
@@ -204,6 +204,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
     );
   }
 
+  // TODO: implement this
   void _resendActivation() {}
 
   void _activateUser() {
