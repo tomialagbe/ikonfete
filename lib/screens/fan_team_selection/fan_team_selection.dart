@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
@@ -14,6 +16,8 @@ import 'package:ikonfetemobile/screens/logout_helper.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
+import 'package:ikonfetemobile/widget/modal.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class FanTeamSelectionScreen extends StatefulWidget {
   /// The fan's uid
@@ -227,9 +231,9 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
   }
 
   void _artistForTeamLoaded(
-      bool success, Team team, Artist artist, String error) {
-    hudOverlay?.close();
+      bool success, Team team, Artist artist, String error) async {
     if (!success) {
+      hudOverlay?.close();
       showDialog(
           context: context,
           barrierDismissible: true,
@@ -260,42 +264,67 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
             );
           });
     } else {
+      // load the team image first
+      final bytes = await _loadImageBytes(team.teamPictureUrl);
+      hudOverlay?.close();
       // show team details
-      showDialog(
+      bool ok = await showModal<bool>(
         context: context,
-        barrierDismissible: false,
-        builder: (ctx) => TeamPreviewDialog(
-              team: team,
-              artist: artist,
-            ),
+        contentBackgroundColor: Colors.white,
+        padding: const EdgeInsets.all(0.0),
+        borderRadius: BorderRadius.circular(10.0),
+        child: ModalChild<bool>(
+          builder: (ctx, mc) {
+            return _buildTeamDetailDialogContent(ctx, mc, team, artist, bytes);
+          },
+        ),
       );
+      print("OK: $ok");
     }
   }
-}
 
-class TeamPreviewDialog extends StatelessWidget {
-  final Team team;
-  final Artist artist;
-
-  TeamPreviewDialog({
-    this.team,
-    this.artist,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTeamDetailDialogContent(BuildContext ctx, ModalChild<bool> mc,
+      Team team, Artist artist, Uint8List teamPictureBytes) {
     return Container(
-      color: Colors.white,
+      color: Colors.transparent,
       child: Column(
         children: <Widget>[
-          Text("TEAM VIEW"),
-          FlatButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Close"),
+          Expanded(
+            flex: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0),
+                ),
+                image: DecorationImage(
+                  image: MemoryImage(teamPictureBytes ?? kTransparentImage),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ),
+          Expanded(
+            flex: 3,
+            child: Container(
+              child: Center(
+                  child: FlatButton(
+                child: Text("Cancel"),
+                onPressed: () => mc.addResult(false),
+              )),
+            ),
+          )
         ],
       ),
     );
+  }
+
+  Future<Uint8List> _loadImageBytes(String url) async {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    }
+    return null;
   }
 }
 

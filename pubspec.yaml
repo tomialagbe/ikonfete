@@ -28,6 +28,7 @@ dependencies:
   rxdart:
   progress_indicators: ^0.1.2
   fluro:
+  image:
   image_picker:
     git:
       url: git://github.com/tomialagbe/plugins

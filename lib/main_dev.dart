@@ -46,7 +46,7 @@ void main() async {
       accessTokenSecret: "dTdKFRrZScqgERhzLQnQEqrgkWNDag5T5yQF3ncAukS0h",
     ),
 //    serverBaseUrl: "https://ikonfete-server.appspot.com",
-    serverBaseUrl: "http://5ff1cf84.ngrok.io",
+    serverBaseUrl: "https://e71b9830.ngrok.io",
     firebaseStorage: firebaseStorage,
     child: IkonfeteApp(),
   );

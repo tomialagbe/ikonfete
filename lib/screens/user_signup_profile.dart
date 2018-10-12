@@ -13,6 +13,7 @@ import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/compressed_image_capture.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -219,7 +220,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   }
 
   Future _chooseDisplayPicture(ImageSource imageSource) async {
-    final im = await ImagePicker.pickImage(source: imageSource);
+    final im = await CompressedImageCapture().takePicture(context, imageSource);
     setState(() {
       _displayPicture = im;
       _bloc.profilePicture.add(im);
