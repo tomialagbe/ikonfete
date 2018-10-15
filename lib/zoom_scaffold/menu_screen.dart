@@ -12,7 +12,6 @@ import 'package:ikonfetemobile/zoom_scaffold/menu.dart';
 import 'zoom_scaffold.dart';
 
 final menuScreenKey = GlobalKey<_MenuScreenState>(debugLabel: 'MenuScreen');
-//final menuScreenKey = GlobalKey<_MenuScreenState>();
 
 class MenuScreen extends StatefulWidget {
   final Menu menu;
@@ -103,47 +102,49 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
 
   Widget createMenuProfileDetails(MenuController menuController) {
     final initState = BlocProvider.of<ApplicationBloc>(context).initState;
-    return AnimatedOpacity(
-      opacity: titleAnimationController.value,
-      duration: Duration(milliseconds: 800),
-      child: Transform(
-        transform: Matrix4.translationValues(35.0, 100.0, 0.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CircleAvatar(
-              backgroundColor: primaryColor,
-              radius: 30.0,
-              backgroundImage:
-                  CachedNetworkImageProvider(initState.profilePictureUrl),
+    return Transform(
+      transform: Matrix4.translationValues(0.0, 100.0, 0.0),
+      child: AnimatedOpacity(
+        opacity: titleAnimationController.value == 0.0
+            ? 0.1
+            : titleAnimationController.value,
+        duration: Duration(milliseconds: 800),
+        child: ListTile(
+          dense: false,
+          isThreeLine: false,
+          onTap: () {
+            print("ITEM SELECTED");
+            // navigate to profile page
+            router.navigateTo(
+              context,
+              RouteNames.profile(
+                  uid: initState.uid, isArtist: initState.isArtist),
+              replace: false,
+              transition: TransitionType.inFromRight,
+            );
+          },
+          leading: CircleAvatar(
+            backgroundColor: primaryColor,
+            radius: 30.0,
+            backgroundImage:
+                CachedNetworkImageProvider(initState.profilePictureUrl),
+          ),
+          title: Text(
+            initState.name,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
             ),
-            SizedBox(width: 10.0),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  initState.name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  initState.email,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
+          ),
+          subtitle: Text(
+            initState.email,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w300,
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -191,56 +192,49 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
 
   Widget createLogoutMenuItem(MenuController menuController) {
     final appBloc = BlocProvider.of<ApplicationBloc>(context);
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Expanded(child: Container()),
-        AnimatedOpacity(
-          opacity: titleAnimationController.value,
-          duration: Duration(milliseconds: 800),
-          child: GestureDetector(
-            onTap: () async {
-              if (await canLogout(context)) {
-                if (await appBloc.doLogout()) {
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  } else {
-                    router.navigateTo(
-                      context,
-                      RouteNames.login(isArtist: appBloc.initState.isArtist),
-                      transition: TransitionType.inFromLeft,
-                      replace: true,
-                    );
-                  }
+    return Positioned(
+      bottom: 30.0,
+      left: 35.0,
+      child: AnimatedOpacity(
+        opacity: titleAnimationController.value,
+        duration: Duration(milliseconds: 800),
+        child: GestureDetector(
+          onTap: () async {
+            if (await canLogout(context)) {
+              if (await appBloc.doLogout()) {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  router.navigateTo(
+                    context,
+                    RouteNames.login(isArtist: appBloc.initState.isArtist),
+                    transition: TransitionType.inFromLeft,
+                    replace: true,
+                  );
                 }
               }
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 35.0, bottom: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(FontAwesome5Icons.powerOff, color: primaryColor),
-                  SizedBox(width: 10.0),
-                  Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 18.0,
-                      fontFamily: 'SanFranciscoDisplay',
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
+            }
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(FontAwesome5Icons.powerOff, color: primaryColor),
+              SizedBox(width: 10.0),
+              Text(
+                "Logout",
+                style: TextStyle(
+                  color: primaryColor,
+                  fontSize: 18.0,
+                  fontFamily: 'SanFranciscoDisplay',
+                  letterSpacing: 1.0,
+                ),
               ),
-            ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -283,8 +277,8 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
           child: new Stack(
             children: [
               createMenuTitle(menuController),
-              createMenuProfileDetails(menuController),
               createMenuItems(menuController),
+              createMenuProfileDetails(menuController),
               createLogoutMenuItem(menuController),
               shouldRenderSelector
                   ? new ItemSelector(

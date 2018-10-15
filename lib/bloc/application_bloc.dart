@@ -24,6 +24,7 @@ class AppInitState {
   String name;
   String email;
   String profilePictureUrl;
+  String bio;
 }
 
 class ApplicationBloc implements BlocBase {
@@ -79,6 +80,7 @@ class ApplicationBloc implements BlocBase {
     bool isArtistVerified = false;
     bool isArtistPendingVerification = false;
     bool isProfileSetup = false;
+    String bio = "";
     try {
       if (state.isLoggedIn) {
         state.profilePictureUrl = currUser.photoUrl;
@@ -89,6 +91,7 @@ class ApplicationBloc implements BlocBase {
           isArtistVerified = artist.isVerified;
           isArtistPendingVerification = artist.isPendingVerification;
           isProfileSetup = !StringUtils.isNullOrEmpty(artist.username);
+          bio = artist.bio;
         } else {
           final fan =
               await FanApi(appConfig.serverBaseUrl).findByUID(currUser.uid);
@@ -106,6 +109,7 @@ class ApplicationBloc implements BlocBase {
     state.isArtistVerified = isArtistVerified;
     state.isArtistPendingVerification = isArtistPendingVerification;
     state.isProfileSetup = isProfileSetup;
+    state.bio = bio;
     this.initState = state;
     return state;
   }

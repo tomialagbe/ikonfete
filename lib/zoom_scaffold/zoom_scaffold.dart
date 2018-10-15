@@ -51,7 +51,6 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           leading: new IconButton(
-//              icon: new Icon(Icons.menu, color: Colors.black),
               icon:
                   new Icon(FontAwesome5Icons.alignLeft, color: Colors.black54),
               onPressed: () {

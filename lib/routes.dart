@@ -16,6 +16,8 @@ import 'package:ikonfetemobile/screens/inactive_user.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification.dart';
+import 'package:ikonfetemobile/screens/profile/profile_screen.dart';
+import 'package:ikonfetemobile/screens/profile/profile_screen_bloc.dart';
 import 'package:ikonfetemobile/screens/signup.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
 import 'package:ikonfetemobile/screens/user_signup_profile.dart';
@@ -128,6 +130,16 @@ final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
   );
 });
 
+Handler profileHandler({bool isArtist: true}) {
+  return Handler(handlerFunc: (ctx, params) {
+    final uid = params["uid"][0];
+    return BlocProvider<ProfileScreenBloc>(
+      bloc: ProfileScreenBloc(appConfig: AppConfig.of(ctx), isArtist: isArtist),
+      child: ProfileScreen(uid: uid, isArtist: isArtist),
+    );
+  });
+}
+
 //final artistProfileHandler = Handler(handlerFunc: (ctx, params) {
 //  final uid = params["uid"][0];
 //  return BlocProvider<ArtistProfileScreenBloc>(
@@ -201,6 +213,11 @@ void defineRoutes(Router router, AppConfig appConfig) {
   router.define(RouteNames.artistHome, handler: artistHomeHandler);
 
   router.define(RouteNames.fanHome, handler: fanHomeHandler);
+
+  router.define(RouteNames.profile(isArtist: true),
+      handler: profileHandler(isArtist: true));
+  router.define(RouteNames.profile(isArtist: false),
+      handler: profileHandler(isArtist: false));
 }
 
 class RouteNames {
@@ -243,6 +260,11 @@ class RouteNames {
 
   static String inactiveUser({String uid: "", bool isArtist: true}) {
     final s = isArtist ? "/inactive_artist" : "/inactive_fan";
+    return "$s/${uid.trim().isEmpty ? ":uid" : uid}";
+  }
+
+  static String profile({String uid: "", bool isArtist: true}) {
+    final s = isArtist ? "/artist_profile" : "/fan_profile";
     return "$s/${uid.trim().isEmpty ? ":uid" : uid}";
   }
 

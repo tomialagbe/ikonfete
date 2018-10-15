@@ -12,6 +12,7 @@ class LineAwesomeIcons {
   static final camera = IconData(0xf162, fontFamily: fontFamily);
   static final playCircle = IconData(0xf2bf, fontFamily: fontFamily);
   static final signOut = IconData(0xf2fc, fontFamily: fontFamily);
+  static final times = IconData(0xf342, fontFamily: fontFamily);
 }
 
 class FontAwesome5Icons {

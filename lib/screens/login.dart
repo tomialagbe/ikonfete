@@ -351,6 +351,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBloc.initState.uid = uid;
       appBloc.initState.isArtist = result.isArtist;
       appBloc.initState.email = result.firebaseUser.email;
+      appBloc.initState.bio = result.isArtist ? result.artist.bio : "";
 
       bool isEmailActivated = result.request.isFacebookProvider ||
           (result.request.isEmailProvider &&
