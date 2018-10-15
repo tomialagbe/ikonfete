@@ -10,9 +10,7 @@ import 'package:ikonfetemobile/bloc/pending_verification_bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart';
-import 'package:ikonfetemobile/screens/artist_home.dart';
 import 'package:ikonfetemobile/screens/artist_verification.dart';
-import 'package:ikonfetemobile/screens/fan_home.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
 import 'package:ikonfetemobile/screens/init_error.dart';
@@ -21,6 +19,7 @@ import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
 import 'package:ikonfetemobile/screens/user_signup_profile.dart';
+import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 
 class IkonfeteApp extends StatefulWidget {
   // This widget is the root of your application.
@@ -99,7 +98,12 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                     );
                   } else if (initState.isArtist) {
                     if (initState.isArtistVerified) {
-                      return ArtistHomeScreen();
+                      // Artist Home Screen
+                      return ZoomScaffoldScreen(
+                        isArtist: true,
+                        screenId: 'home',
+                        params: <String, String>{},
+                      );
                     } else if (initState.isArtistPendingVerification) {
                       // pending verification screen
                       return BlocProvider<ArtistPendingVerificationBloc>(
@@ -121,7 +125,12 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                   } else {
                     // TODO: seek better alternatives
                     if (initState.isFanTeamSetup) {
-                      return FanHomeScreen();
+                      // Fan Home Screen
+                      return ZoomScaffoldScreen(
+                        isArtist: false,
+                        screenId: 'home',
+                        params: <String, String>{},
+                      );
                     } else {
                       return BlocProvider<FanTeamSelectionBloc>(
                         bloc:

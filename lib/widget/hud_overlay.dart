@@ -8,6 +8,10 @@ class HudOverlay {
 
   HudOverlay._internal(this.overlayEntry);
 
+  static HudOverlay showDefault(BuildContext context) {
+    return show(context, dotsLoadingIndicator(), defaultColor());
+  }
+
   static HudOverlay show(
       BuildContext context, Widget child, Color overlayColor) {
     final overlayState = Overlay.of(context);

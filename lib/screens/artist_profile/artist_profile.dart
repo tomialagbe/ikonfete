@@ -6,9 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
-import 'package:ikonfetemobile/screens/logout_helper.dart';
-import 'package:ikonfetemobile/screens/profile/artist_profile_header.dart';
-import 'package:ikonfetemobile/screens/profile/artist_profile_screen_bloc.dart';
+import 'package:ikonfetemobile/screens/artist_profile/artist_profile_header.dart';
+import 'package:ikonfetemobile/screens/artist_profile/artist_profile_screen_bloc.dart';
+import 'package:ikonfetemobile/utils/logout_helper.dart';
 
 // TODO: wire this up
 class ArtistProfileScreen extends StatefulWidget {

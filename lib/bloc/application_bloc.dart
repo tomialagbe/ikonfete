@@ -22,10 +22,13 @@ class AppInitState {
   bool isFanTeamSetup = false;
   String uid;
   String name;
+  String email;
+  String profilePictureUrl;
 }
 
 class ApplicationBloc implements BlocBase {
   final AppConfig appConfig;
+  AppInitState initState = AppInitState();
   StreamController _logoutActionController = StreamController.broadcast();
   StreamController<bool> _logoutResultController =
       StreamController.broadcast<bool>();
@@ -78,6 +81,8 @@ class ApplicationBloc implements BlocBase {
     bool isProfileSetup = false;
     try {
       if (state.isLoggedIn) {
+        state.profilePictureUrl = currUser.photoUrl;
+        state.email = currUser.email;
         if (isArtist) {
           final artist =
               await ArtistApi(appConfig.serverBaseUrl).findByUID(currUser.uid);
@@ -101,6 +106,7 @@ class ApplicationBloc implements BlocBase {
     state.isArtistVerified = isArtistVerified;
     state.isArtistPendingVerification = isArtistPendingVerification;
     state.isProfileSetup = isProfileSetup;
+    this.initState = state;
     return state;
   }
 }

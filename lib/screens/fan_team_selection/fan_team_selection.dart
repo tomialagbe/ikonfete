@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -11,8 +12,10 @@ import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/team.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
-import 'package:ikonfetemobile/screens/logout_helper.dart';
+import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/logout_helper.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
@@ -46,13 +49,21 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
     super.didChangeDependencies();
     if (_bloc == null) {
       _bloc = BlocProvider.of<FanTeamSelectionBloc>(context);
-      final sub = _bloc.loadArtistForTeamResult.listen((result) {
+      var sub = _bloc.loadArtistForTeamResult.listen((result) {
         _artistForTeamLoaded(true, result.first, result.second, null);
       });
       sub.onError((err) {
         _artistForTeamLoaded(false, null, null, err);
       });
       _subscriptions.add(sub);
+
+      var fsub = _bloc.addFanToTeamResult.listen((result) {
+        _handleAddFanToTeamResult(result, null);
+      });
+      fsub.onError((err) {
+        _handleAddFanToTeamResult(false, err);
+      });
+      _subscriptions.add(fsub);
     }
     _bloc.searchArtistTeam.add("");
   }
@@ -164,21 +175,21 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-//                trailing: Text(
-//                  //followers
-//                  team.teamSize.toString(), //500k
-//                  style: TextStyle(
-//                    fontSize: 13.0,
-//                    color: Color(0xFF707070),
-//                  ),
-//                ),
-//                subtitle: Text(
-//                  '',// Country
-//                  style: TextStyle(
-//                    fontSize: 13.0,
-//                    color: Color(0xFF707070),
-//                  ),
-//                ),
+                  trailing: Text(
+                    //followers
+                    StringUtils.abbreviateNumber(team.memberCount, 1),
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      color: Color(0xFF707070),
+                    ),
+                  ),
+                  subtitle: Text(
+                    team.artistCountry,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      color: Color(0xFF707070),
+                    ),
+                  ),
                   enabled: true,
                   onTap: () => _teamSelected(team),
                 );
@@ -216,7 +227,21 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
           children: <Widget>[
             IconButton(
               icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: _canLogout,
+              onPressed: () async {
+                bool logout = await _canLogout();
+                if (logout) {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  } else {
+                    router.navigateTo(
+                      context,
+                      RouteNames.login(isArtist: false),
+                      transition: TransitionType.inFromLeft,
+                      replace: true,
+                    );
+                  }
+                }
+              },
             ),
           ],
         )
@@ -279,12 +304,29 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
           },
         ),
       );
-      print("OK: $ok");
+      if (ok) {
+        // join the artists team and navigate to the team home page
+        hudOverlay = HudOverlay.showDefault(context);
+        _bloc.addFanToTeam.add(Pair.from(team.id, widget.uid));
+      }
+    }
+  }
+
+  void _handleAddFanToTeamResult(bool result, String error) {
+    hudOverlay?.close();
+    if (!result) {
+      final err = error ?? "An unknown error occurred";
+      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(err)));
+    } else {
+      // fan successfully added to team
+      router.navigateTo(context, RouteNames.fanHome,
+          replace: true, transition: TransitionType.inFromRight);
     }
   }
 
   Widget _buildTeamDetailDialogContent(BuildContext ctx, ModalChild<bool> mc,
       Team team, Artist artist, Uint8List teamPictureBytes) {
+    final whiteText = Colors.white.withOpacity(0.9);
     return Container(
       color: Colors.transparent,
       child: Column(
@@ -307,11 +349,81 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
           Expanded(
             flex: 3,
             child: Container(
-              child: Center(
-                  child: FlatButton(
-                child: Text("Cancel"),
-                onPressed: () => mc.addResult(false),
-              )),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                ),
+                color: const Color(0xFFCC181F),
+              ),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  textTheme: TextTheme(
+                    body1: TextStyle(color: whiteText),
+                    title: TextStyle(
+                      color: whiteText,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        team.artistName,
+                        style: Theme.of(context).textTheme.body1.copyWith(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w500,
+                              color: whiteText,
+                            ),
+                      ),
+                      SizedBox(height: 10.0),
+                      SizedBox(
+                        height: 100.0,
+                        child: Text(
+                          artist.bio,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 7,
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context)
+                              .textTheme
+                              .body1
+                              .copyWith(color: whiteText),
+                        ),
+                      ),
+                      Expanded(child: Container()),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () => mc.addResult(false),
+                          ),
+                          Expanded(child: Container()),
+                          FlatButton(
+                            child: Text("Join Team",
+                                style: TextStyle(color: Colors.white),
+                                overflow: TextOverflow.ellipsis),
+                            onPressed: () => mc.addResult(true),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           )
         ],
@@ -320,11 +432,17 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
   }
 
   Future<Uint8List> _loadImageBytes(String url) async {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      return response.bodyBytes;
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      }
+      return null;
+    } on Exception catch (e) {
+      // image failed to load
+      // TODO: handle better
+      return null;
     }
-    return null;
   }
 }
 

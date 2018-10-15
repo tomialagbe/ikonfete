@@ -14,6 +14,9 @@ class _FanHomeScreenState extends State<FanHomeScreen> {
         color: Colors.white,
         width: double.infinity,
         height: double.infinity,
+        child: Center(
+          child: Text("Fan HOME"),
+        ),
       ),
     );
   }

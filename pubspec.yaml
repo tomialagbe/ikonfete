@@ -67,6 +67,7 @@ flutter:
     - assets/images/onboard_background3.png
     - assets/images/onboard_background4.png
     - assets/images/alert.svg
+    - assets/images/dark_grunge_bk.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
@@ -119,3 +120,9 @@ flutter:
           weight: 500
         - asset: assets/fonts/sanfranciscodisplay-bold.ttf
           weight: 900
+    - family: mermaid
+      fonts:
+        - asset: assets/fonts/Mermaid1001.ttf
+    - family: bebas-neue
+      fonts:
+        - asset: assets/fonts/BebasNeue-Regular.ttf

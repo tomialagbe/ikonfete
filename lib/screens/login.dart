@@ -346,6 +346,12 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       final uid = result.isArtist ? result.artist.uid : result.fan.uid;
+      appBloc.initState.profilePictureUrl = result.firebaseUser.photoUrl;
+      appBloc.initState.name = result.firebaseUser.displayName;
+      appBloc.initState.uid = uid;
+      appBloc.initState.isArtist = result.isArtist;
+      appBloc.initState.email = result.firebaseUser.email;
+
       bool isEmailActivated = result.request.isFacebookProvider ||
           (result.request.isEmailProvider &&
               result.firebaseUser.isEmailVerified);

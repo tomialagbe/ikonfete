@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -10,8 +9,6 @@ import 'package:ikonfetemobile/api/fan.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
 import 'package:meta/meta.dart';
 
 class LoginBloc extends BlocBase {
@@ -148,13 +145,5 @@ class LoginBloc extends BlocBase {
     } on Exception catch (e) {
       return LoginResult(request)..errorMessage = e.toString();
     }
-  }
-
-  Artist _artistFromSnapshot(DocumentSnapshot snapshot) {
-    return Artist()..fromJson(snapshot.data);
-  }
-
-  Fan _fanFromSnapshot(DocumentSnapshot snapshot) {
-    return Fan()..fromJson(snapshot.data);
   }
 }

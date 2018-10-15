@@ -11,6 +11,7 @@ class PrimaryButton extends StatefulWidget {
   final TextStyle textStyle;
   final double elevation;
   final Widget child;
+  final BorderRadius borderRadius;
 
   PrimaryButton({
     @required this.width,
@@ -23,6 +24,7 @@ class PrimaryButton extends StatefulWidget {
     this.elevation: 1.0,
     this.textStyle: const TextStyle(color: Colors.white),
     this.onTap,
+    this.borderRadius,
   })  : assert(!(text == null && child == null)),
         assert(!(text != null && child != null));
 
@@ -63,7 +65,7 @@ class _PrimaryButtonState extends State<PrimaryButton> {
           color: _buttonColor,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: widget.borderColor, width: 1.0),
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(5.0),
           ),
           elevation: widget.elevation,
           child: Center(

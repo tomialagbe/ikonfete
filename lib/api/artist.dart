@@ -79,6 +79,7 @@ class ArtistApi extends Api {
   }
 
   Future<List<Team>> searchTeams(String query, int page, int size) async {
+    query = Uri.encodeComponent(query);
     final url = "$apiBaseUrl/teams/search?page=$page&size=$size&query=$query";
     try {
       http.Response response = await http.get(url);
@@ -92,6 +93,27 @@ class ArtistApi extends Api {
             teams.add(team);
           }
           return teams;
+        default:
+          final err = ApiError()..fromJson(json.decode(response.body));
+          throw ApiException(err.error);
+      }
+    } on PlatformException catch (e) {
+      throw ApiException(e.message);
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<bool> addFanToTeam(String teamId, String fanUid) async {
+    fanUid = Uri.encodeComponent(fanUid);
+    final url = "$apiBaseUrl/teams/$teamId/fans?fanUid=$fanUid";
+    try {
+      final headers = {"Content-Type": "application/x-www-form-urlencoded"};
+      final http.Response response = await http.post(url, headers: headers);
+      switch (response.statusCode) {
+        case 200:
+          Map data = json.decode(response.body);
+          return data["success"];
         default:
           final err = ApiError()..fromJson(json.decode(response.body));
           throw ApiException(err.error);

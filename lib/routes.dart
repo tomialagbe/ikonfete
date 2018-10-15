@@ -9,20 +9,17 @@ import 'package:ikonfetemobile/bloc/pending_verification_bloc.dart';
 import 'package:ikonfetemobile/bloc/signup_bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/screens/activation.dart';
-import 'package:ikonfetemobile/screens/artist_home.dart';
 import 'package:ikonfetemobile/screens/artist_verification.dart';
-import 'package:ikonfetemobile/screens/fan_home.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
 import 'package:ikonfetemobile/screens/inactive_user.dart';
 import 'package:ikonfetemobile/screens/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification.dart';
-import 'package:ikonfetemobile/screens/profile/artist_profile.dart';
-import 'package:ikonfetemobile/screens/profile/artist_profile_screen_bloc.dart';
 import 'package:ikonfetemobile/screens/signup.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
 import 'package:ikonfetemobile/screens/user_signup_profile.dart';
+import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 
 final router = Router();
 
@@ -106,10 +103,6 @@ final artistPendingVerificationHandler = Handler(handlerFunc: (ctx, params) {
   );
 });
 
-final artistHomeHandler = Handler(handlerFunc: (ctx, params) {
-  return ArtistHomeScreen();
-});
-
 final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
   final name = params["name"][0];
@@ -119,19 +112,31 @@ final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
   );
 });
 
-final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
-  return FanHomeScreen();
-});
-
-final artistProfileHandler = Handler(handlerFunc: (ctx, params) {
-  final uid = params["uid"][0];
-  return BlocProvider<ArtistProfileScreenBloc>(
-    bloc: ArtistProfileScreenBloc(
-      appConfig: AppConfig.of(ctx),
-    ),
-    child: ArtistProfileScreen(uid: uid),
+final artistHomeHandler = Handler(handlerFunc: (ctx, params) {
+  return ZoomScaffoldScreen(
+    isArtist: true,
+    screenId: 'home',
+    params: <String, String>{},
   );
 });
+
+final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
+  return ZoomScaffoldScreen(
+    isArtist: false,
+    screenId: 'home',
+    params: <String, String>{},
+  );
+});
+
+//final artistProfileHandler = Handler(handlerFunc: (ctx, params) {
+//  final uid = params["uid"][0];
+//  return BlocProvider<ArtistProfileScreenBloc>(
+//    bloc: ArtistProfileScreenBloc(
+//      appConfig: AppConfig.of(ctx),
+//    ),
+//    child: ArtistProfileScreen(uid: uid),
+//  );
+//});
 
 void defineRoutes(Router router, AppConfig appConfig) {
   router.define(RouteNames.splash, handler: splashHandler);
@@ -168,10 +173,6 @@ void defineRoutes(Router router, AppConfig appConfig) {
   router.define(RouteNames.artistPendingVerification(),
       handler: artistPendingVerificationHandler);
 
-  router.define(RouteNames.artistHome, handler: artistHomeHandler);
-
-  router.define(RouteNames.fanHome, handler: fanHomeHandler);
-
   router.define(
     RouteNames.inactiveUser(isArtist: true),
     handler: Handler(handlerFunc: (ctx, params) {
@@ -196,7 +197,10 @@ void defineRoutes(Router router, AppConfig appConfig) {
 
   router.define(RouteNames.teamSelection(), handler: fanTeamSelectionHandler);
 
-  router.define(RouteNames.artistProfile(), handler: artistProfileHandler);
+//  router.define(RouteNames.artistProfile(), handler: artistProfileHandler);
+  router.define(RouteNames.artistHome, handler: artistHomeHandler);
+
+  router.define(RouteNames.fanHome, handler: fanHomeHandler);
 }
 
 class RouteNames {
@@ -242,7 +246,7 @@ class RouteNames {
     return "$s/${uid.trim().isEmpty ? ":uid" : uid}";
   }
 
-  static String artistProfile({String uid: ""}) {
-    return "/artist_profile/${uid.trim().isEmpty ? ":uid" : uid}";
-  }
+//  static String artistProfile({String uid: ""}) {
+//    return "/artist_profile/${uid.trim().isEmpty ? ":uid" : uid}";
+//  }
 }

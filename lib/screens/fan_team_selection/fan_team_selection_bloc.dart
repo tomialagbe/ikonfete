@@ -24,6 +24,14 @@ class FanTeamSelectionBloc extends BlocBase {
   StreamController<Pair<Team, Artist>> _loadArtistForTeamResultController =
       StreamController.broadcast<Pair<Team, Artist>>();
 
+  /// A stream that takes a pair of - the team id and the fan id and adds the fan to the
+  /// team
+  StreamController<Pair<String, String>> _addFanToTeamActionController =
+      StreamController<Pair<String, String>>();
+
+  StreamController<bool> _addFanToTeamResultController =
+      StreamController.broadcast<bool>();
+
   Sink<String> get searchArtistTeam => _searchArtistTeamActionController.sink;
 
   Stream<List<Team>> get searchArtistTeamResult =>
@@ -34,11 +42,18 @@ class FanTeamSelectionBloc extends BlocBase {
   Stream<Pair<Team, Artist>> get loadArtistForTeamResult =>
       _loadArtistForTeamResultController.stream;
 
+  Sink<Pair<String, String>> get addFanToTeam =>
+      _addFanToTeamActionController.sink;
+
+  Stream<bool> get addFanToTeamResult => _addFanToTeamResultController.stream;
+
   FanTeamSelectionBloc({@required this.appConfig}) {
     _searchArtistTeamActionController.stream
         .debounce(Duration(milliseconds: 500))
         .listen(_searchArtistTeams);
     _loadArtistForTeamActionController.stream.listen(_loadArtistForTeam);
+    _addFanToTeamActionController.stream
+        .listen((r) => _addFanToTeam(r.first, r.second));
   }
 
   @override
@@ -47,6 +62,8 @@ class FanTeamSelectionBloc extends BlocBase {
     _searchArtistTeamResultController.close();
     _loadArtistForTeamActionController.close();
     _loadArtistForTeamResultController.close();
+    _addFanToTeamActionController.close();
+    _addFanToTeamResultController.close();
   }
 
   void _searchArtistTeams(String query) async {
@@ -71,6 +88,16 @@ class FanTeamSelectionBloc extends BlocBase {
       _loadArtistForTeamResultController.add(Pair.from(team, artist));
     } on ApiException catch (e) {
       _loadArtistForTeamResultController.addError(e.message);
+    }
+  }
+
+  void _addFanToTeam(String teamId, String fanId) async {
+    final artistApi = ArtistApi(appConfig.serverBaseUrl);
+    try {
+      final success = await artistApi.addFanToTeam(teamId, fanId);
+      _addFanToTeamResultController.add(success);
+    } on ApiException catch (e) {
+      _addFanToTeamResultController.addError(e.message);
     }
   }
 }

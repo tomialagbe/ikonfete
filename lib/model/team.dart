@@ -4,9 +4,11 @@ class Team extends Model<String> {
   String artistId;
   String artistUid;
   String artistName;
+  String artistCountry;
   String teamPictureUrl;
   DateTime dateCreated;
   DateTime dateUpdated;
+  int memberCount;
 
   @override
   void fromJson(Map json) {
@@ -15,7 +17,9 @@ class Team extends Model<String> {
       ..artistId = json["artistId"] ?? ""
       ..artistUid = json["artistUid"] ?? ""
       ..artistName = json["artistName"] ?? ""
+      ..artistCountry = json["artistCountry"] ?? ""
       ..teamPictureUrl = json["teamPictureUrl"] ?? ""
+      ..memberCount = json["memberCount"] ?? 0
       ..dateCreated = json["dateCreated"] == null || json["dateCreated"] == 0
           ? null
           : DateTime.fromMillisecondsSinceEpoch(json["dateCreated"] * 1000)
@@ -31,7 +35,9 @@ class Team extends Model<String> {
       "artistId": artistId ?? "",
       "artistUid": artistUid ?? "",
       "artistName": artistName ?? "",
+      "artistCountry": artistCountry ?? "",
       "teamPictureUrl": teamPictureUrl ?? "",
+      "memberCount": memberCount ?? 0,
       "dateCreated": dateCreated == null
           ? null
           : dateCreated.millisecondsSinceEpoch / 1000,
