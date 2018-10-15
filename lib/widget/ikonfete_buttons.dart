@@ -8,10 +8,12 @@ class PrimaryButton extends StatefulWidget {
   final Color defaultColor;
   final Color activeColor;
   final Color borderColor;
+  final Color disabledColor;
   final TextStyle textStyle;
   final double elevation;
   final Widget child;
   final BorderRadius borderRadius;
+  final bool disabled;
 
   PrimaryButton({
     @required this.width,
@@ -20,11 +22,13 @@ class PrimaryButton extends StatefulWidget {
     this.child,
     @required this.defaultColor,
     this.activeColor,
+    this.disabledColor,
     this.borderColor: Colors.transparent,
     this.elevation: 1.0,
     this.textStyle: const TextStyle(color: Colors.white),
     this.onTap,
     this.borderRadius,
+    this.disabled: false,
   })  : assert(!(text == null && child == null)),
         assert(!(text != null && child != null));
 
@@ -45,24 +49,30 @@ class _PrimaryButtonState extends State<PrimaryButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
-      onTapDown: (details) {
-        if (widget.activeColor != null) {
-          setState(() {
-            _buttonColor = widget.activeColor;
-          });
-        }
-      },
-      onTapUp: (details) {
-        setState(() {
-          _buttonColor = widget.defaultColor;
-        });
-      },
+      onTapDown: widget.disabled
+          ? null
+          : (details) {
+              if (widget.activeColor != null) {
+                setState(() {
+                  _buttonColor = widget.activeColor;
+                });
+              }
+            },
+      onTapUp: widget.disabled
+          ? null
+          : (details) {
+              setState(() {
+                _buttonColor = widget.defaultColor;
+              });
+            },
       child: Container(
         width: this.widget.width,
         height: 50.0,
         child: Material(
           type: MaterialType.button,
-          color: _buttonColor,
+          color: !widget.disabled
+              ? _buttonColor
+              : widget.disabledColor ?? widget.defaultColor.withOpacity(0.4),
           shape: RoundedRectangleBorder(
             side: BorderSide(color: widget.borderColor, width: 1.0),
             borderRadius: widget.borderRadius ?? BorderRadius.circular(5.0),

@@ -246,6 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       defaultColor: primaryButtonColor,
       activeColor: primaryButtonActiveColor,
       text: "SAVE SETTINGS",
+      disabled: true,
       onTap: () {},
     );
   }
