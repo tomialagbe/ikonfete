@@ -7,7 +7,9 @@ import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/utils/logout_helper.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/zoom_scaffold/menu.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'zoom_scaffold.dart';
 
@@ -113,7 +115,6 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
           dense: false,
           isThreeLine: false,
           onTap: () {
-            print("ITEM SELECTED");
             // navigate to profile page
             router.navigateTo(
               context,
@@ -127,7 +128,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             backgroundColor: primaryColor,
             radius: 30.0,
             backgroundImage:
-                CachedNetworkImageProvider(initState.profilePictureUrl),
+                !StringUtils.isNullOrEmpty(initState.profilePictureUrl)
+                    ? CachedNetworkImageProvider(initState.profilePictureUrl)
+                    : MemoryImage(kTransparentImage),
           ),
           title: Text(
             initState.name,
