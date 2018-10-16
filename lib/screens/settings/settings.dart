@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
-Screen settingsScreen() {
-  return Screen(
-    title: "SETTINGS",
-    contentBuilder: (context) {
-      return SettingsScreen();
-    },
-  );
-}
+final Screen settingsScreen = Screen(
+  title: "SETTINGS",
+  contentBuilder: (context) {
+    return SettingsScreen();
+  },
+);
 
 class SettingsScreen extends StatefulWidget {
   @override

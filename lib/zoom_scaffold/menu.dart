@@ -1,5 +1,8 @@
 import 'package:ikonfetemobile/screens/home/home.dart';
+import 'package:ikonfetemobile/screens/ikonscreen/ikons.dart';
+import 'package:ikonfetemobile/screens/inbox/inbox.dart';
 import 'package:ikonfetemobile/screens/settings/settings.dart';
+import 'package:ikonfetemobile/screens/superfans/superfans.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 import 'package:meta/meta.dart';
 
@@ -31,15 +34,16 @@ class MenuItem {
 }
 
 Map<MenuItem, Screen> zoomScaffoldMenuItems({@required bool isArtist}) {
-  return <MenuItem, Screen>{
-    MenuItem(id: 'home', title: 'Home', isDefault: true):
-        homeScreen(isArtist: isArtist),
-    MenuItem(id: 'my_music', title: 'My Music'): null,
-    MenuItem(id: 'notifications', title: 'Notifications'): null,
-    MenuItem(id: 'recommendations', title: 'Recommendations'): null,
-    MenuItem(id: 'events', title: 'Events'): null,
-    MenuItem(id: 'settings', title: 'Settings'): settingsScreen(),
-  };
+  final menu = <MenuItem, Screen>{};
+  menu[MenuItem(id: 'home', title: 'Home', isDefault: true)] =
+      homeScreen(isArtist: isArtist);
+  if (!isArtist) {
+    menu[MenuItem(id: 'ikon', title: 'My Music')] = ikonScreen;
+    menu[MenuItem(id: 'superfans', title: 'Super Fans')] = superfansScreen;
+  }
+  menu[MenuItem(id: 'inbox', title: 'Inbox')] = inboxScreen;
+  menu[MenuItem(id: 'settings', title: 'Settings')] = settingsScreen;
+  return menu;
 }
 
 Screen zoomScaffoldScreen(

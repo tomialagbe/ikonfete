@@ -139,8 +139,10 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
               onTap: () {
-                SharedPreferences.getInstance().then(
-                    (prefs) => prefs.setBool(PreferenceKeys.isOnBoarded, true));
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setBool(PreferenceKeys.isOnBoarded, true);
+                  prefs.setBool(PreferenceKeys.isArtist, true);
+                });
                 router.navigateTo(context, RouteNames.signup(isArtist: true),
                     replace: false, transition: TransitionType.inFromRight);
               },
@@ -154,8 +156,10 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               width: MediaQuery.of(context).size.width - 80,
               height: 50.0,
               onTap: () {
-                SharedPreferences.getInstance().then(
-                    (prefs) => prefs.setBool(PreferenceKeys.isOnBoarded, true));
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setBool(PreferenceKeys.isOnBoarded, true);
+                  prefs.setBool(PreferenceKeys.isArtist, false);
+                });
                 router.navigateTo(context, RouteNames.signup(isArtist: false),
                     replace: false, transition: TransitionType.inFromRight);
               },

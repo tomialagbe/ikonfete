@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
-final fanHomeScreen = new Screen(
+final fanHomeScreen = Screen(
   title: "HOME",
   contentBuilder: (BuildContext context) {
     return FanHomeScreen();
