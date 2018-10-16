@@ -8,8 +8,10 @@ import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/utils/ui_helpers.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ProfileScreen extends StatefulWidget {
   final bool isArtist;
@@ -100,8 +102,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CircleAvatar(
               radius: 45.0,
               foregroundColor: Colors.black45,
-              backgroundImage: CachedNetworkImageProvider(
-                  appBloc.initState.profilePictureUrl),
+              backgroundColor: Colors.black45,
+              backgroundImage: !StringUtils.isNullOrEmpty(
+                      appBloc.initState.profilePictureUrl)
+                  ? CachedNetworkImageProvider(
+                      appBloc.initState.profilePictureUrl)
+                  : MemoryImage(kTransparentImage),
             ),
             SizedBox(width: 20.0),
             SizedBox(

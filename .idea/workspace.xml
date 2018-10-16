@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="56b0bc87-aa28-481f-87aa-7815205e17af" name="Default" comment="- Refactored routes to separate file">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main_dev.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main_dev.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,7 +18,7 @@
         <entry file="file://$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1995">
-              <caret line="133" column="12" lean-forward="true" selection-start-line="133" selection-start-column="12" selection-end-line="133" selection-end-column="12" />
+              <caret line="133" column="12" selection-start-line="133" selection-start-column="12" selection-end-line="133" selection-end-column="12" />
               <folding>
                 <element signature="e#0#64#0" expanded="true" />
               </folding>
@@ -28,11 +26,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="profile_screen.dart" pinned="false" current-in-tab="false">
+      <file leaf-file-name="profile_screen.dart" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/screens/profile/profile_screen.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="177">
-              <caret line="248" column="20" selection-start-line="248" selection-start-column="20" selection-end-line="248" selection-end-column="20" />
+            <state relative-caret-position="193">
+              <caret line="109" column="31" selection-start-line="109" selection-start-column="31" selection-end-line="109" selection-end-column="31" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -49,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main_dev.dart" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main_dev.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main_dev.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="48" column="45" selection-start-line="48" selection-start-column="45" selection-end-line="48" selection-end-column="45" />
+            <state relative-caret-position="260">
+              <caret line="52" column="24" lean-forward="true" selection-start-line="52" selection-start-column="24" selection-end-line="52" selection-end-column="24" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -214,10 +212,10 @@
         <option value="$PROJECT_DIR$/lib/utils/ui_helpers.dart" />
         <option value="$PROJECT_DIR$/lib/bloc/application_bloc.dart" />
         <option value="$PROJECT_DIR$/lib/screens/login.dart" />
-        <option value="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" />
         <option value="$PROJECT_DIR$/lib/widget/ikonfete_buttons.dart" />
         <option value="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" />
         <option value="$PROJECT_DIR$/lib/main_dev.dart" />
+        <option value="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" />
       </list>
     </option>
   </component>
@@ -504,7 +502,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="8" />
       <window_info anchor="right" id="Device File Explorer" order="3" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4983845" weight="0.34150326" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.4983845" visible="true" weight="0.34146342" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32843137" />
       <window_info id="DB Browser" order="3" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
@@ -514,7 +512,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32843137" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32747602" />
       <window_info id="Captures" order="10" weight="0.32956383" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49748743" visible="true" weight="0.24959612" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49748743" visible="true" weight="0.24959612" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info id="Favorites" order="11" side_tool="true" />
       <window_info anchor="right" id="Flutter Inspector" order="3" weight="0.19063005" />
@@ -982,20 +980,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/screens/profile/profile_screen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="248" column="20" selection-start-line="248" selection-start-column="20" selection-end-line="248" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1995">
-          <caret line="133" column="12" lean-forward="true" selection-start-line="133" selection-start-column="12" selection-end-line="133" selection-end-column="12" />
+          <caret line="133" column="12" selection-start-line="133" selection-start-column="12" selection-end-line="133" selection-end-column="12" />
           <folding>
             <element signature="e#0#64#0" expanded="true" />
           </folding>
@@ -1004,10 +992,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/main_dev.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="48" column="45" selection-start-line="48" selection-start-column="45" selection-end-line="48" selection-end-column="45" />
+        <state relative-caret-position="260">
+          <caret line="52" column="24" lean-forward="true" selection-start-line="52" selection-start-column="24" selection-end-line="52" selection-end-column="24" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/screens/profile/profile_screen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="109" column="31" selection-start-line="109" selection-start-column="31" selection-end-line="109" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
