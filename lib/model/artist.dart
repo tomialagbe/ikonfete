@@ -6,6 +6,7 @@ class Artist extends Model<String> {
   String name;
   String email;
   String country;
+  String countryIsoCode;
 
   String facebookId;
   String twitterId;
@@ -33,6 +34,7 @@ class Artist extends Model<String> {
       ..name = json["name"]
       ..email = json["email"]
       ..country = json["country"] ?? ""
+      ..countryIsoCode = json["countryIsoCode"] ?? ""
       ..facebookId = json["facebookId"]
       ..twitterId = json["twitterId"]
       ..spotifyUserId = json["spotifyUserId"]
@@ -76,6 +78,7 @@ class Artist extends Model<String> {
       "name": this.name,
       "email": this.email,
       "country": this.country ?? "",
+      "countryIsoCode": this.countryIsoCode ?? "",
       "facebookId": this.facebookId ?? "",
       "twitterId": this.twitterId ?? "",
       "spotifyUserId": this.spotifyUserId ?? "",

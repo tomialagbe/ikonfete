@@ -9,7 +9,9 @@ import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/facebook_auth.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
+import 'package:ikonfetemobile/utils/twitter_auth.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -166,9 +168,9 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
   }
 
   Widget _buildFacebookFormItem() {
-    return StreamBuilder<FacebookActionResult>(
+    return StreamBuilder<FacebookAuthResult>(
       stream: _bloc.facebookActionResult,
-      initialData: FacebookActionResult(),
+      initialData: FacebookAuthResult(),
       builder: (ctx, snapshot) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -202,9 +204,9 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
   }
 
   Widget _buildTwitterFormItem() {
-    return StreamBuilder<TwitterActionResult>(
+    return StreamBuilder<TwitterAuthResult>(
       stream: _bloc.twitterActionResult,
-      initialData: TwitterActionResult(),
+      initialData: TwitterAuthResult(),
       builder: (ctx, snapshot) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -255,7 +257,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
     );
   }
 
-  void _handleFacebookResult(FacebookActionResult result) {
+  void _handleFacebookResult(FacebookAuthResult result) {
     if (result.canceled) {
       return;
     }
@@ -270,7 +272,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
     }
   }
 
-  void _handleTwitterResult(TwitterActionResult result) {
+  void _handleTwitterResult(TwitterAuthResult result) {
     if (result.canceled) {
       return;
     }

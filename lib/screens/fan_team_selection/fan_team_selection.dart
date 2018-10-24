@@ -356,72 +356,60 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
                 ),
                 color: const Color(0xFFCC181F),
               ),
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  textTheme: TextTheme(
-                    body1: TextStyle(color: whiteText),
-                    title: TextStyle(
-                      color: whiteText,
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                width: double.infinity,
+                height: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      team.artistName,
+                      style: Theme.of(context).textTheme.body1.copyWith(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                            color: whiteText,
+                          ),
                     ),
-                  ),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        team.artistName,
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                              color: whiteText,
-                            ),
+                    SizedBox(height: 10.0),
+                    SizedBox(
+                      height: 100.0,
+                      child: Text(
+                        artist.bio,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 7,
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context)
+                            .textTheme
+                            .body1
+                            .copyWith(color: whiteText),
                       ),
-                      SizedBox(height: 10.0),
-                      SizedBox(
-                        height: 100.0,
-                        child: Text(
-                          artist.bio,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 7,
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context)
-                              .textTheme
-                              .body1
-                              .copyWith(color: whiteText),
+                    ),
+                    Expanded(child: Container()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () => mc.addResult(false),
                         ),
-                      ),
-                      Expanded(child: Container()),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          FlatButton(
-                            child: Text(
-                              "Cancel",
+                        Expanded(child: Container()),
+                        FlatButton(
+                          child: Text("Join Team",
                               style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () => mc.addResult(false),
-                          ),
-                          Expanded(child: Container()),
-                          FlatButton(
-                            child: Text("Join Team",
-                                style: TextStyle(color: Colors.white),
-                                overflow: TextOverflow.ellipsis),
-                            onPressed: () => mc.addResult(true),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                              overflow: TextOverflow.ellipsis),
+                          onPressed: () => mc.addResult(true),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

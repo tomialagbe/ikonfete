@@ -16,13 +16,13 @@ class FanTeamSelectionBloc extends BlocBase {
   BehaviorSubject<String> _searchArtistTeamActionController =
       BehaviorSubject<String>();
   StreamController<List<Team>> _searchArtistTeamResultController =
-      StreamController.broadcast<List<Team>>();
+      StreamController.broadcast();
 
   /// A stream that takes the uid of an artist
   StreamController<Team> _loadArtistForTeamActionController =
-      StreamController.broadcast<Team>();
+      StreamController.broadcast();
   StreamController<Pair<Team, Artist>> _loadArtistForTeamResultController =
-      StreamController.broadcast<Pair<Team, Artist>>();
+      StreamController.broadcast();
 
   /// A stream that takes a pair of - the team id and the fan id and adds the fan to the
   /// team
@@ -30,7 +30,7 @@ class FanTeamSelectionBloc extends BlocBase {
       StreamController<Pair<String, String>>();
 
   StreamController<bool> _addFanToTeamResultController =
-      StreamController.broadcast<bool>();
+      StreamController.broadcast();
 
   Sink<String> get searchArtistTeam => _searchArtistTeamActionController.sink;
 

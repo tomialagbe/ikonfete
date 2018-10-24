@@ -109,10 +109,10 @@ abstract class AuthApi<T> extends Api {
           if (responseData["success"] == true) {
             if (isArtist) {
               final artist = new Artist()..fromJson(responseData["artist"]);
-              return ExclusivePair.withFirst<Artist, Fan>(artist);
+              return ExclusivePair.withFirst(artist);
             } else {
               final fan = new Fan()..fromJson(responseData["fan"]);
-              return ExclusivePair.withSecond<Artist, Fan>(fan);
+              return ExclusivePair.withSecond(fan);
             }
           } else {
             throw ApiException("Facebook Signup failed");

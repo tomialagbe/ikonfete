@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,8 +9,14 @@ import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
+import 'package:ikonfetemobile/screens/profile/edit_bio_screen.dart';
+import 'package:ikonfetemobile/screens/profile/edit_profile_info_screen.dart';
+import 'package:ikonfetemobile/screens/profile/profile_screen_bloc.dart';
+import 'package:ikonfetemobile/utils/facebook_auth.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
+import 'package:ikonfetemobile/utils/twitter_auth.dart';
 import 'package:ikonfetemobile/utils/ui_helpers.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -24,20 +31,113 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  ProfileScreenBloc _bloc;
+
+  bool _initialFacebookEnabled;
+  bool _initialTwitterEnabled;
+  String _initialBio;
+  String _initialCountry;
+
+  String _facebookId;
+  String _twitterId;
+
+  String _displayName = "";
+  String _email = "";
+  bool _facebookEnabled = false;
+  bool _twitterEnabled = false;
+  String _bio = "";
+  String _country = "";
+  File _newProfilePicture;
+  EditProfileInfoResult _editProfileInfoResult;
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final subHeaderTextStyle = TextStyle(
     fontFamily: "SanFranciscoDisplay",
     fontSize: 18.0,
     color: Colors.black87,
   );
 
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
+  HudOverlay hudOverlay;
+
   @override
-  void didChangeDependencies() {
+  void initState() {
+    super.initState();
+    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+
+    _displayName = appBloc.initState.currentUser.displayName;
+    _email = appBloc.initState.currentUser.email;
+    _facebookEnabled = appBloc.initState.isArtist
+        ? !StringUtils.isNullOrEmpty(appBloc.initState.artist.facebookId)
+        : !StringUtils.isNullOrEmpty(appBloc.initState.fan.facebookId);
+    _twitterEnabled = appBloc.initState.isArtist
+        ? !StringUtils.isNullOrEmpty(appBloc.initState.artist.twitterId)
+        : !StringUtils.isNullOrEmpty(appBloc.initState.fan.twitterId);
+    _bio = appBloc.initState.isArtist ? appBloc.initState.artist.bio : "";
+    _country =
+        appBloc.initState.isArtist ? appBloc.initState.artist.country : "";
+
+    _initialFacebookEnabled = _facebookEnabled;
+    _initialTwitterEnabled = _twitterEnabled;
+    _initialBio = _bio;
+    _initialCountry = _country;
+
+    _facebookId = appBloc.initState.isArtist
+        ? appBloc.initState.artist.facebookId
+        : appBloc.initState.fan.facebookId;
+    _twitterId = appBloc.initState.isArtist
+        ? appBloc.initState.artist.twitterId
+        : appBloc.initState.fan.twitterId;
+  }
+
+  @override
+  void didChangeDependencies() async {
     super.didChangeDependencies();
+
+    if (_bloc == null) {
+      _bloc = BlocProvider.of<ProfileScreenBloc>(context);
+      _subscriptions
+          .add(_bloc.facebookAuthResult.listen(_handleFacebookAuthResult));
+      _subscriptions
+          .add(_bloc.twitterAuthResult.listen(_handleTwitterAuthResult));
+    }
   }
 
   Future<bool> _willPop() async {
-    return true;
+    if (_changesMade()) {
+      final canPop = await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text("Save Changes?"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      "There are unsaved changes to your profile. Do you want to discard them?",
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text("YES", style: TextStyle(color: primaryColor)),
+                ),
+                FlatButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text("NO", style: TextStyle(color: primaryColor)),
+                ),
+              ],
+            );
+          });
+      return canPop;
+    } else {
+      return true;
+    }
   }
 
   @override
@@ -104,9 +204,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               foregroundColor: Colors.black45,
               backgroundColor: Colors.black45,
               backgroundImage: !StringUtils.isNullOrEmpty(
-                      appBloc.initState.profilePictureUrl)
+                      appBloc.initState.currentUser.photoUrl)
                   ? CachedNetworkImageProvider(
-                      appBloc.initState.profilePictureUrl)
+                      appBloc.initState.currentUser.photoUrl)
                   : MemoryImage(kTransparentImage),
             ),
             SizedBox(width: 20.0),
@@ -118,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Text(
-                    appBloc.initState.name,
+                    _displayName,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 20.0,
@@ -128,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SizedBox(height: 2.0),
                   Text(
-                    appBloc.initState.email,
+                    _email,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16.0,
@@ -136,6 +236,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontFamily: "SanFranciscoDisplay",
                     ),
                   ),
+                  widget.isArtist && !StringUtils.isNullOrEmpty(_country)
+                      ? Text(
+                          _country,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.black54,
+                            fontFamily: "SanFranciscoDisplay",
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
             ),
@@ -183,22 +294,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              SizedBox(
-                width: 280.0,
-                height: 70.0,
-                child: Text(
-                  "dbajd dada dankdad dakbdajda dank bdaj addabj daknd dad daknd"
-                      " a adbaj qebiqdkaln cdadkb qqrfajeqkb cqenocq "
-                      "dbajd dada dankdad dakbdajda dank bdaj addabj daknd dad daknd"
-                      " a adbaj qebiqdkaln cdadkb qqrfajeqkb cqenocq ",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  maxLines: 4,
-                  style: TextStyle(
-                    fontFamily: "SanFranciscoDisplay",
-                    fontSize: 14.0,
-                    color: Colors.black54,
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {},
+                  splashColor: Colors.grey.withOpacity(0.3),
+                  child: SizedBox(
+                    width: 280.0,
+                    height: 70.0,
+                    child: Text(
+                      _bio,
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      maxLines: 4,
+                      style: TextStyle(
+                        fontFamily: "SanFranciscoDisplay",
+                        fontSize: 14.0,
+                        color: Colors.black54,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -252,8 +367,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       defaultColor: primaryButtonColor,
       activeColor: primaryButtonActiveColor,
       text: "SAVE SETTINGS",
-      disabled: true,
-      onTap: () {},
+      disabled: !_changesMade(),
+      onTap: _saveChanges,
     );
   }
 
@@ -262,22 +377,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: BoxDecoration(
-            color: facebookColor,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Icon(ThemifyIcons.facebook, color: Colors.white),
-        ),
+        _buildSocialIcon(ThemifyIcons.facebook, facebookColor),
         SizedBox(width: 20.0),
         Text("Facebook", style: subHeaderTextStyle),
         Expanded(child: Container()),
         CupertinoSwitch(
-          value: true,
-          onChanged: (val) {},
+          value: _facebookEnabled,
+          onChanged: (val) {
+            setState(() => _facebookEnabled = val);
+            // if the user has not yet set up his facebook id
+            if (val == true && StringUtils.isNullOrEmpty(_facebookId)) {
+              hudOverlay = HudOverlay.showDefault(context);
+              _bloc.facebookAuth.add(null);
+            }
+          },
           activeColor: primaryColor,
         ),
       ],
@@ -289,29 +402,124 @@ class _ProfileScreenState extends State<ProfileScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: BoxDecoration(
-            color: twitterColor,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Icon(ThemifyIcons.twitter, color: Colors.white),
-        ),
+        _buildSocialIcon(ThemifyIcons.twitter, twitterColor),
         SizedBox(width: 20.0),
         Text("Twitter", style: subHeaderTextStyle),
         Expanded(child: Container()),
         CupertinoSwitch(
-          value: true,
-          onChanged: (val) {},
+          value: _twitterEnabled,
+          onChanged: (val) {
+            setState(() => _twitterEnabled = val);
+            // if the user has not yet set up his twitter id
+            if (val == true && StringUtils.isNullOrEmpty(_twitterId)) {
+              hudOverlay = HudOverlay.showDefault(context);
+              _bloc.twitterAuth.add(null);
+            }
+          },
           activeColor: primaryColor,
         ),
       ],
     );
   }
 
-  void _editProfileInfo() {}
+  bool _changesMade() {
+    return _initialTwitterEnabled != _twitterEnabled ||
+        _initialFacebookEnabled != _facebookEnabled ||
+        _initialBio != _bio ||
+        _initialCountry != _country ||
+        _newProfilePicture != null ||
+        _editProfileInfoResult != null;
+  }
 
-  void _editBio() {}
+  void _saveChanges() async {
+
+      final data = EditProfileData();
+      data.isArtist = widget.isArtist;
+      data.uid = widget.uid;
+      data.displayName = ;
+      data.facebookId = ;
+      data.twitterId = ;
+      data.bio = ;
+      data.countryIsoCode = ;
+      data.profilePicture = ;
+      data.removeFacebook = ;
+      data.removeTwitter = ;
+
+  }
+
+  void _editProfileInfo() async {
+    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+    final result = await Navigator.of(context).push<EditProfileInfoResult>(
+      CupertinoPageRoute(
+        builder: (ctx) => EditProfileInfoScreen(
+              displayName: _displayName,
+              countryIsoCode: widget.isArtist
+                  ? appBloc.initState.artist.countryIsoCode
+                  : "",
+              profileImageUrl: appBloc.initState.currentUser.photoUrl,
+            ),
+      ),
+    );
+    if (result != null) {
+      setState(() => _editProfileInfoResult = result);
+    }
+  }
+
+  void _editBio() async {
+    String updatedBio = await Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (ctx) {
+          return new EditBioScreen(bio: _bio);
+        },
+      ),
+    );
+    if (updatedBio != null && updatedBio != _bio) {
+      setState(() {
+        _bio = updatedBio;
+      });
+    }
+  }
+
+  void _handleFacebookAuthResult(FacebookAuthResult result) {
+    hudOverlay?.close();
+    if (result.success) {
+      _facebookId = result.facebookUID;
+    } else {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(result.canceled
+            ? "Facebook setup cancelled"
+            : "Facebook setup falied"),
+      ));
+      // reset the facebook enabled status
+      setState(() => _facebookEnabled = false);
+    }
+  }
+
+  void _handleTwitterAuthResult(TwitterAuthResult result) {
+    hudOverlay?.close();
+    if (result.success) {
+      _twitterId = result.twitterUID;
+    } else {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(result.canceled
+            ? "Twitter setup cancelled"
+            : "Twitter setup falied"),
+      ));
+      // reset the facebook enabled status
+      setState(() => _twitterEnabled = false);
+    }
+  }
+
+  Widget _buildSocialIcon(IconData iconData, Color iconBGColor) {
+    return Container(
+      width: 40.0,
+      height: 40.0,
+      decoration: BoxDecoration(
+        color: iconBGColor,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Icon(iconData, color: Colors.white),
+    );
+  }
 }

@@ -20,6 +20,8 @@ class ArtistApi extends Api {
           final artist = new Artist()..fromJson(data["artist"]);
           return artist;
           break;
+        case 404:
+          return null; // artist not found
         default:
           final apiErr = ApiError()..fromJson(json.decode(response.body));
           throw ApiException(apiErr.error);

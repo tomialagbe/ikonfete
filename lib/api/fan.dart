@@ -19,6 +19,8 @@ class FanApi extends Api {
           final artist = new Fan()..fromJson(data["fan"]);
           return artist;
           break;
+        case 404:
+          return null;
         default:
           final apiErr = ApiError()..fromJson(json.decode(response.body));
           throw ApiException(apiErr.error);

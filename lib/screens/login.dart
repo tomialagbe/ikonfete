@@ -156,8 +156,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final switchModeTapHandler = TapGestureRecognizer();
     switchModeTapHandler.onTap = () {
-      SharedPreferences.getInstance().then(
-          (prefs) => prefs.setBool(PreferenceKeys.isArtist, !widget.isArtist));
+      SharedPreferences.getInstance().then((prefs) => prefs.setBool(
+          PreferenceKeys.isArtist, widget.isArtist ? false : true));
       router.navigateTo(
         context,
         RouteNames.login(isArtist: !widget.isArtist),
@@ -345,13 +345,13 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
+      appBloc.initState.currentUser = result.firebaseUser;
+      if (result.isArtist) {
+        appBloc.initState.artist = result.artist;
+      } else {
+        appBloc.initState.fan = result.fan;
+      }
       final uid = result.isArtist ? result.artist.uid : result.fan.uid;
-      appBloc.initState.profilePictureUrl = result.firebaseUser.photoUrl;
-      appBloc.initState.name = result.firebaseUser.displayName;
-      appBloc.initState.uid = uid;
-      appBloc.initState.isArtist = result.isArtist;
-      appBloc.initState.email = result.firebaseUser.email;
-      appBloc.initState.bio = result.isArtist ? result.artist.bio : "";
 
       bool isEmailActivated = result.request.isFacebookProvider ||
           (result.request.isEmailProvider &&
@@ -367,9 +367,8 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         bool isAccountVerified =
             result.isFan || (result.isArtist && result.artist.isVerified);
-        bool isProfileSetup = isAccountVerified &&
-            !StringUtils.isNullOrEmpty(
-                result.isArtist ? result.artist.username : result.fan.username);
+        bool isProfileSetup =
+            isAccountVerified && appBloc.initState.isProfileSetup;
         if (!isAccountVerified) {
           if (result.artist.isPendingVerification) {
             router.navigateTo(

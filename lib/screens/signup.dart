@@ -161,8 +161,8 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget _buildForm() {
     final switchModeTapHandler = TapGestureRecognizer();
     switchModeTapHandler.onTap = () {
-      SharedPreferences.getInstance().then(
-          (prefs) => prefs.setBool(PreferenceKeys.isArtist, !widget.isArtist));
+      SharedPreferences.getInstance().then((prefs) => prefs.setBool(
+          PreferenceKeys.isArtist, widget.isArtist ? false : true));
       router.navigateTo(
         context,
         RouteNames.signup(isArtist: !widget.isArtist),

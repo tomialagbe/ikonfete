@@ -16,11 +16,10 @@ class ArtistPendingVerificationBloc extends BlocBase {
 
   StreamController _loadUserActionController = StreamController();
   StreamController<Pair<FirebaseUser, Artist>> _loadUserResultController =
-      StreamController.broadcast<Pair<FirebaseUser, Artist>>();
+      StreamController.broadcast();
 
   StreamController _logoutActionController = StreamController.broadcast();
-  StreamController<bool> _logoutResultController =
-      StreamController.broadcast<bool>();
+  StreamController<bool> _logoutResultController = StreamController.broadcast();
 
   Sink get logoutAction => _logoutActionController.sink;
 

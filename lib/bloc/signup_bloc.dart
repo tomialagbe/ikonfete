@@ -24,7 +24,7 @@ class SignupBloc implements BlocBase {
       StreamController<AuthActionRequest>();
 
   StreamController<AuthResult> _signupResultController =
-      StreamController.broadcast<AuthResult>();
+      StreamController.broadcast();
 
   StreamSink<String> get name => _nameController.sink;
 

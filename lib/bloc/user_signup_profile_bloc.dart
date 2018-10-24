@@ -24,7 +24,7 @@ class UserSignupProfileBloc extends BlocBase {
   StreamController<File> _profilePictureController = StreamController<File>();
   StreamController _actionController = StreamController();
   StreamController<Pair<bool, String>> _actionResultController =
-      StreamController.broadcast<Pair<bool, String>>();
+      StreamController.broadcast();
 
   Stream<String> get _username => _usernameController.stream;
 
@@ -67,7 +67,6 @@ class UserSignupProfileBloc extends BlocBase {
       // save the profile picture, make api call to update the firebase user with the username and profile picture url
       final imageId = Uuid().v1();
       final fileExtension = extension(_profilePic.path);
-
       ref = appConfig.firebaseStorage
           .ref()
           .child("profile_pictures")

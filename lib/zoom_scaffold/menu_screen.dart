@@ -119,7 +119,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             router.navigateTo(
               context,
               RouteNames.profile(
-                  uid: initState.uid, isArtist: initState.isArtist),
+                  uid: initState.currentUser.uid, isArtist: initState.isArtist),
               replace: false,
               transition: TransitionType.inFromRight,
             );
@@ -128,12 +128,12 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             backgroundColor: primaryColor,
             radius: 30.0,
             backgroundImage:
-                !StringUtils.isNullOrEmpty(initState.profilePictureUrl)
-                    ? CachedNetworkImageProvider(initState.profilePictureUrl)
+                !StringUtils.isNullOrEmpty(initState.currentUser.photoUrl)
+                    ? CachedNetworkImageProvider(initState.currentUser.photoUrl)
                     : MemoryImage(kTransparentImage),
           ),
           title: Text(
-            initState.name,
+            initState.currentUser.displayName,
             style: TextStyle(
               color: Colors.white,
               fontSize: 20.0,
@@ -141,7 +141,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             ),
           ),
           subtitle: Text(
-            initState.email,
+            initState.currentUser.email,
             style: TextStyle(
               color: Colors.white,
               fontSize: 14.0,

@@ -90,36 +90,37 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                       bloc: UserSignupProfileBloc(
                         appConfig: AppConfig.of(ctx),
                         isArtist: initState.isArtist,
-                        uid: initState.uid,
+                        uid: initState.currentUser.uid,
                       ),
                       child: UserSignupProfileScreen(
                         isArtist: initState.isArtist,
                       ),
                     );
                   } else if (initState.isArtist) {
-                    if (initState.isArtistVerified) {
+                    if (initState.artist.isVerified) {
                       // Artist Home Screen
                       return ZoomScaffoldScreen(
                         isArtist: true,
                         screenId: 'home',
                         params: <String, String>{},
                       );
-                    } else if (initState.isArtistPendingVerification) {
+                    } else if (initState.artist.isPendingVerification) {
                       // pending verification screen
                       return BlocProvider<ArtistPendingVerificationBloc>(
                         bloc: ArtistPendingVerificationBloc(
-                          uid: initState.uid,
+                          uid: initState.currentUser.uid,
                           appConfig: AppConfig.of(ctx),
                         ),
-                        child:
-                            ArtistPendingVerificationScreen(uid: initState.uid),
+                        child: ArtistPendingVerificationScreen(
+                            uid: initState.currentUser.uid),
                       );
                     } else {
                       // to verification screen
                       return BlocProvider<ArtistVerificationBloc>(
                         bloc: ArtistVerificationBloc(
                             appConfig: AppConfig.of(ctx)),
-                        child: ArtistVerificationScreen(uid: initState.uid),
+                        child: ArtistVerificationScreen(
+                            uid: initState.currentUser.uid),
                       );
                     }
                   } else {
@@ -136,7 +137,8 @@ class IkonfeteAppState extends State<IkonfeteApp> {
                         bloc:
                             FanTeamSelectionBloc(appConfig: AppConfig.of(ctx)),
                         child: FanTeamSelectionScreen(
-                            uid: initState.uid, name: initState.name),
+                            uid: initState.currentUser.uid,
+                            name: initState.currentUser.displayName),
                       );
                     }
                   }

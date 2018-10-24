@@ -22,7 +22,7 @@ class ArtistProfileScreenBloc extends BlocBase {
 
   /// StreamController that handles load artist results
   StreamController<ArtistData> _loadArtistResultController =
-      StreamController.broadcast<ArtistData>();
+      StreamController.broadcast();
 
   Sink<String> get loadArtist => _loadArtistActionController.sink;
 

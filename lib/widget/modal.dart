@@ -17,16 +17,22 @@ class Modal {
     Color contentBackgroundColor: Colors.white,
     BorderRadius borderRadius,
     EdgeInsets padding: const EdgeInsets.all(10.0),
+    bool barrierDismissable: false,
   }) {
+    VoidCallback backgroundTapHandler;
+
     final screenSize = MediaQuery.of(context).size;
     final maxHeight = heightRatio * screenSize.height;
     final maxWidth = widthRatio * screenSize.width;
     final overlayState = Overlay.of(context);
     final backgroundEntry = OverlayEntry(builder: (_) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: overlayColor,
+      return GestureDetector(
+        onTap: backgroundTapHandler,
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: overlayColor,
+        ),
       );
     });
 
@@ -51,7 +57,15 @@ class Modal {
     });
     overlayState.insert(backgroundEntry);
     overlayState.insert(contentEntry);
-    return Modal._internal(backgroundEntry, contentEntry);
+
+    final modal = Modal._internal(backgroundEntry, contentEntry);
+    if (barrierDismissable) {
+      backgroundTapHandler = () {
+        modal.close();
+      };
+    }
+
+    return modal;
   }
 
   void close() {
@@ -68,15 +82,19 @@ Future<T> showModal<T>({
   Color contentBackgroundColor: Colors.white,
   BorderRadius borderRadius,
   EdgeInsets padding: const EdgeInsets.all(10.0),
+  bool barrierDismissable: false,
 }) {
   final completer = Completer<T>();
   final modal = Modal.showModal(
     context: context,
-    child: child.builder(context, child),
+    child: Scaffold(
+      body: child.builder(context, child),
+    ),
     widthRatio: widthPercent,
     heightRatio: heightPercent,
     borderRadius: borderRadius,
     padding: padding,
+    barrierDismissable: barrierDismissable,
   );
   child.onResult.listen((T result) {
     modal.close();
@@ -88,7 +106,7 @@ Future<T> showModal<T>({
 typedef Widget ModalChildBuilder<T>(BuildContext context, ModalChild parent);
 
 class ModalChild<T> {
-  StreamController<T> _resultStreamController = StreamController.broadcast<T>();
+  StreamController<T> _resultStreamController = StreamController.broadcast();
 
   Stream<T> get onResult => _resultStreamController.stream;
 
