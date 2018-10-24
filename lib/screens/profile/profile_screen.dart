@@ -92,6 +92,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    _subscriptions.clear();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
@@ -101,6 +108,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .add(_bloc.facebookAuthResult.listen(_handleFacebookAuthResult));
       _subscriptions
           .add(_bloc.twitterAuthResult.listen(_handleTwitterAuthResult));
+
+      final sub = _bloc.edtProfileResult
+          .listen((result) => _handleEditProfileResult(result, null));
+      sub.onError((err) => _handleEditProfileResult(false, err));
+      _subscriptions.add(sub);
     }
   }
 
@@ -422,6 +434,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildSocialIcon(IconData iconData, Color iconBGColor) {
+    return Container(
+      width: 40.0,
+      height: 40.0,
+      decoration: BoxDecoration(
+        color: iconBGColor,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Icon(iconData, color: Colors.white),
+    );
+  }
+
   bool _changesMade() {
     return _initialTwitterEnabled != _twitterEnabled ||
         _initialFacebookEnabled != _facebookEnabled ||
@@ -432,19 +457,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _saveChanges() async {
-
-      final data = EditProfileData();
-      data.isArtist = widget.isArtist;
-      data.uid = widget.uid;
-      data.displayName = ;
-      data.facebookId = ;
-      data.twitterId = ;
-      data.bio = ;
-      data.countryIsoCode = ;
-      data.profilePicture = ;
-      data.removeFacebook = ;
-      data.removeTwitter = ;
-
+    final data = EditProfileData();
+    data.isArtist = widget.isArtist;
+    data.uid = widget.uid;
+    data.displayName = _displayName.trim();
+    data.facebookId = _facebookId;
+    data.twitterId = _twitterId;
+    data.bio = _bio.trim();
+    data.countryIsoCode = _editProfileInfoResult.countryIsoCode;
+    data.profilePicture = _editProfileInfoResult.profilePicture;
+    data.removeFacebook = _initialFacebookEnabled == true &&
+        _facebookEnabled == false &&
+        StringUtils.isNullOrEmpty(_facebookId);
+    data.removeTwitter = _initialTwitterEnabled == true &&
+        _twitterEnabled == false &&
+        StringUtils.isNullOrEmpty(_twitterId);
+    hudOverlay = HudOverlay.showDefault(context);
+    _bloc.editProfile.add(data);
   }
 
   void _editProfileInfo() async {
@@ -510,16 +539,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Widget _buildSocialIcon(IconData iconData, Color iconBGColor) {
-    return Container(
-      width: 40.0,
-      height: 40.0,
-      decoration: BoxDecoration(
-        color: iconBGColor,
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Icon(iconData, color: Colors.white),
-    );
-  }
+  void _handleEditProfileResult(bool success, String errorMessage) {}
 }

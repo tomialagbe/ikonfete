@@ -16,6 +16,7 @@ class EditProfileData {
   String bio;
   String countryIsoCode;
   File profilePicture;
+  String profilePictureUrl;
   bool removeFacebook;
   bool removeTwitter;
 }
@@ -26,6 +27,7 @@ class ProfileScreenBloc extends BlocBase {
 
   StreamController<EditProfileData> _editProfileActionController =
       StreamController();
+  StreamController<bool> _editProfileResult = StreamController();
 
   StreamController _facebookAuthActionController = StreamController();
   StreamController _twitterAuthActionController = StreamController();
@@ -35,6 +37,8 @@ class ProfileScreenBloc extends BlocBase {
       StreamController();
 
   Sink<EditProfileData> get editProfile => _editProfileActionController.sink;
+
+  Stream<bool> get edtProfileResult => _editProfileResult.stream;
 
   Sink get facebookAuth => _facebookAuthActionController.sink;
 
@@ -54,6 +58,7 @@ class ProfileScreenBloc extends BlocBase {
         .listen((_) => _handleFacebookAuthAction());
     _twitterAuthActionController.stream
         .listen((_) => _handleTwitterAuthAction());
+    _editProfileActionController.stream.listen(_handleEditProfileAction);
   }
 
   @override
@@ -63,6 +68,7 @@ class ProfileScreenBloc extends BlocBase {
     _twitterAuthActionController.close();
     _facebookAuthResultController.close();
     _twitterAuthResultController.close();
+    _editProfileResult.close();
   }
 
   void _handleFacebookAuthAction() async {
@@ -75,5 +81,9 @@ class ProfileScreenBloc extends BlocBase {
     final twitterAuth = TwitterAuth(appConfig: appConfig);
     final result = await twitterAuth.twitterAuth();
     _twitterAuthResultController.add(result);
+  }
+
+  void _handleEditProfileAction(EditProfileData data) async {
+    // upload new profile picture, if necessary
   }
 }
