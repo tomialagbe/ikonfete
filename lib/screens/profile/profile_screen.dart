@@ -49,6 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _country = "";
   File _newProfilePicture;
   EditProfileInfoResult _editProfileInfoResult;
+  String _oldProfilePictureUrl;
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final subHeaderTextStyle = TextStyle(
@@ -89,6 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _twitterId = appBloc.initState.isArtist
         ? appBloc.initState.artist.twitterId
         : appBloc.initState.fan.twitterId;
+
+    _oldProfilePictureUrl = appBloc.initState.currentUser.photoUrl;
   }
 
   @override
@@ -466,6 +469,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     data.bio = _bio.trim();
     data.countryIsoCode = _editProfileInfoResult.countryIsoCode;
     data.profilePicture = _editProfileInfoResult.profilePicture;
+    data.oldProfilePictureUrl = _oldProfilePictureUrl;
     data.removeFacebook = _initialFacebookEnabled == true &&
         _facebookEnabled == false &&
         StringUtils.isNullOrEmpty(_facebookId);
@@ -539,5 +543,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void _handleEditProfileResult(bool success, String errorMessage) {}
+  void _handleEditProfileResult(bool success, String errorMessage) async {
+    if (errorMessage != null) {
+      hudOverlay?.close();
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(errorMessage),
+      ));
+    } else {
+      final appBloc = BlocProvider.of<ApplicationBloc>(context);
+      await appBloc.getAppInitState();
+      // profile update successful
+      hudOverlay?.close();
+      Navigator.pop(context);
+    }
+  }
 }

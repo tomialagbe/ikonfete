@@ -70,7 +70,8 @@ class UserSignupProfileBloc extends BlocBase {
       ref = appConfig.firebaseStorage
           .ref()
           .child("profile_pictures")
-          .child("${uid}_$imageId$fileExtension");
+          .child(uid)
+          .child("$imageId$fileExtension");
       final uploadTask = ref.putFile(_profilePic, StorageMetadata());
       final snapshot = await uploadTask.future;
       profilePicUrl = snapshot.downloadUrl.toString();

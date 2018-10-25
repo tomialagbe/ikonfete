@@ -46,11 +46,6 @@ class AppInitState {
 
   bool get isArtist => _artist != null;
 
-//  Future<bool> isArtist() async {
-//    return (await SharedPreferences.getInstance())
-//        .getBool(PreferenceKeys.isArtist);
-//  }
-
   void logout() {
     artist = null;
     fan = null;

@@ -1,11 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/api/profile.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/utils/facebook_auth.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/utils/twitter_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
 class EditProfileData {
   bool isArtist;
@@ -17,6 +24,7 @@ class EditProfileData {
   String countryIsoCode;
   File profilePicture;
   String profilePictureUrl;
+  String oldProfilePictureUrl;
   bool removeFacebook;
   bool removeTwitter;
 }
@@ -84,6 +92,43 @@ class ProfileScreenBloc extends BlocBase {
   }
 
   void _handleEditProfileAction(EditProfileData data) async {
-    // upload new profile picture, if necessary
+    try {
+      if (data.profilePicture != null) {
+        // delete the old profilePicture
+        try {
+          if (!StringUtils.isNullOrEmpty(data.oldProfilePictureUrl)) {
+            appConfig.firebaseStorage
+                .ref()
+                .child("profile_pictures")
+                .child(data.uid)
+                .delete();
+          }
+        } on PlatformException catch (e) {} // if deletion fails, do nothing
+
+        // upload a new profile picture, if one was specified
+        final imageId = Uuid().v1();
+        final fileExtension = extension(data.profilePicture.path);
+
+        StorageReference ref = appConfig.firebaseStorage
+            .ref()
+            .child("profile_pictures")
+            .child(data.uid)
+            .child("$imageId$fileExtension");
+        final uploadTask = ref.putFile(data.profilePicture, StorageMetadata());
+        final snapshot = await uploadTask.future;
+        data.profilePictureUrl = snapshot.downloadUrl.toString();
+      }
+
+      // make call to update profile api
+      final profileApi = ProfileApi(appConfig.serverBaseUrl);
+      bool updated = await profileApi.updateProfile(data);
+      _editProfileResult.add(updated);
+    } on ApiException catch (e) {
+      _editProfileResult.addError(e.message);
+    } on PlatformException catch (e) {
+      _editProfileResult.addError(e.message);
+    } on Exception catch (e) {
+      _editProfileResult.addError(e.toString());
+    }
   }
 }

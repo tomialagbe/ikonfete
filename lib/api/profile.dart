@@ -11,7 +11,7 @@ class ProfileApi extends Api {
 
   Future<bool> updateProfile(EditProfileData updateData) async {
     var url =
-        "$apiBaseUrl/update_profile/uid=?${updateData.uid}&isArtist=${updateData.isArtist}";
+        "$apiBaseUrl/update_profile?uid=${updateData.uid}&isArtist=${updateData.isArtist}";
     if (!StringUtils.isNullOrEmpty(updateData.displayName)) {
       url += "&displayName=${updateData.displayName}";
     }
@@ -25,7 +25,8 @@ class ProfileApi extends Api {
     }
 
     if (!StringUtils.isNullOrEmpty(updateData.profilePictureUrl)) {
-      url += "&profilePictureURL=${updateData.profilePictureUrl}";
+      url +=
+          "&profilePictureURL=${Uri.encodeComponent(updateData.profilePictureUrl)}";
     }
 
     if (updateData.removeFacebook) {
