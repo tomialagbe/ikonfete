@@ -111,43 +111,64 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             ? 0.1
             : titleAnimationController.value,
         duration: Duration(milliseconds: 800),
-        child: ListTile(
-          dense: false,
-          isThreeLine: false,
-          onTap: () async {
-            // navigate to profile page
-            router.navigateTo(
-              context,
-              RouteNames.profile(
-                  uid: initState.currentUser.uid, isArtist: initState.isArtist),
-              replace: false,
-              transition: TransitionType.inFromRight,
-            );
-          },
-          leading: CircleAvatar(
-            backgroundColor: primaryColor,
-            radius: 30.0,
-            backgroundImage:
-                !StringUtils.isNullOrEmpty(initState.currentUser.photoUrl)
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              dense: false,
+              isThreeLine: false,
+              onTap: () async {
+                // navigate to profile page
+                router.navigateTo(
+                  context,
+                  RouteNames.profile(
+                      uid: initState.currentUser.uid,
+                      isArtist: initState.isArtist),
+                  replace: false,
+                  transition: TransitionType.inFromRight,
+                );
+              },
+              leading: CircleAvatar(
+                backgroundColor: primaryColor,
+                radius: 30.0,
+                backgroundImage: !StringUtils.isNullOrEmpty(
+                        initState.currentUser.photoUrl)
                     ? CachedNetworkImageProvider(initState.currentUser.photoUrl)
                     : MemoryImage(kTransparentImage),
-          ),
-          title: Text(
-            initState.currentUser.displayName,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
-              fontWeight: FontWeight.w600,
+              ),
+              title: Text(
+                initState.currentUser.displayName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Text(
+                initState.currentUser.email,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
             ),
-          ),
-          subtitle: Text(
-            initState.currentUser.email,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w300,
+            // TODO: fete score
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 90.0),
+              leading: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "0",
+                    style: TextStyle(fontSize: 50.0, color: Color(0xFFF0F0F0)),
+                  ),
+                  SizedBox(width: 5.0),
+                  Icon(Icons.arrow_upward, color: Colors.green, size: 24.0),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -184,7 +205,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     return new Transform(
       transform: new Matrix4.translationValues(
         0.0,
-        200.0,
+        240.0,
         0.0,
       ),
       child: Column(

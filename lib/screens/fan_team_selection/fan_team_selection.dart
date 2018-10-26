@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
@@ -419,19 +417,19 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
     );
   }
 
-  Future<Uint8List> _loadImageBytes(String url) async {
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      }
-      return null;
-    } on Exception catch (e) {
-      // image failed to load
-      // TODO: handle better
-      return null;
-    }
-  }
+//  Future<Uint8List> _loadImageBytes(String url) async {
+//    try {
+//      final response = await http.get(url);
+//      if (response.statusCode == 200) {
+//        return response.bodyBytes;
+//      }
+//      return null;
+//    } on Exception catch (e) {
+//      // image failed to load
+//      // TODO: handle better
+//      return null;
+//    }
+//  }
 }
 
 class RandomGradientImage extends StatelessWidget {

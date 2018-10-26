@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="56b0bc87-aa28-481f-87aa-7815205e17af" name="Default" comment="- Refactored routes to separate file">
-      <change afterPath="$PROJECT_DIR$/lib/utils/upload_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/auth.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/auth.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/bloc/user_signup_profile_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/bloc/user_signup_profile_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main_dev.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main_dev.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/fan.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/fan.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/pending_verification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/pending_verification.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/profile/profile_screen_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/profile/profile_screen_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/signup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/signup.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/user_signup_profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/user_signup_profile.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widget/modal.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widget/modal.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -31,16 +18,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="menu_screen.dart" pinned="false" current-in-tab="false">
+      <file leaf-file-name="menu_screen.dart" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="118" column="12" selection-start-line="118" selection-start-column="12" selection-end-line="118" selection-end-column="12" />
+            <state relative-caret-position="237">
+              <caret line="163" column="76" selection-start-line="163" selection-start-column="76" selection-end-line="163" selection-end-column="76" />
               <folding>
                 <element signature="e#0#64#0" expanded="true" />
-                <element signature="n#!!block;n#_AnimatedMenuListItemState#0" />
                 <element signature="n#!!block;n#_MenuListItem#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="colors.dart" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/flutter/packages/flutter/lib/src/material/colors.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="127">
+              <caret line="1752" column="29" selection-start-line="1752" selection-start-column="29" selection-end-line="1752" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -49,7 +44,7 @@
         <entry file="file://$PROJECT_DIR$/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-77">
-              <caret line="41" column="32" lean-forward="true" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+              <caret line="41" column="32" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -57,15 +52,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fan_team_selection.dart" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fan_team_selection.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="333" column="19" lean-forward="true" selection-start-line="333" selection-start-column="19" selection-end-line="333" selection-end-column="19" />
+            <state relative-caret-position="1843">
+              <caret line="128" column="18" selection-start-line="128" selection-start-column="18" selection-end-line="128" selection-end-column="18" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
-                <element signature="e#4574#6939#0" />
-                <element signature="e#6977#8239#0" />
                 <element signature="n#!!block;n#RandomGradientImage#0" />
               </folding>
             </state>
@@ -180,10 +173,10 @@
         <option value="$PROJECT_DIR$/lib/screens/pending_verification.dart" />
         <option value="$PROJECT_DIR$/lib/screens/profile/profile_screen_bloc.dart" />
         <option value="$PROJECT_DIR$/lib/bloc/user_signup_profile_bloc.dart" />
-        <option value="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" />
         <option value="$PROJECT_DIR$/lib/screens/profile/profile_screen.dart" />
         <option value="$PROJECT_DIR$/lib/widget/modal.dart" />
         <option value="$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart" />
+        <option value="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" />
       </list>
     </option>
   </component>
@@ -972,41 +965,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="118" column="12" selection-start-line="118" selection-start-column="12" selection-end-line="118" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#64#0" expanded="true" />
-            <element signature="n#!!block;n#_AnimatedMenuListItemState#0" />
-            <element signature="n#!!block;n#_MenuListItem#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/screens/profile/profile_screen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="218">
           <caret line="188" column="24" lean-forward="true" selection-start-line="188" selection-start-column="24" selection-end-line="188" selection-end-column="24" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/flutter/packages/flutter/lib/src/material/colors.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="196" column="30" lean-forward="true" selection-start-line="196" selection-start-column="30" selection-end-line="196" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-77">
-          <caret line="41" column="32" lean-forward="true" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1018,15 +982,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/flutter/packages/flutter/lib/src/material/colors.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="1752" column="29" selection-start-line="1752" selection-start-column="29" selection-end-line="1752" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="333" column="19" lean-forward="true" selection-start-line="333" selection-start-column="19" selection-end-line="333" selection-end-column="19" />
+        <state relative-caret-position="1843">
+          <caret line="128" column="18" selection-start-line="128" selection-start-column="18" selection-end-line="128" selection-end-column="18" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#4574#6939#0" />
-            <element signature="e#6977#8239#0" />
             <element signature="n#!!block;n#RandomGradientImage#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-77">
+          <caret line="41" column="32" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="163" column="76" selection-start-line="163" selection-start-column="76" selection-end-line="163" selection-end-column="76" />
+          <folding>
+            <element signature="e#0#64#0" expanded="true" />
+            <element signature="n#!!block;n#_MenuListItem#0" />
           </folding>
         </state>
       </provider>
