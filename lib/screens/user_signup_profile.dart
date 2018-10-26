@@ -5,6 +5,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
@@ -39,6 +40,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   File _displayPicture;
+  Country _selectedCountry;
 
   HudOverlay hudOverlay;
 
@@ -58,6 +60,13 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
       if (_subscriptions.isEmpty) {
         _subscriptions
             .add(_bloc.actionResult.listen(_handleProfileUpdateResult));
+      }
+    }
+    if (_selectedCountry == null) {
+      _selectedCountry =
+          Country.findByIsoCode(Localizations.localeOf(context).countryCode);
+      if (_selectedCountry != null) {
+        _bloc.countryCode.add(_selectedCountry.isoCode);
       }
     }
   }
@@ -81,20 +90,18 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).viewInsets.top + 40.0,
         ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              _buildTitleAndBackButton(),
-              SizedBox(height: 20.0),
-              _buildIntroText(),
-              SizedBox(height: 40.0),
-              _buildForm(),
-              SizedBox(height: 20.0),
-              _buildButton(),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            _buildTitleAndBackButton(),
+            SizedBox(height: 20.0),
+            _buildIntroText(),
+            SizedBox(height: 40.0),
+            _buildForm(),
+            Expanded(child: Container()),
+            _buildButton(),
+            SizedBox(height: 40.0),
+          ],
         ),
       ),
     );
@@ -187,6 +194,25 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
                 usernameFocusNode.unfocus();
               },
             ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CountryPicker(
+                  onChanged: (Country country) {
+                    setState(() => _selectedCountry = country);
+                    _bloc.countryCode.add(_selectedCountry.isoCode);
+                  },
+                  selectedCountry: _selectedCountry,
+                ),
+                SizedBox(width: 10.0),
+                Text(
+                  _selectedCountry?.name ?? "",
+                  style: TextStyle(fontSize: 14.0, color: Colors.black54),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -207,6 +233,14 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
           text: "PROCEED",
           // REGISTER
           onTap: () {
+            if (_selectedCountry == null) {
+              scaffoldKey.currentState.showSnackBar(
+                SnackBar(
+                  content: Text("Please select a country"),
+                ),
+              );
+              return;
+            }
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
               hudOverlay = HudOverlay.show(context,

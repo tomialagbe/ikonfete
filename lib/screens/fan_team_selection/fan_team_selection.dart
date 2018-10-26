@@ -20,7 +20,6 @@ import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/modal.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class FanTeamSelectionScreen extends StatefulWidget {
   /// The fan's uid
@@ -290,17 +289,18 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
           });
     } else {
       // load the team image first
-      final bytes = await _loadImageBytes(team.teamPictureUrl);
+//      final bytes = await _loadImageBytes(team.teamPictureUrl);
       hudOverlay?.close();
       // show team details
       bool ok = await showModal<bool>(
         context: context,
-        contentBackgroundColor: Colors.white,
-        padding: const EdgeInsets.all(0.0),
+        contentBackgroundColor: Colors.transparent,
+        padding: const EdgeInsets.all(10.0),
         borderRadius: BorderRadius.circular(10.0),
         child: ModalChild<bool>(
           builder: (ctx, mc) {
-            return _buildTeamDetailDialogContent(ctx, mc, team, artist, bytes);
+            return _buildTeamDetailDialogContent(
+                ctx, mc, team, artist, team.teamPictureUrl);
           },
         ),
       );
@@ -325,7 +325,7 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
   }
 
   Widget _buildTeamDetailDialogContent(BuildContext ctx, ModalChild<bool> mc,
-      Team team, Artist artist, Uint8List teamPictureBytes) {
+      Team team, Artist artist, String pictureUrl) {
     final whiteText = Colors.white.withOpacity(0.9);
     return Container(
       color: Colors.transparent,
@@ -340,7 +340,7 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
                   topRight: Radius.circular(10.0),
                 ),
                 image: DecorationImage(
-                  image: MemoryImage(teamPictureBytes ?? kTransparentImage),
+                  image: CachedNetworkImageProvider(pictureUrl),
                   fit: BoxFit.cover,
                 ),
               ),

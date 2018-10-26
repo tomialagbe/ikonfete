@@ -50,6 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File _newProfilePicture;
   EditProfileInfoResult _editProfileInfoResult;
   String _oldProfilePictureUrl;
+  String _profilePictureUrl;
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final subHeaderTextStyle = TextStyle(
@@ -92,6 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : appBloc.initState.fan.twitterId;
 
     _oldProfilePictureUrl = appBloc.initState.currentUser.photoUrl;
+    _profilePictureUrl = appBloc.initState.currentUser.photoUrl;
   }
 
   @override
@@ -218,11 +220,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               radius: 45.0,
               foregroundColor: Colors.black45,
               backgroundColor: Colors.black45,
-              backgroundImage: !StringUtils.isNullOrEmpty(
-                      appBloc.initState.currentUser.photoUrl)
-                  ? CachedNetworkImageProvider(
-                      appBloc.initState.currentUser.photoUrl)
-                  : MemoryImage(kTransparentImage),
+              backgroundImage: _newProfilePicture != null
+                  ? FileImage(_newProfilePicture)
+                  : (!StringUtils.isNullOrEmpty(_profilePictureUrl)
+                      ? CachedNetworkImageProvider(_profilePictureUrl)
+                      : MemoryImage(kTransparentImage)),
             ),
             SizedBox(width: 20.0),
             SizedBox(
@@ -251,13 +253,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontFamily: "SanFranciscoDisplay",
                     ),
                   ),
+                  SizedBox(height: 2.0),
                   widget.isArtist && !StringUtils.isNullOrEmpty(_country)
                       ? Text(
                           _country,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 16.0,
-                            color: Colors.black54,
+                            color: Colors.black45,
                             fontFamily: "SanFranciscoDisplay",
                           ),
                         )
@@ -494,7 +497,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
     if (result != null) {
-      setState(() => _editProfileInfoResult = result);
+      setState(() {
+        _editProfileInfoResult = result;
+        _newProfilePicture = result.profilePicture;
+      });
     }
   }
 
@@ -552,6 +558,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       final appBloc = BlocProvider.of<ApplicationBloc>(context);
       await appBloc.getAppInitState();
+      setState(() {});
       // profile update successful
       hudOverlay?.close();
       Navigator.pop(context);

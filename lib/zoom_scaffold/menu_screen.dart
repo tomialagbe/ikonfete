@@ -114,7 +114,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         child: ListTile(
           dense: false,
           isThreeLine: false,
-          onTap: () {
+          onTap: () async {
             // navigate to profile page
             router.navigateTo(
               context,

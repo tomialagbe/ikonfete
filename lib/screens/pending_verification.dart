@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/gestures.dart';
@@ -84,7 +85,7 @@ class _ArtistPendingVerificationScreenState
                                   !StringUtils.isNullOrEmpty(
                                       snapshot.data.first.photoUrl)
                               ? Image(
-                                  image: NetworkImage(
+                                  image: CachedNetworkImageProvider(
                                       snapshot.data.first.photoUrl),
                                   fit: BoxFit.cover,
                                 )
@@ -122,7 +123,8 @@ class _ArtistPendingVerificationScreenState
                                 radius: 45.0,
                                 backgroundImage: snapshot.hasData &&
                                         snapshot.data.first.photoUrl != null
-                                    ? NetworkImage(snapshot.data.first.photoUrl)
+                                    ? CachedNetworkImageProvider(
+                                        snapshot.data.first.photoUrl)
                                     : null,
                                 child: !snapshot.hasData ||
                                         snapshot.data.first.photoUrl == null

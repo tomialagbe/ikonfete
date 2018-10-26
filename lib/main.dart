@@ -61,9 +61,8 @@ class IkonfeteAppState extends State<IkonfeteApp> {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-//      supportedLocales: [Locale("en", ""), Locale("es", ""), Locale("pt", "")],
         supportedLocales: [
-          Locale("en", ""),
+          Locale("en", "NG"),
         ],
         onGenerateTitle: (context) {
           return AppLocalizations.of(context).title;

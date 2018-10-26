@@ -49,7 +49,7 @@ abstract class AuthApi<T> extends Api {
   }
 
   Future<bool> setupUserProfile(
-      String uid, String username, String profilePictureUrl,
+      String uid, String username, String countryCode, String profilePictureUrl,
       [bool isArtist = true]) async {
     final url = "${this.apiBaseUrl}/setup_profile";
     final headers = {"Content-Type": "application/json"};
@@ -57,6 +57,7 @@ abstract class AuthApi<T> extends Api {
       "uid": uid,
       "username": username,
       "profilePictureUrl": profilePictureUrl,
+      "countryIsoCode": countryCode,
       "isArtist": isArtist,
     };
     try {

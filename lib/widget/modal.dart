@@ -88,8 +88,10 @@ Future<T> showModal<T>({
   final modal = Modal.showModal(
     context: context,
     child: Scaffold(
+      backgroundColor: contentBackgroundColor,
       body: child.builder(context, child),
     ),
+    contentBackgroundColor: contentBackgroundColor,
     widthRatio: widthPercent,
     heightRatio: heightPercent,
     borderRadius: borderRadius,

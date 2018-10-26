@@ -8,6 +8,8 @@ class Fan extends Model<String> {
   String facebookId;
   String twitterId;
   String currentTeamId;
+  String country;
+  String countryIsoCode;
   int feteScore = 0;
 
   @override
@@ -18,6 +20,8 @@ class Fan extends Model<String> {
       ..username = json["username"]
       ..name = json["name"]
       ..email = json["email"]
+      ..country = json["country"] ?? ""
+      ..countryIsoCode = json["countryIsoCode"] ?? ""
       ..facebookId = json["facebookId"]
       ..twitterId = json["twitterId"]
       ..feteScore = json["feteScore"] ?? 0
@@ -32,6 +36,8 @@ class Fan extends Model<String> {
       "username": this.username,
       "email": this.email,
       "name": this.name,
+      "country": this.country ?? "",
+      "countryIsoCode": this.countryIsoCode ?? "",
       "facebookId": this.facebookId ?? "",
       "twitterId": this.twitterId ?? "",
       "feteScore": this.feteScore ?? 0,

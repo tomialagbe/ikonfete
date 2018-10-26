@@ -6,7 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/signup_bloc.dart';
@@ -426,7 +425,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _handleSignupResult(AuthResult result) {
     hudOverlay?.close();
-    final appBloc = BlocProvider.of<ApplicationBloc>(context);
 
     if (!result.success) {
       scaffoldKey.currentState.showSnackBar(

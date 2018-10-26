@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/profile.dart';
@@ -10,9 +9,8 @@ import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/utils/facebook_auth.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/utils/twitter_auth.dart';
+import 'package:ikonfetemobile/utils/upload_helper.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
 class EditProfileData {
   bool isArtist;
@@ -95,28 +93,18 @@ class ProfileScreenBloc extends BlocBase {
     try {
       if (data.profilePicture != null) {
         // delete the old profilePicture
+        final uploadHelper = CloudStorageUploadHelper();
         try {
           if (!StringUtils.isNullOrEmpty(data.oldProfilePictureUrl)) {
-            appConfig.firebaseStorage
-                .ref()
-                .child("profile_pictures")
-                .child(data.uid)
-                .delete();
+            uploadHelper.deleteProfilePicture(
+                appConfig.firebaseStorage, data.uid);
           }
         } on PlatformException catch (e) {} // if deletion fails, do nothing
 
         // upload a new profile picture, if one was specified
-        final imageId = Uuid().v1();
-        final fileExtension = extension(data.profilePicture.path);
-
-        StorageReference ref = appConfig.firebaseStorage
-            .ref()
-            .child("profile_pictures")
-            .child(data.uid)
-            .child("$imageId$fileExtension");
-        final uploadTask = ref.putFile(data.profilePicture, StorageMetadata());
-        final snapshot = await uploadTask.future;
-        data.profilePictureUrl = snapshot.downloadUrl.toString();
+        final uploadResult = await uploadHelper.uploadProfilePicture(
+            appConfig.firebaseStorage, data.uid, data.profilePicture);
+        data.profilePictureUrl = uploadResult.fileDownloadUrl;
       }
 
       // make call to update profile api
