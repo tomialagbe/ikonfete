@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 final inboxScreen = Screen(
-  title: "INBOX",
+  title: "Inbox",
   contentBuilder: (ctx) => InboxScreen(),
 );
 

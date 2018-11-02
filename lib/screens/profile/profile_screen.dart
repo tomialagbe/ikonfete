@@ -204,7 +204,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileInfo() {
-    final appBloc = BlocProvider.of<ApplicationBloc>(context);
     final editProfileTapHandler = TapGestureRecognizer();
     editProfileTapHandler.onTap = _editProfileInfo;
     return Padding(

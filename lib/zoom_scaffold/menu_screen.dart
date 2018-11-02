@@ -103,6 +103,17 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
   }
 
   Widget createMenuProfileDetails(MenuController menuController) {
+    switch (menuController.state) {
+      case MenuState.open:
+      case MenuState.opening:
+        titleAnimationController.forward();
+        break;
+      case MenuState.closed:
+      case MenuState.closing:
+        titleAnimationController.reverse();
+        break;
+    }
+
     final initState = BlocProvider.of<ApplicationBloc>(context).initState;
     return Transform(
       transform: Matrix4.translationValues(0.0, 100.0, 0.0),
@@ -300,7 +311,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
           color: Colors.transparent,
           child: new Stack(
             children: [
-              createMenuTitle(menuController),
+//              createMenuTitle(menuController),
               createMenuItems(menuController),
               createMenuProfileDetails(menuController),
               createLogoutMenuItem(menuController),

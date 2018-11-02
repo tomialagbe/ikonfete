@@ -2,7 +2,7 @@ import 'package:ikonfetemobile/screens/home/home.dart';
 import 'package:ikonfetemobile/screens/ikonscreen/ikons.dart';
 import 'package:ikonfetemobile/screens/inbox/inbox.dart';
 import 'package:ikonfetemobile/screens/messages.dart';
-import 'package:ikonfetemobile/screens/settings/settings.dart';
+import 'package:ikonfetemobile/screens/settings/settings_screen.dart';
 import 'package:ikonfetemobile/screens/superfans/superfans.dart';
 import 'package:ikonfetemobile/screens/team/team.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';

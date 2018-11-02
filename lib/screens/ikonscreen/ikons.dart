@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 final Screen ikonScreen = Screen(
-  title: "IKON",
+  title: "Ikon",
   contentBuilder: (ctx) {
     return IkonScreen();
   },

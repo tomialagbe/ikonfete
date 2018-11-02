@@ -29,4 +29,6 @@ class FontAwesome5Icons {
   static final exclamationTriangle =
       IconData(0xf071, fontFamily: fontFamilySolid);
   static final powerOff = IconData(0xf011, fontFamily: fontFamilySolid);
+  static final spotify = IconData(0xf1bc, fontFamily: fontFamilyBrands);
+  static final soundCloud = IconData(0xf1be, fontFamily: fontFamilyBrands);
 }

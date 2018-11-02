@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 final superfansScreen = Screen(
-  title: "SUPERFANS",
+  title: "Superfans",
   contentBuilder: (ctx) => SuperFansScreen(),
 );
 
@@ -18,7 +18,7 @@ class _SuperFansScreenState extends State<SuperFansScreen> {
       width: double.infinity,
       height: double.infinity,
       child: Center(
-        child: Text("SUPERFANS"),
+        child: Text("Superfans"),
       ),
     );
   }
