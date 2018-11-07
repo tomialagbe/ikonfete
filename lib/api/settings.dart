@@ -38,7 +38,7 @@ class SettingsApi extends Api {
       };
       final body = settings.toJson();
       http.Response response =
-          await http.put(url, headers: headers, body: body);
+          await http.put(url, headers: headers, body: json.encode(body));
       switch (response.statusCode) {
         case 200:
           Map data = json.decode(response.body);

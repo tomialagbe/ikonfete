@@ -1,12 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
-
-final artistHomeScreen = Screen(
-  title: "HOME",
-  contentBuilder: (BuildContext context) {
-    return ArtistHomeScreen();
-  },
-);
 
 class ArtistHomeScreen extends StatefulWidget {
   @override

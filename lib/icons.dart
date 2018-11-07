@@ -31,4 +31,9 @@ class FontAwesome5Icons {
   static final powerOff = IconData(0xf011, fontFamily: fontFamilySolid);
   static final spotify = IconData(0xf1bc, fontFamily: fontFamilyBrands);
   static final soundCloud = IconData(0xf1be, fontFamily: fontFamilyBrands);
+  static final comment = IconData(0xf075, fontFamily: fontFamilySolid);
+  static final stream = IconData(0xf550, fontFamily: fontFamilySolid);
+  static final play = IconData(0xf04b, fontFamily: fontFamilySolid);
+  static final angleLeft = IconData(0xf104, fontFamily: fontFamilySolid);
+  static final plus = IconData(0xf067, fontFamily: fontFamilySolid);
 }

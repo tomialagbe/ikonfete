@@ -1,10 +1,12 @@
+import 'package:flutter/widgets.dart';
 import 'package:ikonfetemobile/screens/home/home.dart';
-import 'package:ikonfetemobile/screens/ikonscreen/ikons.dart';
-import 'package:ikonfetemobile/screens/inbox/inbox.dart';
-import 'package:ikonfetemobile/screens/messages.dart';
+import 'package:ikonfetemobile/screens/ikonscreen/ikon_screen.dart';
+import 'package:ikonfetemobile/screens/messages/inbox.dart';
+import 'package:ikonfetemobile/screens/messages/messages.dart';
 import 'package:ikonfetemobile/screens/settings/settings_screen.dart';
 import 'package:ikonfetemobile/screens/superfans/superfans.dart';
 import 'package:ikonfetemobile/screens/team/team.dart';
+import 'package:ikonfetemobile/zoom_scaffold/menu_ids.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 import 'package:meta/meta.dart';
 
@@ -37,28 +39,25 @@ class MenuItem {
 
 Map<MenuItem, Screen> zoomScaffoldMenuItems({@required bool isArtist}) {
   final menu = <MenuItem, Screen>{};
-  menu[MenuItem(id: 'home', title: 'Home', isDefault: true)] =
+  menu[MenuItem(id: MenuIDs.home, title: 'Home', isDefault: true)] =
       homeScreen(isArtist: isArtist);
-  menu[MenuItem(id: 'superfans', title: 'Super Fans')] = superfansScreen;
+  menu[MenuItem(id: MenuIDs.superFans, title: 'Super Fans')] = superfansScreen;
 
   // artist menu
   if (isArtist) {
-    menu[MenuItem(id: 'team', title: 'Team')] = teamScreen;
-    menu[MenuItem(id: 'messages', title: 'Messages')] = messagesScreen;
+    menu[MenuItem(id: MenuIDs.team, title: 'Team')] = teamScreen;
+    menu[MenuItem(id: MenuIDs.inbox, title: 'Inbox')] = inboxScreen;
   } else {
     // fan menu
-    menu[MenuItem(id: 'ikon', title: 'Ikon')] = ikonScreen;
-    menu[MenuItem(id: 'inbox', title: 'Inbox')] = inboxScreen;
+    menu[MenuItem(id: MenuIDs.ikon, title: 'Ikon')] = ikonScreen;
+    menu[MenuItem(id: MenuIDs.messages, title: 'Messages')] = messagesScreen;
   }
 
-  menu[MenuItem(id: 'settings', title: 'Settings')] = settingsScreen;
+  menu[MenuItem(id: MenuIDs.settings, title: 'Settings')] = settingsScreen;
   return menu;
 }
 
-Screen zoomScaffoldScreen(
-  String menuItemId, {
-  @required bool isArtist,
-}) {
+Screen getZoomScaffoldScreen(String menuItemId, {@required bool isArtist}) {
   final menuItems = zoomScaffoldMenuItems(isArtist: isArtist);
   var menuItem =
       menuItems.keys.firstWhere((item) => item.id == menuItemId, orElse: null);

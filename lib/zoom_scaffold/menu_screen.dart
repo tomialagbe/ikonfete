@@ -155,7 +155,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                 ),
               ),
               subtitle: Text(
-                initState.currentUser.email,
+                initState.isArtist
+                    ? "@${initState.artist.username}"
+                    : "@${initState.fan.username}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.0,
@@ -163,7 +165,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            // TODO: fete score
+            // fete score
             ListTile(
               contentPadding: const EdgeInsets.only(left: 90.0),
               leading: Row(
@@ -171,7 +173,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "0",
+                    initState.isArtist
+                        ? initState.artist.feteScore.toString()
+                        : initState.fan.feteScore.toString(),
                     style: TextStyle(fontSize: 50.0, color: Color(0xFFF0F0F0)),
                   ),
                   SizedBox(width: 5.0),

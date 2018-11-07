@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:country_code_picker/celement.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
@@ -40,7 +41,9 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   File _displayPicture;
-  Country _selectedCountry;
+
+//  Country _selectedCountry;
+  CElement _selectedCountry;
 
   HudOverlay hudOverlay;
 
@@ -63,11 +66,11 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
       }
     }
     if (_selectedCountry == null) {
-      _selectedCountry =
-          Country.findByIsoCode(Localizations.localeOf(context).countryCode);
-      if (_selectedCountry != null) {
-        _bloc.countryCode.add(_selectedCountry.isoCode);
-      }
+//      _selectedCountry =
+//          Country.findByIsoCode(Localizations.localeOf(context).countryCode);
+//      if (_selectedCountry != null) {
+//        _bloc.countryCode.add(_selectedCountry.isoCode);
+//      }
     }
   }
 
@@ -196,16 +199,23 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
             ),
             SizedBox(height: 20.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CountryPicker(
-                  onChanged: (Country country) {
-                    setState(() => _selectedCountry = country);
-                    _bloc.countryCode.add(_selectedCountry.isoCode);
+                CountryCodePicker(
+                  onChanged: (newCountry) {
+                    setState(() => _selectedCountry = newCountry);
                   },
-                  selectedCountry: _selectedCountry,
+                  padding: EdgeInsets.all(10.0),
+                  textStyle: TextStyle(color: Colors.black54),
                 ),
+//                CountryPicker(
+//                  onChanged: (Country country) {
+//                    setState(() => _selectedCountry = country);
+//                    _bloc.countryCode.add(_selectedCountry.isoCode);
+//                  },
+//                  selectedCountry: _selectedCountry,
+//                ),
                 SizedBox(width: 10.0),
                 Text(
                   _selectedCountry?.name ?? "",

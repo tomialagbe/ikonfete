@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:country_code_picker/celement.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/screens/profile/profile_picture_chooser.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
@@ -30,7 +31,9 @@ class EditProfileInfoScreen extends StatefulWidget {
 
 class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
   File _selectedImage;
-  Country _selectedCountry;
+
+//  Country _selectedCountry;
+  CElement _selectedCountry;
 
   TextEditingController _displayNameController;
 
@@ -116,15 +119,22 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CountryPicker(
-                  onChanged: (Country newCountry) {
+                CountryCodePicker(
+                  onChanged: (newCountry) {
                     setState(() => _selectedCountry = newCountry);
                   },
-                  selectedCountry: _selectedCountry ?? Country.NG,
+                  padding: EdgeInsets.all(10.0),
+                  textStyle: TextStyle(color: Colors.black54),
                 ),
+//                CountryPicker(
+//                  onChanged: (Country newCountry) {
+//                    setState(() => _selectedCountry = newCountry);
+//                  },
+//                  selectedCountry: _selectedCountry ?? Country.NG,
+//                ),
                 SizedBox(width: 10.0),
                 Text(
                   _selectedCountry?.name ?? "Nigeria",
@@ -158,7 +168,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
   void _saveChanges() {
     final result = EditProfileInfoResult()
       ..displayName = _displayNameController.value.text
-      ..countryIsoCode = _selectedCountry?.isoCode ?? null
+      ..countryIsoCode = _selectedCountry?.code ?? null
       ..profilePicture = _selectedImage ?? null;
     Navigator.of(context).pop(result);
   }

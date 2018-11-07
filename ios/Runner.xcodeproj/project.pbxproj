@@ -22,6 +22,15 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		E60ACDB7214324F700AB7738 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E60ACDB6214324F700AB7738 /* GoogleService-Info.plist */; };
+		E69389C92192CE9400D14B45 /* libDeezer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389A82192CE9300D14B45 /* libDeezer.a */; };
+		E69389CA2192CE9400D14B45 /* DZRResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E69389C82192CE9300D14B45 /* DZRResources.bundle */; };
+		E69389CC2192CF6800D14B45 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389CB2192CF6700D14B45 /* CoreAudio.framework */; };
+		E69389CE2192CF7400D14B45 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389CD2192CF7400D14B45 /* AudioToolbox.framework */; };
+		E69389D02192CF8000D14B45 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389CF2192CF8000D14B45 /* SystemConfiguration.framework */; };
+		E69389D42192CF9100D14B45 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389D22192CF9100D14B45 /* libicucore.tbd */; };
+		E69389D62192CFC700D14B45 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389D52192CFC700D14B45 /* MediaPlayer.framework */; };
+		E69389D82192D0CC00D14B45 /* DeezerApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69389D72192D0CC00D14B45 /* DeezerApi.swift */; };
+		E69389DA21932D1800D14B45 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389D921932D1700D14B45 /* SpotifyiOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,6 +67,46 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E60ACDB6214324F700AB7738 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E69389A82192CE9300D14B45 /* libDeezer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libDeezer.a; sourceTree = "<group>"; };
+		E69389AA2192CE9300D14B45 /* DZRPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRPlaylist.h; sourceTree = "<group>"; };
+		E69389AB2192CE9300D14B45 /* Deezer+Compatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Deezer+Compatibility.h"; sourceTree = "<group>"; };
+		E69389AC2192CE9300D14B45 /* DeezerConnect+Compatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DeezerConnect+Compatibility.h"; sourceTree = "<group>"; };
+		E69389AD2192CE9300D14B45 /* DeezerRequestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeezerRequestDelegate.h; sourceTree = "<group>"; };
+		E69389AE2192CE9300D14B45 /* DZRPodcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRPodcast.h; sourceTree = "<group>"; };
+		E69389AF2192CE9300D14B45 /* DZRArtist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRArtist.h; sourceTree = "<group>"; };
+		E69389B02192CE9300D14B45 /* DZREpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZREpisode.h; sourceTree = "<group>"; };
+		E69389B12192CE9300D14B45 /* DZRPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRPlayer.h; sourceTree = "<group>"; };
+		E69389B22192CE9300D14B45 /* NSBundle+DZRBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+DZRBundle.h"; sourceTree = "<group>"; };
+		E69389B32192CE9300D14B45 /* DZRObject+Compatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DZRObject+Compatibility.h"; sourceTree = "<group>"; };
+		E69389B42192CE9300D14B45 /* DZRGenericCancelable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRGenericCancelable.h; sourceTree = "<group>"; };
+		E69389B52192CE9300D14B45 /* DZRModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRModel.h; sourceTree = "<group>"; };
+		E69389B62192CE9300D14B45 /* DZRCancelable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRCancelable.h; sourceTree = "<group>"; };
+		E69389B72192CE9300D14B45 /* DZRObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRObject.h; sourceTree = "<group>"; };
+		E69389B82192CE9300D14B45 /* DZRNetworkRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRNetworkRequest.h; sourceTree = "<group>"; };
+		E69389B92192CE9300D14B45 /* DZRManagedRadio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRManagedRadio.h; sourceTree = "<group>"; };
+		E69389BA2192CE9300D14B45 /* NSError+DZRPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+DZRPlayer.h"; sourceTree = "<group>"; };
+		E69389BB2192CE9300D14B45 /* DZRRequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRRequestManager.h; sourceTree = "<group>"; };
+		E69389BC2192CE9300D14B45 /* DZRRadio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRRadio.h; sourceTree = "<group>"; };
+		E69389BD2192CE9300D14B45 /* DZRUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRUser.h; sourceTree = "<group>"; };
+		E69389BE2192CE9300D14B45 /* DZRTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRTrack.h; sourceTree = "<group>"; };
+		E69389BF2192CE9300D14B45 /* DZRFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRFolder.h; sourceTree = "<group>"; };
+		E69389C02192CE9300D14B45 /* DZRPlayableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRPlayableArray.h; sourceTree = "<group>"; };
+		E69389C12192CE9300D14B45 /* DZRComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRComment.h; sourceTree = "<group>"; };
+		E69389C22192CE9300D14B45 /* DeezerConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeezerConnect.h; sourceTree = "<group>"; };
+		E69389C32192CE9300D14B45 /* DZRGenre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRGenre.h; sourceTree = "<group>"; };
+		E69389C42192CE9300D14B45 /* NSError+DZRModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+DZRModel.h"; sourceTree = "<group>"; };
+		E69389C52192CE9300D14B45 /* DZRAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRAlbum.h; sourceTree = "<group>"; };
+		E69389C62192CE9300D14B45 /* DZREditorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZREditorial.h; sourceTree = "<group>"; };
+		E69389C72192CE9300D14B45 /* DZRObjectList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRObjectList.h; sourceTree = "<group>"; };
+		E69389C82192CE9300D14B45 /* DZRResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DZRResources.bundle; sourceTree = "<group>"; };
+		E69389CB2192CF6700D14B45 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		E69389CD2192CF7400D14B45 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		E69389CF2192CF8000D14B45 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E69389D12192CF9100D14B45 /* libicucore.A.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.A.tbd; path = usr/lib/libicucore.A.tbd; sourceTree = SDKROOT; };
+		E69389D22192CF9100D14B45 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
+		E69389D52192CFC700D14B45 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		E69389D72192D0CC00D14B45 /* DeezerApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeezerApi.swift; sourceTree = "<group>"; };
+		E69389D921932D1700D14B45 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyiOS.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +114,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E69389D62192CFC700D14B45 /* MediaPlayer.framework in Frameworks */,
+				E69389D42192CF9100D14B45 /* libicucore.tbd in Frameworks */,
+				E69389D02192CF8000D14B45 /* SystemConfiguration.framework in Frameworks */,
+				E69389CE2192CF7400D14B45 /* AudioToolbox.framework in Frameworks */,
+				E69389CC2192CF6800D14B45 /* CoreAudio.framework in Frameworks */,
+				E69389DA21932D1800D14B45 /* SpotifyiOS.framework in Frameworks */,
+				E69389C92192CE9400D14B45 /* libDeezer.a in Frameworks */,
 				9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */,
 				3B80C3941E831B6300D905FE /* App.framework in Frameworks */,
 				1A49C722CE629F8678D5AE11 /* libPods-Runner.a in Frameworks */,
@@ -91,6 +147,8 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				E69389D921932D1700D14B45 /* SpotifyiOS.framework */,
+				E69389A72192CE9300D14B45 /* DeezerSDK */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -120,6 +178,7 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				E69389D72192D0CC00D14B45 /* DeezerApi.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -141,9 +200,62 @@
 		9EAB7BAD67DC08C3E398A834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E69389D52192CFC700D14B45 /* MediaPlayer.framework */,
+				E69389D12192CF9100D14B45 /* libicucore.A.tbd */,
+				E69389D22192CF9100D14B45 /* libicucore.tbd */,
+				E69389CF2192CF8000D14B45 /* SystemConfiguration.framework */,
+				E69389CD2192CF7400D14B45 /* AudioToolbox.framework */,
+				E69389CB2192CF6700D14B45 /* CoreAudio.framework */,
 				0CEA74E31CAC4F3F8AD52B0B /* libPods-Runner.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E69389A72192CE9300D14B45 /* DeezerSDK */ = {
+			isa = PBXGroup;
+			children = (
+				E69389A82192CE9300D14B45 /* libDeezer.a */,
+				E69389A92192CE9300D14B45 /* include */,
+				E69389C82192CE9300D14B45 /* DZRResources.bundle */,
+			);
+			path = DeezerSDK;
+			sourceTree = "<group>";
+		};
+		E69389A92192CE9300D14B45 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				E69389AA2192CE9300D14B45 /* DZRPlaylist.h */,
+				E69389AB2192CE9300D14B45 /* Deezer+Compatibility.h */,
+				E69389AC2192CE9300D14B45 /* DeezerConnect+Compatibility.h */,
+				E69389AD2192CE9300D14B45 /* DeezerRequestDelegate.h */,
+				E69389AE2192CE9300D14B45 /* DZRPodcast.h */,
+				E69389AF2192CE9300D14B45 /* DZRArtist.h */,
+				E69389B02192CE9300D14B45 /* DZREpisode.h */,
+				E69389B12192CE9300D14B45 /* DZRPlayer.h */,
+				E69389B22192CE9300D14B45 /* NSBundle+DZRBundle.h */,
+				E69389B32192CE9300D14B45 /* DZRObject+Compatibility.h */,
+				E69389B42192CE9300D14B45 /* DZRGenericCancelable.h */,
+				E69389B52192CE9300D14B45 /* DZRModel.h */,
+				E69389B62192CE9300D14B45 /* DZRCancelable.h */,
+				E69389B72192CE9300D14B45 /* DZRObject.h */,
+				E69389B82192CE9300D14B45 /* DZRNetworkRequest.h */,
+				E69389B92192CE9300D14B45 /* DZRManagedRadio.h */,
+				E69389BA2192CE9300D14B45 /* NSError+DZRPlayer.h */,
+				E69389BB2192CE9300D14B45 /* DZRRequestManager.h */,
+				E69389BC2192CE9300D14B45 /* DZRRadio.h */,
+				E69389BD2192CE9300D14B45 /* DZRUser.h */,
+				E69389BE2192CE9300D14B45 /* DZRTrack.h */,
+				E69389BF2192CE9300D14B45 /* DZRFolder.h */,
+				E69389C02192CE9300D14B45 /* DZRPlayableArray.h */,
+				E69389C12192CE9300D14B45 /* DZRComment.h */,
+				E69389C22192CE9300D14B45 /* DeezerConnect.h */,
+				E69389C32192CE9300D14B45 /* DZRGenre.h */,
+				E69389C42192CE9300D14B45 /* NSError+DZRModel.h */,
+				E69389C52192CE9300D14B45 /* DZRAlbum.h */,
+				E69389C62192CE9300D14B45 /* DZREditorial.h */,
+				E69389C72192CE9300D14B45 /* DZRObjectList.h */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,6 +325,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				E60ACDB7214324F700AB7738 /* GoogleService-Info.plist in Resources */,
+				E69389CA2192CE9400D14B45 /* DZRResources.bundle in Resources */,
 				9740EEB51CF90195004384FC /* Generated.xcconfig in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
@@ -320,6 +433,7 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				E69389D82192D0CC00D14B45 /* DeezerApi.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,12 +574,111 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)/DeezerSDK",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"Bolts\"",
+					"-l\"BoringSSL\"",
+					"-l\"FBSDKCoreKit\"",
+					"-l\"FBSDKLoginKit\"",
+					"-l\"FirebaseAuth\"",
+					"-l\"FirebaseCore\"",
+					"-l\"FirebaseStorage\"",
+					"-l\"GTMSessionFetcher\"",
+					"-l\"GoogleUtilities\"",
+					"-l\"Protobuf\"",
+					"-l\"c++\"",
+					"-l\"firebase_auth\"",
+					"-l\"firebase_core\"",
+					"-l\"firebase_storage\"",
+					"-l\"flutter_facebook_login\"",
+					"-l\"flutter_twitter_login\"",
+					"-l\"flutter_webview_plugin\"",
+					"-l\"icucore\"",
+					"-l\"image_picker\"",
+					"-l\"nanopb\"",
+					"-l\"path_provider\"",
+					"-l\"shared_preferences\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accounts\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreData\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"Fabric\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseInstanceID\"",
+					"-framework",
+					"\"Flutter\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"MeasurementNanoPB\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"Social\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"TwitterCore\"",
+					"-framework",
+					"\"TwitterKit\"",
+					"-framework",
+					"\"UIKit\"",
+					"-weak_framework",
+					"\"Accounts\"",
+					"-weak_framework",
+					"\"AudioToolbox\"",
+					"-weak_framework",
+					"\"CoreGraphics\"",
+					"-weak_framework",
+					"\"CoreLocation\"",
+					"-weak_framework",
+					"\"Foundation\"",
+					"-weak_framework",
+					"\"QuartzCore\"",
+					"-weak_framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"Social\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikonfete.ikonfetemobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -489,12 +702,111 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)/DeezerSDK",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"Bolts\"",
+					"-l\"BoringSSL\"",
+					"-l\"FBSDKCoreKit\"",
+					"-l\"FBSDKLoginKit\"",
+					"-l\"FirebaseAuth\"",
+					"-l\"FirebaseCore\"",
+					"-l\"FirebaseStorage\"",
+					"-l\"GTMSessionFetcher\"",
+					"-l\"GoogleUtilities\"",
+					"-l\"Protobuf\"",
+					"-l\"c++\"",
+					"-l\"firebase_auth\"",
+					"-l\"firebase_core\"",
+					"-l\"firebase_storage\"",
+					"-l\"flutter_facebook_login\"",
+					"-l\"flutter_twitter_login\"",
+					"-l\"flutter_webview_plugin\"",
+					"-l\"icucore\"",
+					"-l\"image_picker\"",
+					"-l\"nanopb\"",
+					"-l\"path_provider\"",
+					"-l\"shared_preferences\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accounts\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreData\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"Fabric\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseInstanceID\"",
+					"-framework",
+					"\"Flutter\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"MeasurementNanoPB\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"Social\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"TwitterCore\"",
+					"-framework",
+					"\"TwitterKit\"",
+					"-framework",
+					"\"UIKit\"",
+					"-weak_framework",
+					"\"Accounts\"",
+					"-weak_framework",
+					"\"AudioToolbox\"",
+					"-weak_framework",
+					"\"CoreGraphics\"",
+					"-weak_framework",
+					"\"CoreLocation\"",
+					"-weak_framework",
+					"\"Foundation\"",
+					"-weak_framework",
+					"\"QuartzCore\"",
+					"-weak_framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"Social\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikonfete.ikonfetemobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";

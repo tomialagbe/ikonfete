@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/artist.dart';
+import 'package:ikonfetemobile/api/teams.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/model/artist.dart';
@@ -67,13 +68,13 @@ class FanTeamSelectionBloc extends BlocBase {
   }
 
   void _searchArtistTeams(String query) async {
-    final artistApi = ArtistApi(appConfig.serverBaseUrl);
+    final teamApi = TeamApi(appConfig.serverBaseUrl);
     List<Team> teams;
     try {
       if (query.trim().isEmpty) {
-        teams = await artistApi.getTeams(1, 20);
+        teams = await teamApi.getTeams(1, 20);
       } else {
-        teams = await artistApi.searchTeams(query, 1, 20);
+        teams = await teamApi.searchTeams(query, 1, 20);
       }
       _searchArtistTeamResultController.add(teams);
     } on ApiException catch (e) {
@@ -92,9 +93,9 @@ class FanTeamSelectionBloc extends BlocBase {
   }
 
   void _addFanToTeam(String teamId, String fanId) async {
-    final artistApi = ArtistApi(appConfig.serverBaseUrl);
+    final teamApi = TeamApi(appConfig.serverBaseUrl);
     try {
-      final success = await artistApi.addFanToTeam(teamId, fanId);
+      final success = await teamApi.addFanToTeam(teamId, fanId);
       _addFanToTeamResultController.add(success);
     } on ApiException catch (e) {
       _addFanToTeamResultController.addError(e.message);

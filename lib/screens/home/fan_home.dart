@@ -4,14 +4,6 @@ import 'package:ikonfetemobile/widget/album_art.dart';
 import 'package:ikonfetemobile/widget/artist_event.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 import 'package:ikonfetemobile/widget/post_cards.dart';
-import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
-
-final fanHomeScreen = Screen(
-  title: "HOME",
-  contentBuilder: (BuildContext context) {
-    return FanHomeScreen();
-  },
-);
 
 class FanHomeScreen extends StatefulWidget {
   @override

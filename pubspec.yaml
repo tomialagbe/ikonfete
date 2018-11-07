@@ -36,7 +36,9 @@ dependencies:
   flutter_svg:
   transparent_image:
   cached_network_image:
-  flutter_country_picker: ^0.1.0
+#  flutter_country_picker: ^0.1.0
+  country_code_picker:
+  mime: ^0.9.6+2
 
 
 dev_dependencies:

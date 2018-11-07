@@ -15,10 +15,10 @@ class ZoomScaffoldScreen extends StatefulWidget {
   });
 
   @override
-  _ZoomScaffoldScreenState createState() => _ZoomScaffoldScreenState();
+  ZoomScaffoldScreenState createState() => ZoomScaffoldScreenState();
 }
 
-class _ZoomScaffoldScreenState extends State<ZoomScaffoldScreen> {
+class ZoomScaffoldScreenState extends State<ZoomScaffoldScreen> {
   String selectedMenuItemId;
   Screen activeScreen;
 
@@ -35,14 +35,27 @@ class _ZoomScaffoldScreenState extends State<ZoomScaffoldScreen> {
       menuScreen: MenuScreen(
         menu: zoomScaffoldMenu(isArtist: widget.isArtist),
         selectedItemId: selectedMenuItemId,
-        onMenuItemSelected: (String itemId) {
-          selectedMenuItemId = itemId;
-          final screen =
-              zoomScaffoldScreen(selectedMenuItemId, isArtist: widget.isArtist);
-          setState(() => activeScreen = screen);
-        },
+        onMenuItemSelected: _onMenuItemSelected,
       ),
       contentScreen: activeScreen,
     );
+  }
+
+  void _onMenuItemSelected(String itemId) {
+    selectedMenuItemId = itemId;
+    final screen =
+        getZoomScaffoldScreen(selectedMenuItemId, isArtist: widget.isArtist);
+    setState(() => activeScreen = screen);
+  }
+
+  void changeActiveScreen(String newScreenId) {
+    _onMenuItemSelected(newScreenId);
+  }
+}
+
+class ZoomScaffoldStateTypeMatcher extends TypeMatcher {
+  @override
+  bool check(dynamic object) {
+    return object is ZoomScaffoldScreenState;
   }
 }

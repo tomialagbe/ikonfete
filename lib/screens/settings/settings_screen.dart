@@ -17,7 +17,9 @@ import 'package:ikonfetemobile/streaming/spotify/spotify_auth_bloc.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
+import 'package:ikonfetemobile/zoom_scaffold/menu_ids.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
+import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 
 final Screen settingsScreen = Screen(
   title: "Settings",
@@ -253,6 +255,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             setState(() => _spotifyEnabled = val);
             if (val) {
               _bloc.spotifyAuthBloc.authorizeSpotify();
+            } else if (_settings != null) {
+              _settings.spotifyUserId = "";
             }
           },
           activeColor: primaryColor,
@@ -286,6 +290,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             setState(() => _deezerEnabled = val);
             if (val) {
               _bloc.deezerAuthBloc.authorizeDeezer();
+            } else if (_settings != null) {
+              _settings.deezerUserId = "";
             }
           },
           activeColor: primaryColor,
@@ -400,7 +406,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void _handleSaveSettingsResult(Settings settings) {}
+  void _handleSaveSettingsResult(Settings settings) {
+    hudOverlay?.close();
+    ZoomScaffoldScreenState zoomScaffoldScreenState =
+        context.ancestorStateOfType(ZoomScaffoldStateTypeMatcher());
+    zoomScaffoldScreenState.changeActiveScreen(MenuIDs.home);
+  }
 
   void _showErrorSnackBar(Object errMessage) {
     scaffoldKey.currentState.showSnackBar(SnackBar(
