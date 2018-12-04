@@ -5,6 +5,7 @@ class ThemifyIcons {
   static final facebook = IconData(0xe741, fontFamily: fontFamily);
   static final close = IconData(0xe646, fontFamily: fontFamily);
   static final twitter = IconData(0xe74b, fontFamily: fontFamily);
+  static final check = IconData(0xe64c, fontFamily: fontFamily);
 }
 
 class LineAwesomeIcons {
@@ -13,6 +14,9 @@ class LineAwesomeIcons {
   static final playCircle = IconData(0xf2bf, fontFamily: fontFamily);
   static final signOut = IconData(0xf2fc, fontFamily: fontFamily);
   static final times = IconData(0xf342, fontFamily: fontFamily);
+  static final paperclip = IconData(0xf2aa, fontFamily: fontFamily);
+  static final check = IconData(0xf17b, fontFamily: fontFamily);
+  static final retweet = IconData(0xf2dc, fontFamily: fontFamily);
 }
 
 class FontAwesome5Icons {
@@ -36,4 +40,11 @@ class FontAwesome5Icons {
   static final play = IconData(0xf04b, fontFamily: fontFamilySolid);
   static final angleLeft = IconData(0xf104, fontFamily: fontFamilySolid);
   static final plus = IconData(0xf067, fontFamily: fontFamilySolid);
+  static final pencilAlt = IconData(0xf303, fontFamily: fontFamilySolid);
+  static final check = IconData(0xf00c, fontFamily: fontFamilySolid);
+  static final camera = IconData(0xf030, fontFamily: fontFamilySolid);
+  static final paperclip = IconData(0xf0c6, fontFamily: fontFamilySolid);
+  static final grinAlt = IconData(0xf581, fontFamily: fontFamilySolid);
+  static final paperPlane = IconData(0xf1d8, fontFamily: fontFamilySolid);
+  static final retweet = IconData(0xf079, fontFamily: fontFamilySolid);
 }

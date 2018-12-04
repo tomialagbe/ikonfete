@@ -16,6 +16,12 @@ class ZoomScaffoldScreen extends StatefulWidget {
 
   @override
   ZoomScaffoldScreenState createState() => ZoomScaffoldScreenState();
+
+  static ZoomScaffoldScreenState getState(BuildContext context) {
+    ZoomScaffoldScreenState zoomScaffoldScreenState =
+        context.ancestorStateOfType(ZoomScaffoldStateTypeMatcher());
+    return zoomScaffoldScreenState;
+  }
 }
 
 class ZoomScaffoldScreenState extends State<ZoomScaffoldScreen> {

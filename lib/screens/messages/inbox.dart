@@ -1,15 +1,24 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
+import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/screens/messages/chat_bloc.dart';
 import 'package:ikonfetemobile/screens/messages/inbox_bloc.dart';
+import 'package:ikonfetemobile/screens/messages/message_recipient_selector.dart';
+import 'package:ikonfetemobile/screens/messages/messages.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 // artists get an inbox
 final inboxScreen = Screen(
   title: "Inbox",
   contentBuilder: (ctx) => BlocProvider<InboxBloc>(
-        bloc: InboxBloc(),
+        bloc: InboxBloc(appConfig: AppConfig.of(ctx)),
         child: InboxScreen(),
       ),
 );
@@ -20,6 +29,32 @@ class InboxScreen extends StatefulWidget {
 }
 
 class _InboxScreenState extends State<InboxScreen> {
+  String artistUid;
+  InboxBloc _bloc;
+  List<StreamSubscription> _subscriptions = <StreamSubscription>[];
+
+  @override
+  void initState() {
+    super.initState();
+    artistUid =
+        BlocProvider.of<ApplicationBloc>(context).initState.currentUser.uid;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bloc == null) {
+      _bloc = BlocProvider.of<InboxBloc>(context);
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((s) => s.cancel());
+    _subscriptions.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,14 +71,33 @@ class _InboxScreenState extends State<InboxScreen> {
         backgroundColor: primaryColor,
         tooltip: "New Message",
         child: Icon(
-          FontAwesome5Icons.plus,
-          size: 20.0,
+          FontAwesome5Icons.pencilAlt,
+          size: 25.0,
         ),
       ),
     );
   }
 
-  void _newMessage() {
-    // TODO: show selection dialog
+  void _newMessage() async {
+    final messageRecipient = await Navigator.push<Fan>(
+      context,
+      CupertinoPageRoute(
+          builder: (ctx) => MessageRecipientSelector(
+                inboxBloc: _bloc,
+                artistUid: artistUid,
+              )),
+    );
+
+    if (messageRecipient != null) {
+      final appConfig = AppConfig.of(context);
+      Navigator.push(
+          context,
+          CupertinoPageRoute(
+              builder: (ctx) => BlocProvider<ChatBloc>(
+                    bloc: ChatBloc(appConfig: appConfig),
+                    child: MessagesScreen(
+                        isArtist: true, recipient: messageRecipient),
+                  )));
+    }
   }
 }

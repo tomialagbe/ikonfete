@@ -66,9 +66,9 @@ public class SpotifyChannels {
     }
 
     public void handleAuthResponse(AuthenticationResponse response) {
+        Map<String, Object> resultMap = new HashMap<>();
         if (response.getType() == AuthenticationResponse.Type.TOKEN) {
             if (loginResultHandler != null) {
-                Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("success", true);
                 resultMap.put("access_token", response.getAccessToken());
                 loginResultHandler.success(resultMap);
@@ -86,6 +86,15 @@ public class SpotifyChannels {
                     Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
                 }
             });
+        } else if (response.getType() == AuthenticationResponse.Type.ERROR){
+            resultMap.put("success", false);
+            resultMap.put("cancelled", false);
+            resultMap.put("error", response.getError());
+            loginResultHandler.success(resultMap);
+        } else if (response.getType() == AuthenticationResponse.Type.EMPTY) {
+            resultMap.put("success", false);
+            resultMap.put("cancelled", true);
+            loginResultHandler.success(resultMap);
         }
     }
 }

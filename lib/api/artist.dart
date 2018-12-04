@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/model/team.dart';
 
 class ArtistApi extends Api {
   ArtistApi(String apiBaseUrl) : super(apiBaseUrl);
@@ -43,6 +44,26 @@ class ArtistApi extends Api {
         case 200:
           Map data = json.decode(response.body);
           return data["success"];
+        default:
+          final err = ApiError()..fromJson(json.decode(response.body));
+          throw ApiException(err.error);
+      }
+    } on PlatformException catch (e) {
+      throw ApiException(e.message);
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<Team> getArtistTeam(String artistUID) async {
+    artistUID = Uri.encodeComponent(artistUID);
+    final url = "$apiBaseUrl/artists/$artistUID/team";
+    try {
+      final response = await http.get(url);
+      switch (response.statusCode) {
+        case 200:
+          final map = json.decode(response.body);
+          return Team()..fromJson(map["result"]);
         default:
           final err = ApiError()..fromJson(json.decode(response.body));
           throw ApiException(err.error);

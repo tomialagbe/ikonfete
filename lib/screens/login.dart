@@ -369,7 +369,14 @@ class _LoginScreenState extends State<LoginScreen> {
             result.isFan || (result.isArtist && result.artist.isVerified);
         bool isProfileSetup =
             isAccountVerified && appBloc.initState.isProfileSetup;
-        if (!isAccountVerified) {
+        if (!isProfileSetup) {
+          // profile has not been set up
+          router.navigateTo(
+            context,
+            RouteNames.signupProfile(
+                isArtist: result.isArtist, uid: result.firebaseUser.uid),
+          );
+        } else if (!isAccountVerified) {
           if (result.artist.isPendingVerification) {
             router.navigateTo(
               context,
@@ -385,13 +392,6 @@ class _LoginScreenState extends State<LoginScreen> {
               transition: TransitionType.inFromRight,
             );
           }
-        } else if (!isProfileSetup) {
-          // profile has not been setup
-          router.navigateTo(
-            context,
-            RouteNames.signupProfile(
-                isArtist: result.isArtist, uid: result.firebaseUser.uid),
-          );
         } else {
           // account is verified
           String routeName = widget.isArtist

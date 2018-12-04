@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/profile.dart';
@@ -97,13 +98,13 @@ class ProfileScreenBloc extends BlocBase {
         try {
           if (!StringUtils.isNullOrEmpty(data.oldProfilePictureUrl)) {
             uploadHelper.deleteProfilePicture(
-                appConfig.firebaseStorage, data.uid);
+                FirebaseStorage.instance, data.uid);
           }
         } on PlatformException catch (e) {} // if deletion fails, do nothing
 
         // upload a new profile picture, if one was specified
         final uploadResult = await uploadHelper.uploadProfilePicture(
-            appConfig.firebaseStorage, data.uid, data.profilePicture);
+            FirebaseStorage.instance, data.uid, data.profilePicture);
         data.profilePictureUrl = uploadResult.fileDownloadUrl;
       }
 

@@ -8,6 +8,8 @@ class TwitterAuthResult {
   String errorMessage;
   String twitterUID;
   String twitterUsername;
+  String token;
+  String tokenSecret;
 
   TwitterAuthResult()
       : canceled = false,
@@ -16,14 +18,20 @@ class TwitterAuthResult {
 
 class TwitterAuth {
   final AppConfig appConfig;
+  TwitterLogin twitterLogin;
 
-  TwitterAuth({@required this.appConfig});
-
-  Future<TwitterAuthResult> twitterAuth() async {
-    final twitterLogin = TwitterLogin(
+  TwitterAuth({@required this.appConfig}) {
+    twitterLogin = TwitterLogin(
       consumerKey: appConfig.twitterConfig.consumerKey,
       consumerSecret: appConfig.twitterConfig.consumerSecret,
     );
+  }
+
+  Future<bool> isLoggedIn() {
+    return twitterLogin.isSessionActive;
+  }
+
+  Future<TwitterAuthResult> twitterAuth() async {
     await twitterLogin.logOut();
     final twitterLoginResult = await twitterLogin.authorize();
     if (twitterLoginResult.status == TwitterLoginStatus.loggedIn) {
@@ -32,7 +40,9 @@ class TwitterAuth {
         ..canceled = false
         ..success = true
         ..twitterUID = twitterLoginResult.session.userId
-        ..twitterUsername = twitterLoginResult.session.username;
+        ..twitterUsername = twitterLoginResult.session.username
+        ..tokenSecret = twitterLoginResult.session.secret
+        ..token = twitterLoginResult.session.token;
       return tresult;
     } else if (twitterLoginResult.status ==
         TwitterLoginStatus.cancelledByUser) {

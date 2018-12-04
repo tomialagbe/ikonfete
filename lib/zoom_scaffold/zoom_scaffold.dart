@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/icons.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ZoomScaffold extends StatefulWidget {
@@ -57,14 +58,16 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 menuController.toggle();
               }),
           centerTitle: true,
-          title: new Text(
-            widget.contentScreen.title,
-            style: new TextStyle(
-              fontFamily: 'bebas-neue',
-              fontSize: 25.0,
-              color: Colors.black54,
-            ),
-          ),
+          title: widget.contentScreen.hasTitle
+              ? new Text(
+                  widget.contentScreen.title,
+                  style: new TextStyle(
+                    fontFamily: 'bebas-neue',
+                    fontSize: 25.0,
+                    color: Colors.black54,
+                  ),
+                )
+              : widget.contentScreen.titleBuilder(context),
         ),
         body: widget.contentScreen.contentBuilder(context),
       ),
@@ -179,14 +182,19 @@ typedef Widget ZoomScaffoldBuilder(
 
 class Screen {
   final String title;
+  final WidgetBuilder titleBuilder;
   final DecorationImage background;
   final WidgetBuilder contentBuilder;
 
   Screen({
     this.title,
+    this.titleBuilder,
     this.background,
     this.contentBuilder,
-  });
+  })  : assert(!(title == null && titleBuilder == null)),
+        assert(!(title != null && titleBuilder != null));
+
+  bool get hasTitle => !StringUtils.isNullOrEmpty(this.title);
 }
 
 class MenuController extends ChangeNotifier {

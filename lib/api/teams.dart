@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ikonfetemobile/api/api.dart';
+import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/model/team.dart';
 
 class TeamApi extends Api {
@@ -57,7 +59,7 @@ class TeamApi extends Api {
 
   Future<List<Team>> searchTeams(String query, int page, int size) async {
     query = Uri.encodeComponent(query);
-    final url = "$apiBaseUrl/teams/search?page=$page&size=$size&query=$query";
+    final url = "$apiBaseUrl/teams/search/?page=$page&size=$size&query=$query";
     try {
       http.Response response = await http.get(url);
       switch (response.statusCode) {
@@ -91,6 +93,32 @@ class TeamApi extends Api {
         case 200:
           Map data = json.decode(response.body);
           return data["success"];
+        default:
+          final err = ApiError()..fromJson(json.decode(response.body));
+          throw ApiException(err.error);
+      }
+    } on PlatformException catch (e) {
+      throw ApiException(e.message);
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<List<Fan>> getFansInTeam(String teamId, int page, int pageSize) async {
+    teamId = Uri.encodeComponent(teamId);
+    final url = "$apiBaseUrl/teams/$teamId/fans?page=$page&size=$pageSize";
+    try {
+      final response = await http.get(url);
+      switch (response.statusCode) {
+        case 200:
+          Map data = json.decode(response.body);
+          List resultList = data["result"];
+          List<Fan> fans = <Fan>[];
+          for (var m in resultList) {
+            final fan = Fan()..fromJson(m);
+            fans.add(fan);
+          }
+          return fans;
         default:
           final err = ApiError()..fromJson(json.decode(response.body));
           throw ApiException(err.error);

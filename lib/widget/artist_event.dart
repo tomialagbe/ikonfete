@@ -10,10 +10,18 @@ class ArtistEvent extends StatelessWidget {
           alignment: Alignment.bottomLeft,
           margin: EdgeInsets.only(right: 15.0),
           padding: EdgeInsets.all(15.0),
-          height: 180.0,
+          height: 160.0,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black54,
+                blurRadius: 3.0,
+                spreadRadius: 1.0,
+                offset: Offset(0.0, 2.0),
+              ),
+            ],
             image: DecorationImage(
               fit: BoxFit.cover,
               image: AssetImage("assets/images/onboard_background1.png"),
@@ -27,7 +35,7 @@ class ArtistEvent extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 20.0,
+          height: 10.0,
         ),
         Text(
           "Concert Name",
@@ -36,6 +44,7 @@ class ArtistEvent extends StatelessWidget {
             fontSize: 20.0,
             fontFamily: "SanFranciscoDisplay",
             fontWeight: FontWeight.bold,
+            color: Color(0xAA000000),
           ),
         ),
         Text(
@@ -43,19 +52,16 @@ class ArtistEvent extends StatelessWidget {
           textAlign: TextAlign.start,
           style: TextStyle(
             color: Colors.black.withOpacity(0.64),
-            fontSize: 15.0,
+            fontSize: 14.0,
             fontFamily: "SanFranciscoDisplay",
           ),
-        ),
-        SizedBox(
-          height: 5.0,
         ),
         Text(
           "Concert Date & Time Here ",
           textAlign: TextAlign.start,
           style: TextStyle(
             color: Colors.black.withOpacity(0.64),
-            fontSize: 15.0,
+            fontSize: 14.0,
             fontFamily: "SanFranciscoDisplay",
           ),
         ),

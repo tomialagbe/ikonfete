@@ -26,14 +26,19 @@ class ProfilePictureChooser extends StatefulWidget {
 
 class ProfilePictureChooserState extends State<ProfilePictureChooser> {
   File _imageFile;
+  bool _isImageLoading = false;
 
   @override
   Widget build(BuildContext context) {
     final uploadFileTapHandler = TapGestureRecognizer();
     uploadFileTapHandler.onTap = () async {
+      setState(() => _isImageLoading = true);
       final im = await CompressedImageCapture()
           .takePicture(context, ImageSource.gallery);
-      setState(() => _imageFile = im);
+      setState(() {
+        _isImageLoading = false;
+        _imageFile = im;
+      });
       widget.onImageSelected(im);
     };
 
@@ -59,9 +64,13 @@ class ProfilePictureChooserState extends State<ProfilePictureChooser> {
       children: <Widget>[
         GestureDetector(
           onTap: () async {
+            setState(() => _isImageLoading = true);
             final im = await CompressedImageCapture()
                 .takePicture(context, ImageSource.camera);
-            setState(() => _imageFile = im);
+            setState(() {
+              _isImageLoading = false;
+              _imageFile = im;
+            });
             widget.onImageSelected(im);
           },
           child: Container(
@@ -84,6 +93,10 @@ class ProfilePictureChooserState extends State<ProfilePictureChooser> {
                   color: Colors.white,
                   size: 40.0,
                 ),
+                _isImageLoading
+                    ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(primaryColor))
+                    : Container(),
               ],
             ),
           ),

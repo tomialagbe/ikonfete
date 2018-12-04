@@ -5,6 +5,7 @@ class FacebookAuthResult {
   bool success;
   String errorMessage;
   String facebookUID;
+  String accessToken;
 
   FacebookAuthResult()
       : canceled = false,
@@ -12,9 +13,32 @@ class FacebookAuthResult {
 }
 
 class FacebookAuth {
-  Future<FacebookAuthResult> facebookAuth() async {
-    final facebookLogin = FacebookLogin();
+  static final FacebookAuth _instance = FacebookAuth._internal();
+
+  FacebookLogin facebookLogin;
+
+  factory FacebookAuth() {
+    return _instance;
+  }
+
+  FacebookAuth._internal() {
+    facebookLogin = FacebookLogin();
     facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+  }
+
+  Future<bool> isLoggedIn() {
+    return facebookLogin.isLoggedIn;
+  }
+
+  Future<String> facebookAccessToken() async {
+    if (await isLoggedIn()) {
+      final at = await facebookLogin.currentAccessToken;
+      return at.token;
+    }
+    return null;
+  }
+
+  Future<FacebookAuthResult> facebookAuth() async {
     await facebookLogin.logOut();
     final result = await facebookLogin.logInWithReadPermissions(
       [
@@ -31,6 +55,7 @@ class FacebookAuth {
       fbResult
         ..success = true
         ..canceled = false
+        ..accessToken = result.accessToken.token
         ..facebookUID = result.accessToken.userId;
       return fbResult;
     } else if (result.status == FacebookLoginStatus.cancelledByUser) {

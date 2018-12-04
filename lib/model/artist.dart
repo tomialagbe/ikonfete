@@ -22,6 +22,7 @@ class Artist extends Model<String> {
   String bio;
   String spotifyArtistId;
   String deezerArtistId;
+  String profilePictureUrl;
 
   int feteScore = 0;
 
@@ -44,7 +45,8 @@ class Artist extends Model<String> {
       ..isPendingVerification = json["isPendingVerification"] ?? false
       ..bio = json["bio"]
       ..spotifyArtistId = json["spotifyArtistId"]
-      ..deezerArtistId = json["deezerArtistId"];
+      ..deezerArtistId = json["deezerArtistId"]
+      ..profilePictureUrl = json["profilePictureUrl"] ?? "";
 
     if (json.containsKey("dateCreated") &&
         json["dateCreated"] != null &&
@@ -98,6 +100,7 @@ class Artist extends Model<String> {
       "bio": this.bio,
       "spotifyArtistId": this.spotifyArtistId ?? "",
       "deezerArtistId": this.deezerArtistId ?? "",
+      "profilePictureUrl": this.profilePictureUrl ?? "",
     });
     return map;
   }

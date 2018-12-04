@@ -1,9 +1,12 @@
 import 'dart:io';
 
-import 'package:country_code_picker/celement.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_picker_dialog.dart';
+import 'package:country_pickers/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/colors.dart';
+import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/screens/profile/profile_picture_chooser.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -12,6 +15,7 @@ class EditProfileInfoResult {
   File profilePicture;
   String displayName;
   String countryIsoCode;
+  String country;
 }
 
 class EditProfileInfoScreen extends StatefulWidget {
@@ -32,8 +36,7 @@ class EditProfileInfoScreen extends StatefulWidget {
 class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
   File _selectedImage;
 
-//  Country _selectedCountry;
-  CElement _selectedCountry;
+  Country _selectedDialogCountry;
 
   TextEditingController _displayNameController;
 
@@ -42,6 +45,40 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
     super.initState();
     _displayNameController =
         new TextEditingController(text: widget.displayName);
+    _selectedDialogCountry =
+        CountryPickerUtils.getCountryByIsoCode(widget.countryIsoCode);
+  }
+
+  Widget _buildDialogItem(Country country) {
+    return Row(
+      children: <Widget>[
+        CountryPickerUtils.getDefaultFlagImage(country),
+        SizedBox(width: 8.0),
+        Flexible(child: Text(country.name)),
+        SizedBox(width: 8.0),
+        Text("(${country.isoCode})"),
+      ],
+    );
+  }
+
+  void _showCountryPickerDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => Theme(
+            data: Theme.of(context).copyWith(primaryColor: Colors.pink),
+            child: CountryPickerDialog(
+              titlePadding: EdgeInsets.all(8.0),
+              searchCursorColor: Colors.pinkAccent,
+              searchInputDecoration: InputDecoration(hintText: 'Search...'),
+              isSearchable: true,
+              title: Text('Select your phone code'),
+              onValuePicked: (Country country) => setState(() {
+                    _selectedDialogCountry = country;
+                  }),
+              itemBuilder: _buildDialogItem,
+            ),
+          ),
+    );
   }
 
   @override
@@ -52,8 +89,8 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.black87,
+          icon: Icon(CupertinoIcons.back),
+          color: Colors.black54,
           onPressed: () {
             Navigator.pop(context);
           },
@@ -65,8 +102,8 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.check),
-            color: Colors.black87,
+            icon: Icon(LineAwesomeIcons.check),
+            color: Colors.black54,
             onPressed: _changesMade() ? _saveChanges : null,
             tooltip: "Done",
           ),
@@ -94,7 +131,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
             ),
             SizedBox(height: 40.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
@@ -104,12 +141,16 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
               ],
             ),
             SizedBox(height: 5.0),
-            LoginFormField(
-              controller: _displayNameController,
+            Padding(
+              padding: const EdgeInsets.only(left: 40.0, right: 40.0),
+              child: LoginFormField(
+                controller: _displayNameController,
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBox(height: 30.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
@@ -118,29 +159,26 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CountryCodePicker(
-                  onChanged: (newCountry) {
-                    setState(() => _selectedCountry = newCountry);
-                  },
-                  padding: EdgeInsets.all(10.0),
-                  textStyle: TextStyle(color: Colors.black54),
+            SizedBox(height: 10.0),
+            Material(
+              child: InkWell(
+                onTap: _showCountryPickerDialog,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CountryPickerUtils.getDefaultFlagImage(
+                          _selectedDialogCountry),
+                      SizedBox(width: 8.0),
+                      Flexible(child: Text(_selectedDialogCountry.name)),
+                      SizedBox(width: 8.0),
+                      Text("(${_selectedDialogCountry.isoCode})"),
+                    ],
+                  ),
                 ),
-//                CountryPicker(
-//                  onChanged: (Country newCountry) {
-//                    setState(() => _selectedCountry = newCountry);
-//                  },
-//                  selectedCountry: _selectedCountry ?? Country.NG,
-//                ),
-                SizedBox(width: 10.0),
-                Text(
-                  _selectedCountry?.name ?? "Nigeria",
-                  style: TextStyle(fontSize: 14.0, color: Colors.black54),
-                ),
-              ],
+              ),
             ),
             Expanded(child: Container()),
             PrimaryButton(
@@ -161,14 +199,15 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen> {
 
   bool _changesMade() {
     return _selectedImage != null ||
-        _selectedCountry != null ||
+        _selectedDialogCountry.isoCode != widget.countryIsoCode ||
         _displayNameController.value.text != widget.displayName;
   }
 
   void _saveChanges() {
     final result = EditProfileInfoResult()
-      ..displayName = _displayNameController.value.text
-      ..countryIsoCode = _selectedCountry?.code ?? null
+      ..displayName = _displayNameController.value.text.trim()
+      ..countryIsoCode = _selectedDialogCountry?.isoCode ?? null
+      ..country = _selectedDialogCountry.name ?? null
       ..profilePicture = _selectedImage ?? null;
     Navigator.of(context).pop(result);
   }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/app_config.dart';
@@ -20,17 +19,24 @@ void main() async {
   final firebaseApp = await FirebaseApp.configure(
     name: "ikonfete",
     options: FirebaseOptions(
+//      googleAppID: Platform.isIOS
+//          ? "1:504427487731:ios:75be1ef2cbdac210"
+//          : "1:504427487731:android:49880b1f76da2ca7",
+//      projectID: "ikonfete-server",
+//      gcmSenderID: "504427487731",
+//      apiKey: "AIzaSyCJz_OBOjuxtd6h9AW-l0s_6jYixna-RRI",
       googleAppID: Platform.isIOS
-          ? "1:504427487731:ios:75be1ef2cbdac210"
-          : "1:504427487731:android:49880b1f76da2ca7",
-      projectID: "ikonfete-server",
-      gcmSenderID: "504427487731",
-      apiKey: "AIzaSyCJz_OBOjuxtd6h9AW-l0s_6jYixna-RRI",
+          ? "1:915599328141:ios:75be1ef2cbdac210"
+          : "1:915599328141:android:49880b1f76da2ca7",
+      projectID: "ikonfete-dev",
+      gcmSenderID: "915599328141",
+      apiKey: "AIzaSyDfYJVgz85fds9XyoqbZhHsUOMTJuJwx6A",
     ),
   );
 
-  final firebaseStorage = FirebaseStorage(
-      app: firebaseApp, storageBucket: "gs://ikonfete-server.appspot.com");
+//  final firebaseStorage = FirebaseStorage(app: firebaseApp, storageBucket: "gs://ikonfete-server.appspot.com");
+//  final firebaseStorage = FirebaseStorage(
+//      app: firebaseApp, storageBucket: "gs://ikonfete-dev.appspot.com");
 
   var configuredApp = AppConfig(
     appName: "Ikonfete",
@@ -46,8 +52,8 @@ void main() async {
       accessTokenSecret: "dTdKFRrZScqgERhzLQnQEqrgkWNDag5T5yQF3ncAukS0h",
     ),
 //    serverBaseUrl: "https://ikonfete-server.appspot.com",
-    serverBaseUrl: "https://bfce2594.ngrok.io",
-    firebaseStorage: firebaseStorage,
+    serverBaseUrl: "https://26c9222c.ngrok.io",
+//    firebaseStorage: firebaseStorage,
     child: IkonfeteApp(),
   );
   runApp(configuredApp);

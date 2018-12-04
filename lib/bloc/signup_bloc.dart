@@ -70,6 +70,8 @@ class SignupBloc implements BlocBase {
     final signupResult = AuthResult(request: request);
     try {
       final authResult = await authApi.signup(_name, _email, _password);
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
       if (request.isArtist) {
         signupResult.artist = authResult;
       } else {

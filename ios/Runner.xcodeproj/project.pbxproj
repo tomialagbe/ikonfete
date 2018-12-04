@@ -22,6 +22,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		E60ACDB7214324F700AB7738 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E60ACDB6214324F700AB7738 /* GoogleService-Info.plist */; };
+		E613406821A96F6F00822DE9 /* GoogleService-Info-dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = E613406721A96F6F00822DE9 /* GoogleService-Info-dev.plist */; };
 		E69389C92192CE9400D14B45 /* libDeezer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389A82192CE9300D14B45 /* libDeezer.a */; };
 		E69389CA2192CE9400D14B45 /* DZRResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E69389C82192CE9300D14B45 /* DZRResources.bundle */; };
 		E69389CC2192CF6800D14B45 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69389CB2192CF6700D14B45 /* CoreAudio.framework */; };
@@ -67,6 +68,7 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E60ACDB6214324F700AB7738 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E613406721A96F6F00822DE9 /* GoogleService-Info-dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-dev.plist"; sourceTree = "<group>"; };
 		E69389A82192CE9300D14B45 /* libDeezer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libDeezer.a; sourceTree = "<group>"; };
 		E69389AA2192CE9300D14B45 /* DZRPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZRPlaylist.h; sourceTree = "<group>"; };
 		E69389AB2192CE9300D14B45 /* Deezer+Compatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Deezer+Compatibility.h"; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				E613406721A96F6F00822DE9 /* GoogleService-Info-dev.plist */,
 				E60ACDB6214324F700AB7738 /* GoogleService-Info.plist */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -324,6 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
+				E613406821A96F6F00822DE9 /* GoogleService-Info-dev.plist in Resources */,
 				E60ACDB7214324F700AB7738 /* GoogleService-Info.plist in Resources */,
 				E69389CA2192CE9400D14B45 /* DZRResources.bundle in Resources */,
 				9740EEB51CF90195004384FC /* Generated.xcconfig in Resources */,

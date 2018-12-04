@@ -163,7 +163,10 @@ class ArtistAuthApi extends AuthApi<Artist> {
           err.fromJson(responseData);
           throw ApiException(err.error);
       }
-    } on Exception {
+    } on Exception catch (e) {
+      if (e is ApiException) {
+        throw e;
+      }
       throw ApiException("A network error occurred.");
     }
   }

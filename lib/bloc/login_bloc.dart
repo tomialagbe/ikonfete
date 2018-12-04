@@ -73,10 +73,16 @@ class LoginBloc extends BlocBase {
       if (request.isArtist) {
         final artistApi = ArtistApi(appConfig.serverBaseUrl);
         final artist = await artistApi.findByUID(firebaseUser.uid);
+        if (artist == null) {
+          throw ApiException("Invalid username or password");
+        }
         authResult.artist = artist;
       } else {
         final fanApi = FanApi(appConfig.serverBaseUrl);
         final fan = await fanApi.findByUID(firebaseUser.uid);
+        if (fan == null) {
+          throw ApiException("Invalid username or password");
+        }
         authResult.fan = fan;
       }
       authResult.firebaseUser = firebaseUser;

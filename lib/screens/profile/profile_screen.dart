@@ -42,11 +42,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _twitterId;
 
   String _displayName = "";
+  String _username = "";
   String _email = "";
   bool _facebookEnabled = false;
   bool _twitterEnabled = false;
   String _bio = "";
   String _country = "";
+  String _countryIsoCode = "";
   File _newProfilePicture;
   EditProfileInfoResult _editProfileInfoResult;
   String _oldProfilePictureUrl;
@@ -68,7 +70,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     final appBloc = BlocProvider.of<ApplicationBloc>(context);
 
-    _displayName = appBloc.initState.currentUser.displayName;
+    _displayName = appBloc.initState.isArtist
+        ? appBloc.initState.artist.name
+        : appBloc.initState.fan.name;
+    _username = appBloc.initState.isArtist
+        ? appBloc.initState.artist.username
+        : appBloc.initState.fan.username;
     _email = appBloc.initState.currentUser.email;
     _facebookEnabled = appBloc.initState.isArtist
         ? !StringUtils.isNullOrEmpty(appBloc.initState.artist.facebookId)
@@ -77,8 +84,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ? !StringUtils.isNullOrEmpty(appBloc.initState.artist.twitterId)
         : !StringUtils.isNullOrEmpty(appBloc.initState.fan.twitterId);
     _bio = appBloc.initState.isArtist ? appBloc.initState.artist.bio : "";
-    _country =
-        appBloc.initState.isArtist ? appBloc.initState.artist.country : "";
+    _country = appBloc.initState.isArtist
+        ? appBloc.initState.artist.country
+        : appBloc.initState.fan.country;
+    _countryIsoCode = appBloc.initState.isArtist
+        ? appBloc.initState.artist.countryIsoCode
+        : appBloc.initState.fan.countryIsoCode;
 
     _initialFacebookEnabled = _facebookEnabled;
     _initialTwitterEnabled = _twitterEnabled;
@@ -92,8 +103,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ? appBloc.initState.artist.twitterId
         : appBloc.initState.fan.twitterId;
 
-    _oldProfilePictureUrl = appBloc.initState.currentUser.photoUrl;
-    _profilePictureUrl = appBloc.initState.currentUser.photoUrl;
+    _oldProfilePictureUrl = widget.isArtist
+        ? appBloc.initState.artist.profilePictureUrl
+        : appBloc.initState.fan.profilePictureUrl;
+    _profilePictureUrl = widget.isArtist
+        ? appBloc.initState.artist.profilePictureUrl
+        : appBloc.initState.fan.profilePictureUrl;
   }
 
   @override
@@ -161,6 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final children = <Widget>[
       _buildProfileInfo(),
+      _buildEmail(),
     ];
     if (widget.isArtist) {
       children.add(_buildBio());
@@ -207,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final editProfileTapHandler = TapGestureRecognizer();
     editProfileTapHandler.onTap = _editProfileInfo;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 60.0),
+      padding: const EdgeInsets.only(bottom: 40.0),
       child: SizedBox(
         height: 90.0,
         child: Row(
@@ -234,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Text(
-                    _displayName,
+                    "$_displayName",
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 20.0,
@@ -242,10 +258,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontFamily: "SanFranciscoDisplay",
                     ),
                   ),
-                  SizedBox(height: 2.0),
+                  SizedBox(height: 5.0),
                   Text(
-                    _email,
-                    overflow: TextOverflow.ellipsis,
+                    "@$_username",
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.black54,
@@ -253,17 +268,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 2.0),
-                  widget.isArtist && !StringUtils.isNullOrEmpty(_country)
-                      ? Text(
-                          _country,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black45,
-                            fontFamily: "SanFranciscoDisplay",
-                          ),
-                        )
-                      : Container(),
+                  Text(
+                    _country,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black45,
+                      fontFamily: "SanFranciscoDisplay",
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -289,6 +302,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildEmail() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "Email",
+          style: subHeaderTextStyle,
+        ),
+        SizedBox(height: 10.0),
+        Text(
+          _email,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Colors.black54,
+            fontFamily: "SanFranciscoDisplay",
+          ),
+        ),
+        SizedBox(height: 20.0),
+      ],
     );
   }
 
@@ -483,20 +520,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _editProfileInfo() async {
-    final appBloc = BlocProvider.of<ApplicationBloc>(context);
     final result = await Navigator.of(context).push<EditProfileInfoResult>(
       CupertinoPageRoute(
         builder: (ctx) => EditProfileInfoScreen(
               displayName: _displayName,
-              countryIsoCode: widget.isArtist
-                  ? appBloc.initState.artist.countryIsoCode
-                  : "",
-              profileImageUrl: appBloc.initState.currentUser.photoUrl,
+              countryIsoCode: _countryIsoCode,
+              profileImageUrl: _profilePictureUrl,
             ),
       ),
     );
     if (result != null) {
       setState(() {
+        _displayName = result.displayName;
+        _country = result.country;
+        _countryIsoCode = result.countryIsoCode;
         _editProfileInfoResult = result;
         _newProfilePicture = result.profilePicture;
       });

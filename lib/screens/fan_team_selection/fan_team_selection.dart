@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluro/fluro.dart';
@@ -18,6 +17,7 @@ import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/modal.dart';
+import 'package:ikonfetemobile/widget/random_gradient_image.dart';
 
 class FanTeamSelectionScreen extends StatefulWidget {
   /// The fan's uid
@@ -193,7 +193,7 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
               },
             );
           } else {
-            Container(
+            return Container(
               child: Center(
                 child: Text("No artists available"),
               ),
@@ -222,24 +222,26 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: () async {
-                bool logout = await _canLogout();
-                if (logout) {
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
-                  } else {
-                    router.navigateTo(
-                      context,
-                      RouteNames.login(isArtist: false),
-                      transition: TransitionType.inFromLeft,
-                      replace: true,
-                    );
-                  }
-                }
-              },
-            ),
+            Navigator.canPop(context)
+                ? IconButton(
+                    icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
+                    onPressed: () async {
+                      bool logout = await _canLogout();
+                      if (logout) {
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).pop();
+                        } else {
+                          router.navigateTo(
+                            context,
+                            RouteNames.login(isArtist: false),
+                            transition: TransitionType.inFromLeft,
+                            replace: true,
+                          );
+                        }
+                      }
+                    },
+                  )
+                : Container(),
           ],
         )
       ],
@@ -430,37 +432,4 @@ class FanTeamSelectionScreenState extends State<FanTeamSelectionScreen> {
 //      return null;
 //    }
 //  }
-}
-
-class RandomGradientImage extends StatelessWidget {
-  final Widget child;
-
-  RandomGradientImage({this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 64.0,
-      width: 64.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(32.0),
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            Color.fromARGB(
-              200,
-              Random().nextInt(255),
-              Random().nextInt(255),
-              Random().nextInt(255),
-            ).withOpacity(.8),
-            Colors.grey.withOpacity(.8),
-          ],
-        ),
-      ),
-      child: child ?? Container(),
-    );
-  }
 }

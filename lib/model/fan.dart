@@ -10,6 +10,7 @@ class Fan extends Model<String> {
   String currentTeamId;
   String country;
   String countryIsoCode;
+  String profilePictureUrl;
   int feteScore = 0;
 
   @override
@@ -25,7 +26,8 @@ class Fan extends Model<String> {
       ..facebookId = json["facebookId"]
       ..twitterId = json["twitterId"]
       ..feteScore = json["feteScore"] ?? 0
-      ..currentTeamId = json["currentTeamId"] ?? "";
+      ..currentTeamId = json["currentTeamId"] ?? ""
+      ..profilePictureUrl = json["profilePictureUrl"] ?? "";
   }
 
   @override
@@ -42,6 +44,7 @@ class Fan extends Model<String> {
       "twitterId": this.twitterId ?? "",
       "feteScore": this.feteScore ?? 0,
       "currentTeamId": this.currentTeamId ?? "",
+      "profilePictureUrl": this.profilePictureUrl ?? "",
     });
     return map;
   }

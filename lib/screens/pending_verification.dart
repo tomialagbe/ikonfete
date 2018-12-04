@@ -83,16 +83,16 @@ class _ArtistPendingVerificationScreenState
                         children: <Widget>[
                           snapshot.hasData &&
                                   !StringUtils.isNullOrEmpty(
-                                      snapshot.data.first.photoUrl)
+                                      snapshot.data.second.profilePictureUrl)
                               ? Image(
                                   image: CachedNetworkImageProvider(
-                                      snapshot.data.first.photoUrl),
+                                      snapshot.data.second.profilePictureUrl),
                                   fit: BoxFit.cover,
                                 )
                               : Container(),
                           snapshot.hasData &&
                                   !StringUtils.isNullOrEmpty(
-                                      snapshot.data.first.photoUrl)
+                                      snapshot.data.second.profilePictureUrl)
                               ? BackdropFilter(
                                   filter: ui.ImageFilter.blur(
                                       sigmaX: 10.0, sigmaY: 10.0),
@@ -122,12 +122,16 @@ class _ArtistPendingVerificationScreenState
                                 backgroundColor: Colors.white.withOpacity(0.5),
                                 radius: 45.0,
                                 backgroundImage: snapshot.hasData &&
-                                        snapshot.data.first.photoUrl != null
+                                        snapshot.data.second
+                                                .profilePictureUrl !=
+                                            null
                                     ? CachedNetworkImageProvider(
-                                        snapshot.data.first.photoUrl)
+                                        snapshot.data.second.profilePictureUrl)
                                     : null,
                                 child: !snapshot.hasData ||
-                                        snapshot.data.first.photoUrl == null
+                                        snapshot.data.second
+                                                .profilePictureUrl ==
+                                            null
                                     ? Icon(
                                         FontAwesome5Icons.solidUser,
                                         size: 40.0,

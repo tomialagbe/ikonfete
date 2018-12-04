@@ -71,30 +71,38 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
     super.dispose();
   }
 
+  Future<bool> _willPop() async {
+    bool canClose = Navigator.canPop(context);
+    return canClose;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      resizeToAvoidBottomPadding: false,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).viewInsets.top + 40.0,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            _buildTitleAndBackButton(),
-            SizedBox(height: 20.0),
-            _buildIntroText(),
-            SizedBox(height: 30.0),
-            _buildForm(),
-            Expanded(child: Container()),
-            _buildButtons(),
-            SizedBox(height: 40.0)
-          ],
+    return WillPopScope(
+      onWillPop: _willPop,
+      child: Scaffold(
+        key: scaffoldKey,
+        resizeToAvoidBottomPadding: false,
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.white,
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).viewInsets.top + 40.0,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              _buildTitleAndBackButton(),
+              SizedBox(height: 20.0),
+              _buildIntroText(),
+              SizedBox(height: 30.0),
+              _buildForm(),
+              Expanded(child: Container()),
+              _buildButtons(),
+              SizedBox(height: 40.0)
+            ],
+          ),
         ),
       ),
     );
@@ -118,10 +126,12 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            Navigator.canPop(context)
+                ? IconButton(
+                    icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                : Container(),
           ],
         )
       ],
@@ -300,7 +310,7 @@ class _ArtistVerificationScreenState extends State<ArtistVerificationScreen> {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content:
-              Text("Your Facebook and Twitter accounts have not been setup"),
+              Text("Your Facebook and Twitter accounts have not been set up"),
         ),
       );
       return;

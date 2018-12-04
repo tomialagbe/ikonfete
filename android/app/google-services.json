@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "504427487731",
-    "firebase_url": "https://ikonfete-server.firebaseio.com",
-    "project_id": "ikonfete-server",
-    "storage_bucket": "ikonfete-server.appspot.com"
+    "project_number": "915599328141",
+    "firebase_url": "https://ikonfete-dev.firebaseio.com",
+    "project_id": "ikonfete-dev",
+    "storage_bucket": "ikonfete-dev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:504427487731:android:49880b1f76da2ca7",
+        "mobilesdk_app_id": "1:915599328141:android:49880b1f76da2ca7",
         "android_client_info": {
           "package_name": "com.ikonfete.ikonfetemobile.ikonfetemobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "504427487731-35d31dfrqv5nobsvk6bteffe3bv98f5d.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ikonfete.ikonfetemobile.ikonfetemobile",
-            "certificate_hash": "6d28f502a036275891ecc954b829c371decc03c7"
-          }
-        },
-        {
-          "client_id": "504427487731-odhi95ck09t4cneuu9bav6lnarv2kevu.apps.googleusercontent.com",
+          "client_id": "915599328141-jnodck6nc55eknm5oppj63hh1hb53gt1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAEKmygPvaYVsnFspNGMctrdce5zn-IYWw"
+          "current_key": "AIzaSyA8HoD4MWSlv_e4cJdbf-r3GspOHBoAras"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "504427487731-odhi95ck09t4cneuu9bav6lnarv2kevu.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

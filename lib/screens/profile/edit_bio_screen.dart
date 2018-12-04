@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/colors.dart';
+import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
@@ -32,7 +33,7 @@ class _EditBioScreenState extends State<EditBioScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(FontAwesome5Icons.angleLeft, color: Colors.black54),
           tooltip: "Back",
           onPressed: () {
             Navigator.pop(context, _bio);

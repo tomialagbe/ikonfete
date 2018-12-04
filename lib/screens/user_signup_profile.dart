@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:country_code_picker/celement.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
@@ -16,6 +17,7 @@ import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/utils/compressed_image_capture.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -41,9 +43,9 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   File _displayPicture;
+  bool _loadingPicture = false;
 
-//  Country _selectedCountry;
-  CElement _selectedCountry;
+  Country _selectedDialogCountry = CountryPickerUtils.getCountryByIsoCode('ng');
 
   HudOverlay hudOverlay;
 
@@ -64,13 +66,6 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
         _subscriptions
             .add(_bloc.actionResult.listen(_handleProfileUpdateResult));
       }
-    }
-    if (_selectedCountry == null) {
-//      _selectedCountry =
-//          Country.findByIsoCode(Localizations.localeOf(context).countryCode);
-//      if (_selectedCountry != null) {
-//        _bloc.countryCode.add(_selectedCountry.isoCode);
-//      }
     }
   }
 
@@ -128,10 +123,16 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            Navigator.canPop(context)
+                ? IconButton(
+                    icon: Icon(CupertinoIcons.back, color: Color(0xFF181D28)),
+                    onPressed: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    },
+                  )
+                : Container(),
           ],
         )
       ],
@@ -146,6 +147,39 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
         text:
             "Select a display picture and username\nthat you will be identified with.",
       ),
+    );
+  }
+
+  Widget _buildDialogItem(Country country) {
+    return Row(
+      children: <Widget>[
+        CountryPickerUtils.getDefaultFlagImage(country),
+        SizedBox(width: 8.0),
+        Flexible(child: Text(country.name)),
+        SizedBox(width: 8.0),
+        Text("(${country.isoCode})"),
+      ],
+    );
+  }
+
+  void _showCountryPickerDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => Theme(
+            data: Theme.of(context).copyWith(primaryColor: Colors.pink),
+            child: CountryPickerDialog(
+              titlePadding: EdgeInsets.all(8.0),
+              searchCursorColor: Colors.pinkAccent,
+              searchInputDecoration: InputDecoration(hintText: 'Search...'),
+              isSearchable: true,
+              title: Text('Select your phone code'),
+              onValuePicked: (Country country) => setState(() {
+                    _bloc.countryCode.add(country.isoCode.toUpperCase());
+                    _selectedDialogCountry = country;
+                  }),
+              itemBuilder: _buildDialogItem,
+            ),
+          ),
     );
   }
 
@@ -168,6 +202,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
                 _chooseDisplayPicture(ImageSource.camera);
               },
               image: _displayPicture,
+              isLoadingImage: _loadingPicture,
             ),
             SizedBox(height: 10.0),
             Text("OR"),
@@ -197,32 +232,32 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
                 usernameFocusNode.unfocus();
               },
             ),
-            SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CountryCodePicker(
-                  onChanged: (newCountry) {
-                    setState(() => _selectedCountry = newCountry);
-                  },
-                  padding: EdgeInsets.all(10.0),
-                  textStyle: TextStyle(color: Colors.black54),
+            SizedBox(height: 30.0),
+            Text(
+              "Select your country",
+              style: TextStyle(fontSize: 14.0, color: Colors.black),
+            ),
+            SizedBox(height: 10.0),
+            Material(
+              child: InkWell(
+                onTap: _showCountryPickerDialog,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CountryPickerUtils.getDefaultFlagImage(
+                          _selectedDialogCountry),
+                      SizedBox(width: 8.0),
+                      Flexible(child: Text(_selectedDialogCountry.name)),
+                      SizedBox(width: 8.0),
+                      Text("(${_selectedDialogCountry.isoCode})"),
+                    ],
+                  ),
                 ),
-//                CountryPicker(
-//                  onChanged: (Country country) {
-//                    setState(() => _selectedCountry = country);
-//                    _bloc.countryCode.add(_selectedCountry.isoCode);
-//                  },
-//                  selectedCountry: _selectedCountry,
-//                ),
-                SizedBox(width: 10.0),
-                Text(
-                  _selectedCountry?.name ?? "",
-                  style: TextStyle(fontSize: 14.0, color: Colors.black54),
-                ),
-              ],
-            )
+              ),
+            ),
           ],
         ),
       ),
@@ -243,7 +278,7 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
           text: "PROCEED",
           // REGISTER
           onTap: () {
-            if (_selectedCountry == null) {
+            if (_selectedDialogCountry == null) {
               scaffoldKey.currentState.showSnackBar(
                 SnackBar(
                   content: Text("Please select a country"),
@@ -255,6 +290,9 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
               formKey.currentState.save();
               hudOverlay = HudOverlay.show(context,
                   HudOverlay.dotsLoadingIndicator(), HudOverlay.defaultColor());
+              if (_selectedDialogCountry != null) {
+                _bloc.countryCode.add(_selectedDialogCountry.isoCode);
+              }
               _bloc.action.add(null);
             }
           },
@@ -264,16 +302,20 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
   }
 
   Future _chooseDisplayPicture(ImageSource imageSource) async {
+    setState(() {
+      _loadingPicture = true;
+    });
     final im = await CompressedImageCapture().takePicture(context, imageSource);
     setState(() {
+      _loadingPicture = false;
       _displayPicture = im;
       _bloc.profilePicture.add(im);
     });
   }
 
-  void _handleProfileUpdateResult(Pair<bool, String> result) {
-    hudOverlay?.close();
+  void _handleProfileUpdateResult(Pair<bool, String> result) async {
     if (!result.first) {
+      hudOverlay?.close();
       scaffoldKey.currentState.showSnackBar(
         SnackBar(content: Text(result.second)),
       );
@@ -282,41 +324,50 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
         prefs.setBool(PreferenceKeys.isOnBoarded, true);
         prefs.setBool(PreferenceKeys.isArtist, widget.isArtist);
       });
-      showDialog(
-        context: context,
-        builder: (c) {
-          return AlertDialog(
-            title: Text("Onboarding Complete"),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    "Congratulations. Your Ikonfete account has been setup.\nYou can now log in to your account",
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  router.navigateTo(
-                    context,
-                    RouteNames.login(isArtist: widget.isArtist),
-                    transition: TransitionType.inFromRight,
-                    replace: true,
-                  );
-                },
-                child: Text(
-                  "LOGIN",
-                  style: TextStyle(color: colors.primaryColor),
-                ),
-              ),
-            ],
+      final appBloc = BlocProvider.of<ApplicationBloc>(context);
+      final initState = await appBloc.getAppInitState();
+      hudOverlay?.close();
+      // if this is an artist, check if he's verified
+      if (initState.isArtist) {
+        if (initState.artist.isVerified) {
+          router.navigateTo(
+            context,
+            RouteNames.artistHome,
+            transition: TransitionType.inFromRight,
+            replace: false,
           );
-        },
-        barrierDismissible: false,
-      );
+        } else if (initState.artist.isPendingVerification) {
+          router.navigateTo(
+            context,
+            RouteNames.artistPendingVerification(uid: initState.artist.uid),
+            replace: true,
+            transition: TransitionType.inFromRight,
+          );
+        } else {
+          router.navigateTo(
+            context,
+            RouteNames.artistVerification(uid: initState.artist.uid),
+            replace: true,
+            transition: TransitionType.inFromRight,
+          );
+        }
+      } else if (StringUtils.isNullOrEmpty(initState.fan.currentTeamId)) {
+        // if the user is a fan, check if the fan belongs to any team
+        router.navigateTo(
+          context,
+          RouteNames.teamSelection(
+              uid: initState.fan.uid, name: initState.fan.name),
+          replace: true,
+          transition: TransitionType.inFromRight,
+        );
+      } else {
+        router.navigateTo(
+          context,
+          RouteNames.fanHome,
+          replace: true,
+          transition: TransitionType.inFromRight,
+        );
+      }
     }
   }
 }
@@ -324,10 +375,12 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
 class ProfilePictureChooser extends StatelessWidget {
   final Function onTap;
   final File image;
+  final bool isLoadingImage;
 
   ProfilePictureChooser({
     this.onTap,
     this.image,
+    this.isLoadingImage,
   });
 
   @override
@@ -364,6 +417,10 @@ class ProfilePictureChooser extends StatelessWidget {
               color: Colors.white,
               size: 40.0,
             ),
+            isLoadingImage
+                ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor))
+                : Container(),
           ],
         ),
       ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
@@ -67,12 +69,18 @@ class UserSignupProfileBloc extends BlocBase {
   }
 
   void _handleProfileUpdate() async {
+    final firebaseStorage = FirebaseStorage.instance;
     final uploadHelper = CloudStorageUploadHelper();
     String profilePicUrl = "";
     if (_profilePic != null) {
-      final uploadResult = await uploadHelper.uploadProfilePicture(
-          appConfig.firebaseStorage, uid, _profilePic);
-      profilePicUrl = uploadResult.fileDownloadUrl;
+      try {
+        final uploadResult = await uploadHelper.uploadProfilePicture(
+            firebaseStorage, uid, _profilePic);
+        profilePicUrl = uploadResult.fileDownloadUrl;
+      } on PlatformException catch (e) {
+        _actionResult.add(Pair.from(false, e.message));
+        return;
+      }
     }
 
     // make api call to update firebase user with username and profile picture url
@@ -89,14 +97,14 @@ class UserSignupProfileBloc extends BlocBase {
       if (ok) {
         _actionResult.add(Pair.from(true, null));
       } else {
-        uploadHelper.deleteProfilePicture(appConfig.firebaseStorage, uid);
+        uploadHelper.deleteProfilePicture(firebaseStorage, uid);
         _actionResult.add(Pair.from(false, "An unknown error occrurred"));
       }
     } on ApiException catch (e) {
-      uploadHelper.deleteProfilePicture(appConfig.firebaseStorage, uid);
+      uploadHelper.deleteProfilePicture(firebaseStorage, uid);
       _actionResult.add(Pair.from(false, e.message));
     } on Exception catch (e) {
-      uploadHelper.deleteProfilePicture(appConfig.firebaseStorage, uid);
+      uploadHelper.deleteProfilePicture(firebaseStorage, uid);
       _actionResult.add(Pair.from(false, e.toString()));
     }
   }
