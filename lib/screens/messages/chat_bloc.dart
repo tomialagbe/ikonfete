@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:ikonfetemobile/api/chat.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/model/message.dart';
 import 'package:meta/meta.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatBloc extends BlocBase {
   final AppConfig appConfig;
@@ -35,16 +32,16 @@ class ChatBloc extends BlocBase {
   }
 
   void _sendMessage(Message message) async {
-    try {
-      final firestore = Firestore.instance;
-      final chatApi = ChatApi(
-          firestore: firestore, firebaseStorage: FirebaseStorage.instance);
-      await chatApi.sendMessage(message);
-      _sendResponse.add(null);
-    } on PlatformException catch (e) {
-      _sendResponse.addError(e.message);
-    } on Exception catch (e) {
-      _sendResponse.addError(e.toString());
-    }
+//    try {
+//      final firestore = Firestore.instance;
+//      final chatApi = ChatApi(
+//          firestore: firestore, firebaseStorage: FirebaseStorage.instance);
+//      await chatApi.sendMessage(message);
+//      _sendResponse.add(null);
+//    } on PlatformException catch (e) {
+//      _sendResponse.addError(e.message);
+//    } on Exception catch (e) {
+//      _sendResponse.addError(e.toString());
+//    }
   }
 }

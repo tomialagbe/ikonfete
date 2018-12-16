@@ -7,6 +7,13 @@ class SocialFeedImage {
   String fullImage;
 }
 
+class SocialFeedVideo {
+  String displayImage;
+  String videoUrl;
+  int durationInMillis;
+  String contentType;
+}
+
 abstract class SocialFeedItem implements Comparable<SocialFeedItem> {
   String id;
   FeedItemType type;
@@ -33,6 +40,8 @@ abstract class SocialFeedItem implements Comparable<SocialFeedItem> {
   String get textContent;
 
   List<SocialFeedImage> get images;
+
+  List<SocialFeedVideo> get videos;
 
   @override
   int get hashCode => id.hashCode;
@@ -126,6 +135,11 @@ class FacebookFeedItem extends SocialFeedItem {
       ];
     }
   }
+
+  @override
+  List<SocialFeedVideo> get videos {
+    return <SocialFeedVideo>[]; // TODO: implement this
+  }
 }
 
 enum TweetMediaItemType { photo, video, animated_gif }
@@ -200,6 +214,23 @@ class TwitterFeedItem extends SocialFeedItem {
     return feedImages;
   }
 
+  @override
+  List<SocialFeedVideo> get videos {
+    if (media == null) return null;
+
+    final videoItems =
+        media.where((item) => item.type == TweetMediaItemType.video);
+    if (videoItems.isEmpty) return null;
+
+    final feedVideos = <SocialFeedVideo>[]
+      ..addAll(videoItems.map((videoItem) => SocialFeedVideo()
+        ..durationInMillis = videoItem.videoInfo.durationMillis
+        ..contentType = videoItem.videoInfo.contentType
+        ..displayImage = videoItem.displayUrl
+        ..videoUrl = videoItem.videoInfo.videoUrl));
+    return feedVideos;
+  }
+
   List<TweetMediaItem> _parseMedia(List json) {
     List<TweetMediaItem> media = <TweetMediaItem>[];
     if (json != null) {
@@ -269,7 +300,11 @@ class TweetMediaItem {
       ..id = json["id"]
       ..mediaUrl = json["media_url"]
       ..type = _getTwitterMediaItemType(json["type"]);
-    // TODO: handle videos
+
+    // handle videos
+    this.videoInfo = type == TweetMediaItemType.video
+        ? _getVideoInfo(json["video_info"])
+        : null;
   }
 
   TweetMediaItemType _getTwitterMediaItemType(String str) {
@@ -283,6 +318,26 @@ class TweetMediaItem {
       default:
         return TweetMediaItemType.photo;
     }
+  }
+
+  VideoInfo _getVideoInfo(Map videoInfoMap) {
+    if (videoInfoMap == null) {
+      return null;
+    }
+
+    final videoInfo = VideoInfo();
+    List aspectRatio = videoInfoMap["aspect_ratio"];
+    videoInfo.aspectRatio = <int>[aspectRatio[0], aspectRatio[1]];
+    videoInfo.durationMillis = videoInfoMap["duration_millis"];
+
+    List variants = videoInfoMap["variants"]; // TODO: handle better
+    if (variants.isEmpty) {
+      return null;
+    }
+    final largest = variants[0];
+    videoInfo.contentType = largest["content_type"];
+    videoInfo.videoUrl = largest["url"];
+    return videoInfo;
   }
 }
 
@@ -303,14 +358,15 @@ class VideoInfo {
   String contentType;
   List<int> aspectRatio;
   int durationMillis;
-  List<VideoVariant> variants;
+  String videoUrl;
+//  List<VideoVariant> variants;
 }
 
-class VideoVariant {
-  String contentType;
-  int bitrate;
-  String url;
-}
+//class VideoVariant {
+//  String contentType;
+//  int bitrate;
+//  String url;
+//}
 
 abstract class TweetEntity implements Comparable<TweetEntity> {
   int startIndex;

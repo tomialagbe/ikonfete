@@ -1,10 +1,14 @@
 import 'dart:collection';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/model/SocialFeedItem.dart';
 import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/screens/home/widgets/social_card_image.dart';
+import 'package:ikonfetemobile/screens/home/widgets/social_card_video.dart';
+import 'package:ikonfetemobile/screens/photo_gallery.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/random_gradient_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -52,13 +56,17 @@ abstract class SocialCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: buildTextContent(),
-                ),
+//                Padding(
+//                  padding: EdgeInsets.only(left: 20, right: 20),
+//                  child: buildTextContent(),
+//                ),
+//                Padding(
+//                  padding: EdgeInsets.only(left: 2.0, right: 2.0),
+//                  child: buildImages(context),
+//                ),
                 Padding(
                   padding: EdgeInsets.only(left: 2.0, right: 2.0),
-                  child: buildImages(),
+                  child: buildVideo(context),
                 ),
                 SizedBox(height: 10.0),
                 Padding(
@@ -66,12 +74,6 @@ abstract class SocialCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
-//                    children: <Widget>[
-////                      buildSocialIcon(),
-//                      _buildLikes(),
-//                      Expanded(child: Container()),
-//                      _buildComments(),
-//                    ],
                     children: <Widget>[]
                       ..add(_buildLikes())
                       ..add(SizedBox(width: 10.0))
@@ -144,166 +146,34 @@ abstract class SocialCard extends StatelessWidget {
         : Container();
   }
 
-  Widget buildImages() {
+  Widget buildImages(BuildContext context) {
     if (feedItem.images == null || feedItem.images.isEmpty) {
       return Container();
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: feedItem.images.length >= 3
-          ? _buildThreeOrMoreImages()
-          : (feedItem.images.length == 2
-              ? _buildTwoImages()
-              : _buildOneImage()),
+    return SocialCardImage(
+        feedItem: feedItem, onTap: () => _showImageGallery(context));
+  }
+
+  Widget buildVideo(BuildContext context) {
+//    if (feedItem.videos == null || feedItem.videos.isEmpty) {
+//      return Container();
+//    }
+    return SocialCardVideo(
+      videoUrl:
+          "https://video.twimg.com/ext_tw_video/1060053547096698881/pu/vid/640x360/unY_vAC3NcciKe9U.mp4?tag=5",
+      placeHolderUrl:
+          "https://pbs.twimg.com/ext_tw_video_thumb/1060053547096698881/pu/img/-BsiZ24Up2awhmzj.jpg",
+      videoDuration: Duration(minutes: 1, seconds: 10),
     );
   }
 
-  Widget _buildOneImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5.0),
-      child: Container(
-        width: double.infinity,
-        constraints: BoxConstraints(maxHeight: 300.0),
-        child: Image.network(
-          feedItem.images[0].fullImage,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTwoImages() {
-    return Container(
-      constraints: BoxConstraints(maxHeight: 300.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5.0),
-                  bottomLeft: Radius.circular(5.0)),
-              child: Container(
-                height: double.infinity,
-                child: Image.network(
-                  feedItem.images[0].displayImage,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 5.0),
-          Expanded(
-            flex: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(5.0),
-                  bottomRight: Radius.circular(5.0)),
-              child: Container(
-                child: Image.network(
-                  feedItem.images[1].displayImage,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildThreeOrMoreImages() {
-    return Container(
-      constraints: BoxConstraints(maxHeight: 300.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            flex: 3,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5.0),
-                  bottomLeft: Radius.circular(5.0)),
-              child: Container(
-                child: Image.network(
-                  feedItem.images[0].displayImage,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 5.0),
-          Expanded(
-            flex: 2,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(5.0),
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      child: Image.network(
-                        feedItem.images[1].displayImage,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5.0),
-                Expanded(
-                  flex: 1,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(5.0),
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Image.asset(
-                            feedItem.images[2].displayImage,
-                            fit: BoxFit.cover,
-                          ),
-                          feedItem.images.length > 3
-                              ? Container(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  color: primaryColor.withOpacity(0.4),
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(Icons.add, color: Colors.white),
-                                      SizedBox(height: 5.0),
-                                      Text("${3 - feedItem.images.length} more",
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ],
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+  void _showImageGallery(BuildContext context) {
+    final uriList = feedItem.images.map((i) => i.fullImage).toList();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => PhotoGalleryScreen(networkImages: uriList),
       ),
     );
   }
@@ -330,47 +200,6 @@ abstract class SocialCard extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget _buildStackedImages() {
-    //        Stack(
-//          children: <Widget>[
-//            Container(
-//              transform: Matrix4.identity()..translate(0.0),
-//              decoration: BoxDecoration(
-//                shape: BoxShape.circle,
-//                border: Border.all(color: Colors.white, width: 4.0),
-//              ),
-//              child: CircleAvatar(
-//                  radius: 14.0,
-//                  backgroundImage:
-//                      AssetImage("assets/images/onboard_background1.png")),
-//            ),
-//            Container(
-//              transform: Matrix4.identity()..translate(14.0),
-//              decoration: BoxDecoration(
-//                shape: BoxShape.circle,
-//                border: Border.all(color: Colors.white, width: 4.0),
-//              ),
-//              child: CircleAvatar(
-//                  radius: 14.0,
-//                  backgroundImage:
-//                      AssetImage("assets/images/onboard_background1.png")),
-//            ),
-//            Container(
-//              transform: Matrix4.identity()..translate(28.0),
-//              decoration: BoxDecoration(
-//                shape: BoxShape.circle,
-//                border: Border.all(color: Colors.white, width: 4.0),
-//              ),
-//              child: CircleAvatar(
-//                  radius: 14.0,
-//                  backgroundImage:
-//                      AssetImage("assets/images/onboard_background1.png")),
-//            ),
-//          ],
-//        ),
-    return Container();
   }
 
   Widget _buildComments() {
@@ -456,7 +285,7 @@ class TwitterSocialCard extends SocialCard {
 
     if (hashTags != null) tweetEntities.addAll(hashTags);
     if (mentions != null) tweetEntities.addAll(mentions);
-//    if (urls != null) tweetEntities.addAll(urls); // TODO: strip urls from text
+    if (urls != null) tweetEntities.addAll(urls); // TODO: strip urls from text
     if (tweetEntities.isEmpty) {
       return Text(
         feedItem.textContent,
@@ -472,18 +301,22 @@ class TwitterSocialCard extends SocialCard {
     final textSpans = <TextSpan>[];
     final linkedTexts = <TwitterLinkedText>[];
     int start = 0;
+    final runes = feedItem.textContent.runes.toList();
     for (TweetEntity entity in sortedEntities) {
-      String before = feedItem.textContent.substring(start, entity.startIndex);
-      String link =
-          feedItem.textContent.substring(entity.startIndex, entity.endIndex);
+      String before =
+          String.fromCharCodes(runes.sublist(start, entity.startIndex));
+
+      String link = String.fromCharCodes(
+          runes.sublist(entity.startIndex, entity.endIndex));
+
       start = entity.endIndex;
       linkedTexts.addAll([
         TwitterLinkedText(before, false),
         TwitterLinkedText(link, true),
       ]);
     }
-    String rest =
-        feedItem.textContent.substring(start, feedItem.textContent.length);
+
+    String rest = String.fromCharCodes(runes.sublist(start, runes.length));
     linkedTexts.add(TwitterLinkedText(rest, false));
 
     for (TwitterLinkedText linkedText in linkedTexts) {

@@ -27,7 +27,7 @@ class FeedApi extends Api {
       url += "&facebookPagingToken=$facebookPagingToken";
     }
     if (lastTweetId != null && lastTweetId != 0) {
-      url += "lastTweetId=$lastTweetId";
+      url += "&lastTweetId=$lastTweetId";
     }
 
     final headers = <String, String>{

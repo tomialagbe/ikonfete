@@ -8,11 +8,14 @@ import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/model/SocialFeedItem.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/screens/home/fan_home_bloc.dart';
-import 'package:ikonfetemobile/screens/home/social_cards.dart';
+import 'package:ikonfetemobile/screens/home/widgets/social_cards.dart';
 import 'package:ikonfetemobile/utils/facebook_auth.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/album_art.dart';
 import 'package:ikonfetemobile/widget/artist_event.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
+
+enum HomeScreenTab { ArtistFeed, TeamFeed, Leaderboard }
 
 class FanHomeScreen extends StatefulWidget {
   @override
@@ -30,6 +33,8 @@ class _FanHomeScreenState extends State<FanHomeScreen>
   ScrollController _feedListScrollController = ScrollController();
   TabController _tabController;
 
+  HomeScreenTab currentTab = HomeScreenTab.ArtistFeed;
+
   String fanUID;
   String currentTeamID;
   Artist artist;
@@ -38,6 +43,19 @@ class _FanHomeScreenState extends State<FanHomeScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        if (_tabController.indexIsChanging) {
+          if (_tabController.index == 0) {
+            currentTab = HomeScreenTab.ArtistFeed;
+          } else if (_tabController.index == 1) {
+            currentTab = HomeScreenTab.TeamFeed;
+          } else {
+            currentTab = HomeScreenTab.Leaderboard;
+          }
+        }
+      });
+    });
     final appBloc = BlocProvider.of<ApplicationBloc>(context);
     fanUID = appBloc.initState.fan.uid;
     currentTeamID = appBloc.initState.fan.currentTeamId;
@@ -118,16 +136,9 @@ class _FanHomeScreenState extends State<FanHomeScreen>
                   },
                 ),
               ),
-              _buildTab(),
+              _buildTabBar(),
               SizedBox(height: 10.0),
-              _buildAlbumList(),
-              Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: []..addAll(_feedItems.map(_buildFeedItem)),
-                ),
-              ),
+              _buildCurrentTab(),
             ],
           ),
         ),
@@ -135,7 +146,7 @@ class _FanHomeScreenState extends State<FanHomeScreen>
     );
   }
 
-  Widget _buildTab() {
+  Widget _buildTabBar() {
     final labelTextStyle = TextStyle(
       fontFamily: "SanFranciscoDisplay",
       color: Colors.black54,
@@ -166,19 +177,56 @@ class _FanHomeScreenState extends State<FanHomeScreen>
     );
   }
 
+  Widget _buildArtistFeedContent() {
+    final children = <Widget>[];
+    children.addAll(_feedItems.map(_buildFeedItem));
+    if (_bloc.isLoading) {
+      children.add(_buildLoadingIndicator());
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildAlbumList(),
+        Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCurrentTab() {
+    if (currentTab == HomeScreenTab.ArtistFeed) {
+      return _buildArtistFeedContent();
+    } else if (currentTab == HomeScreenTab.TeamFeed) {
+      return Container();
+    } else {
+      return Container();
+    }
+  }
+
   Widget _buildAlbumList() {
-    return SizedBox.fromSize(
-      size: Size.fromRadius(40.0),
-      child: ListView.builder(
-        padding: EdgeInsets.only(left: 20.0),
-        scrollDirection: Axis.horizontal,
-        itemExtent: 100.0, // MARGIN SIZE + WIDTH SIZE,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: EdgeInsets.only(right: 5.0, bottom: 10.0),
-            child: AlbumArt(),
-          );
-        },
+    return Container(
+      width: double.infinity,
+      child: SizedBox.fromSize(
+        size: Size.fromRadius(40.0),
+        child: ListView.builder(
+          padding: EdgeInsets.only(left: 20.0),
+          scrollDirection: Axis.horizontal,
+          itemExtent: 100.0, // MARGIN SIZE + WIDTH SIZE,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.only(right: 5.0, bottom: 10.0),
+              child: AlbumArt(),
+            );
+          },
+        ),
       ),
     );
   }
@@ -222,5 +270,16 @@ class _FanHomeScreenState extends State<FanHomeScreen>
             }),
       ));
     }
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Opacity(
+      opacity: 0.5,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.only(top: 10.0),
+        child: HudOverlay.dotsLoadingIndicator(),
+      ),
+    );
   }
 }
