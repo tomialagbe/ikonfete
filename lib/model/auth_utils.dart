@@ -30,6 +30,12 @@ class AuthResult {
 
   AuthResult({@required this.request});
 
+  factory AuthResult.error(AuthActionRequest request, String message) {
+    final res = AuthResult(request: request);
+    res.errorMessage = message;
+    return res;
+  }
+
   set errorMessage(String val) {
     _errorMessage = val;
     _artist = null;

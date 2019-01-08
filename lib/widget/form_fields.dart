@@ -173,7 +173,7 @@ class _LoginPasswordFieldState extends State<LoginPasswordField> {
             ? IconButton(
                 iconSize: 20.0,
                 icon: Icon(
-                  obscureText ? widget.revealIcon : widget.hideIcon,
+                  obscureText ? widget.hideIcon : widget.revealIcon,
                   color: Color(0xFF8F8F8F),
                 ),
                 onPressed: () {

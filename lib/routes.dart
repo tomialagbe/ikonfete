@@ -1,29 +1,58 @@
 import 'package:fluro/fluro.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/activation_bloc.dart';
-import 'package:ikonfetemobile/bloc/artist_verification_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/inactive_user_bloc.dart';
-import 'package:ikonfetemobile/bloc/login_bloc.dart';
-import 'package:ikonfetemobile/bloc/pending_verification_bloc.dart';
-import 'package:ikonfetemobile/bloc/signup_bloc.dart';
-import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
-import 'package:ikonfetemobile/screens/activation.dart';
-import 'package:ikonfetemobile/screens/artist_verification.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
-import 'package:ikonfetemobile/screens/inactive_user.dart';
-import 'package:ikonfetemobile/screens/login.dart';
+import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
-import 'package:ikonfetemobile/screens/pending_verification.dart';
+import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
 import 'package:ikonfetemobile/screens/profile/profile_screen.dart';
 import 'package:ikonfetemobile/screens/profile/profile_screen_bloc.dart';
-import 'package:ikonfetemobile/screens/signup.dart';
+import 'package:ikonfetemobile/screens/signup/signup.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
-import 'package:ikonfetemobile/screens/user_signup_profile.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 
 final router = Router();
+
+void defineRoutes(Router router) {
+  router.define(
+    Routes.login,
+    handler: Handler(
+      handlerFunc: (ctx, params) {
+        return loginScreen(ctx);
+      },
+    ),
+  );
+
+  router.define(
+    Routes.signup,
+    handler: Handler(
+      handlerFunc: (ctx, params) {
+        return signupScreen(ctx);
+      },
+    ),
+  );
+
+  router.define(
+    Routes.pendingVerification(),
+    handler: Handler(
+      handlerFunc: (ctx, params) {
+        final uid = params["uid"][0];
+        return pendingVerificationScreen(ctx, uid);
+      },
+    ),
+  );
+}
+
+class Routes {
+  static final String login = "/login";
+  static final String signup = "/signup";
+
+  static String pendingVerification({String uid}) {
+    return "/pendingVerification/${uid == null ? ":uid" : uid}";
+  }
+}
 
 final splashHandler = Handler(handlerFunc: (ctx, params) {
   return SplashScreen();
@@ -33,26 +62,29 @@ final onBoardingHandler = Handler(handlerFunc: (ctx, params) {
 });
 
 Handler signupHandler({bool isArtist: true}) {
-  return Handler(handlerFunc: (ctx, params) {
-    return BlocProvider<SignupBloc>(
-      child: SignupScreen(
-        isArtist: isArtist,
-        appConfig: AppConfig.of(ctx),
-      ),
-      bloc: SignupBloc(AppConfig.of(ctx)),
-    );
-  });
+//  return Handler(handlerFunc: (ctx, params) {
+//    return BlocProvider<SignupBloc>(
+//      child: SignupScreen(
+//        isArtist: isArtist,
+//        appConfig: AppConfig.of(ctx),
+//      ),
+//      bloc: SignupBloc(AppConfig.of(ctx)),
+//    );
+//  });
+// TODO:
+  return null;
 }
 
 Handler loginHandler({bool isArtist: true}) {
   return Handler(handlerFunc: (ctx, params) {
-    return BlocProvider<LoginBloc>(
-      child: LoginScreen(isArtist: isArtist),
-      bloc: LoginBloc(
-        isArtist: isArtist,
-        appConfig: AppConfig.of(ctx),
-      ),
-    );
+//    return BlocProvider<LoginBloc>(
+//      child: LoginScreen(isArtist: isArtist),
+//      bloc: LoginBloc(
+//        isArtist: isArtist,
+//        appConfig: AppConfig.of(ctx),
+//      ),
+//    );
+    return Container();
   });
 }
 
@@ -61,10 +93,11 @@ Handler activationHandler({bool isArtist: true}) {
     final appConfig = AppConfig.of(ctx);
     final uid = params["uid"][0];
 
-    return BlocProvider<ActivationBloc>(
-      bloc: ActivationBloc(appConfig, isArtist: isArtist, uid: uid),
-      child: ActivationScreen(isArtist: isArtist, uid: uid),
-    );
+//    return BlocProvider<ActivationBloc>(
+//      bloc: ActivationBloc(appConfig, isArtist: isArtist, uid: uid),
+//      child: ActivationScreen(isArtist: isArtist, uid: uid),
+//    );
+    return Container();
   });
 }
 
@@ -73,36 +106,39 @@ Handler signupProfileHandler({bool isArtist: true}) {
     final appConfig = AppConfig.of(ctx);
     final uid = params["uid"][0];
 
-    return BlocProvider<UserSignupProfileBloc>(
-      bloc: UserSignupProfileBloc(
-        appConfig: appConfig,
-        isArtist: isArtist,
-        uid: uid,
-      ),
-      child: UserSignupProfileScreen(
-        isArtist: isArtist,
-      ),
-    );
+//    return BlocProvider<UserSignupProfileBloc>(
+//      bloc: UserSignupProfileBloc(
+//        appConfig: appConfig,
+//        isArtist: isArtist,
+//        uid: uid,
+//      ),
+//      child: UserSignupProfileScreen(
+//        isArtist: isArtist,
+//      ),
+//    );
+    return Container();
   });
 }
 
 final artistVerificationHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
-  return BlocProvider<ArtistVerificationBloc>(
-    bloc: ArtistVerificationBloc(appConfig: AppConfig.of(ctx)),
-    child: ArtistVerificationScreen(uid: uid),
-  );
+//  return BlocProvider<ArtistVerificationBloc>(
+//    bloc: ArtistVerificationBloc(appConfig: AppConfig.of(ctx)),
+//    child: ArtistVerificationScreen(uid: uid),
+//  );
+  return Container();
 });
 
 final artistPendingVerificationHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
-  return BlocProvider<ArtistPendingVerificationBloc>(
-    bloc: ArtistPendingVerificationBloc(
-      uid: uid,
-      appConfig: AppConfig.of(ctx),
-    ),
-    child: ArtistPendingVerificationScreen(uid: uid),
-  );
+//  return BlocProvider<ArtistPendingVerificationBloc>(
+//    bloc: ArtistPendingVerificationBloc(
+//      uid: uid,
+//      appConfig: AppConfig.of(ctx),
+//    ),
+//    child: ArtistPendingVerificationScreen(uid: uid),
+//  );
+  return Container();
 });
 
 final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
@@ -150,7 +186,9 @@ Handler profileHandler({bool isArtist: true}) {
 //  );
 //});
 
+/*
 void defineRoutes(Router router, AppConfig appConfig) {
+  
   router.define(RouteNames.splash, handler: splashHandler);
 
   router.define(RouteNames.onBoarding, handler: onBoardingHandler);
@@ -218,7 +256,9 @@ void defineRoutes(Router router, AppConfig appConfig) {
       handler: profileHandler(isArtist: true));
   router.define(RouteNames.profile(isArtist: false),
       handler: profileHandler(isArtist: false));
+      
 }
+*/
 
 class RouteNames {
   static final splash = "/splash";

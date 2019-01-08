@@ -23,7 +23,8 @@ class FacebookAuth {
 
   FacebookAuth._internal() {
     facebookLogin = FacebookLogin();
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+//    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    facebookLogin.loginBehavior = FacebookLoginBehavior.nativeWithFallback;
   }
 
   Future<bool> isLoggedIn() {

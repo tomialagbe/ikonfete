@@ -4,14 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
-import 'package:ikonfetemobile/model/SocialFeedItem.dart';
 import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/model/social_feed_item.dart';
 import 'package:ikonfetemobile/screens/home/widgets/social_card_image.dart';
 import 'package:ikonfetemobile/screens/home/widgets/social_card_video.dart';
-import 'package:ikonfetemobile/screens/photo_gallery.dart';
+import 'package:ikonfetemobile/screens/home/widgets/twitter_gif.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/random_gradient_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:utf/utf.dart';
 
 abstract class SocialCard extends StatelessWidget {
   final SocialFeedItem feedItem;
@@ -56,14 +57,18 @@ abstract class SocialCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-//                Padding(
-//                  padding: EdgeInsets.only(left: 20, right: 20),
-//                  child: buildTextContent(),
-//                ),
-//                Padding(
-//                  padding: EdgeInsets.only(left: 2.0, right: 2.0),
-//                  child: buildImages(context),
-//                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: buildTextContent(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 2.0, right: 2.0),
+                  child: buildImages(context),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 2.0, right: 2.0),
+                  child: buildGifs(context),
+                ),
                 Padding(
                   padding: EdgeInsets.only(left: 2.0, right: 2.0),
                   child: buildVideo(context),
@@ -95,16 +100,15 @@ abstract class SocialCard extends StatelessWidget {
     final postDate = feedItem.postedDate;
     final diff = now.difference(postDate);
     String postedFuzzyDate = timeago.format(now.subtract(diff));
-    String profilePicUri = feedItem.profileImageUri ?? artist.profilePictureUrl;
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-      leading: StringUtils.isNullOrEmpty(profilePicUri)
+      leading: StringUtils.isNullOrEmpty(profilePicture)
           ? RandomGradientImage()
           : RandomGradientImage(
               child: CircleAvatar(
                 radius: 16.0,
-                backgroundImage: NetworkImage(profilePicUri),
+                backgroundImage: NetworkImage(profilePicture),
               ),
             ),
       title: Text(
@@ -134,6 +138,9 @@ abstract class SocialCard extends StatelessWidget {
     );
   }
 
+  String get profilePicture =>
+      feedItem.profileImageUri ?? artist.profilePictureUrl;
+
   Widget buildTextContent() {
     return !StringUtils.isNullOrEmpty(feedItem.textContent)
         ? Text(
@@ -151,32 +158,24 @@ abstract class SocialCard extends StatelessWidget {
       return Container();
     }
 
-    return SocialCardImage(
-        feedItem: feedItem, onTap: () => _showImageGallery(context));
+    return SocialCardImage(feedItem: feedItem);
   }
 
   Widget buildVideo(BuildContext context) {
-//    if (feedItem.videos == null || feedItem.videos.isEmpty) {
-//      return Container();
-//    }
+    if (feedItem.videos == null || feedItem.videos.isEmpty) {
+      return Container();
+    }
     return SocialCardVideo(
-      videoUrl:
-          "https://video.twimg.com/ext_tw_video/1060053547096698881/pu/vid/640x360/unY_vAC3NcciKe9U.mp4?tag=5",
-      placeHolderUrl:
-          "https://pbs.twimg.com/ext_tw_video_thumb/1060053547096698881/pu/img/-BsiZ24Up2awhmzj.jpg",
-      videoDuration: Duration(minutes: 1, seconds: 10),
+      videoUrl: feedItem.videos[0].videoUrl,
+      placeHolderUrl: feedItem.videos[0].displayImage,
+      videoDuration:
+          Duration(milliseconds: feedItem.videos[0].durationInMillis),
+      aspectRatio:
+          feedItem.videos[0].aspectRatio[0] / feedItem.videos[0].aspectRatio[1],
     );
   }
 
-  void _showImageGallery(BuildContext context) {
-    final uriList = feedItem.images.map((i) => i.fullImage).toList();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (ctx) => PhotoGalleryScreen(networkImages: uriList),
-      ),
-    );
-  }
+  Widget buildGifs(BuildContext context);
 
   Widget buildSocialIcon() {
     return Opacity(
@@ -272,6 +271,102 @@ class TwitterSocialCard extends SocialCard {
     ];
   }
 
+  @override
+  String get profilePicture {
+    final twitterFeedItem = feedItem as TwitterFeedItem;
+    if (twitterFeedItem.isRetweet) {
+      return twitterFeedItem.retweetInfo.profilePictureUrl;
+    } else {
+      return feedItem.profileImageUri ?? artist.profilePictureUrl;
+    }
+  }
+
+  @override
+  Widget buildHeader() {
+    final now = DateTime.now();
+    final postDate = feedItem.postedDate;
+    final diff = now.difference(postDate);
+    String postedFuzzyDate = timeago.format(now.subtract(diff));
+
+    final twitterFeedItem = feedItem as TwitterFeedItem;
+    String screenName = twitterFeedItem.isRetweet
+        ? twitterFeedItem.retweetInfo.screenName
+        : twitterFeedItem.screenName;
+    String name = twitterFeedItem.isRetweet
+        ? twitterFeedItem.retweetInfo.name
+        : twitterFeedItem.realName;
+
+    final retweetIndicator = twitterFeedItem.isRetweet
+        ? Row(
+            children: <Widget>[
+              SizedBox(width: 64),
+              Icon(
+                LineAwesomeIcons.retweet,
+                size: 24,
+                color: primaryColor.withOpacity(0.5),
+              ),
+              SizedBox(width: 10),
+              Text(
+                "${twitterFeedItem.realName} Retweeted",
+                style: TextStyle(color: Color(0xFF0707070)),
+              ),
+            ],
+          )
+        : Container();
+
+    return Column(
+      children: <Widget>[
+        retweetIndicator,
+        ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+          leading: StringUtils.isNullOrEmpty(profilePicture)
+              ? RandomGradientImage()
+              : RandomGradientImage(
+                  child: CircleAvatar(
+                    radius: 16.0,
+                    backgroundImage: NetworkImage(profilePicture),
+                  ),
+                ),
+          title: RichText(
+            text: TextSpan(
+              text: name,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "  @$screenName",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          subtitle: RichText(
+            text: TextSpan(
+              text: "$postedFuzzyDate via ",
+              children: <TextSpan>[
+                TextSpan(
+                  text: feedSource,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+              style: TextStyle(
+                fontSize: 13.0,
+                color: Color(0xFF0707070),
+              ),
+            ),
+          ),
+          enabled: true,
+        ),
+      ],
+    );
+  }
+
   Widget buildTextContent() {
     if (StringUtils.isNullOrEmpty(feedItem.textContent)) {
       return Container();
@@ -285,7 +380,13 @@ class TwitterSocialCard extends SocialCard {
 
     if (hashTags != null) tweetEntities.addAll(hashTags);
     if (mentions != null) tweetEntities.addAll(mentions);
-    if (urls != null) tweetEntities.addAll(urls); // TODO: strip urls from text
+    if (urls != null) tweetEntities.addAll(urls);
+    String decoded = decodeUtf16(feedItem.textContent.codeUnits);
+    if (decoded.trim().isEmpty) {
+      // Skip displaying Malformed UTF-16 characters
+      return Container();
+    }
+
     if (tweetEntities.isEmpty) {
       return Text(
         feedItem.textContent,
@@ -303,11 +404,11 @@ class TwitterSocialCard extends SocialCard {
     int start = 0;
     final runes = feedItem.textContent.runes.toList();
     for (TweetEntity entity in sortedEntities) {
-      String before =
-          String.fromCharCodes(runes.sublist(start, entity.startIndex));
+      var s = runes.sublist(start, entity.startIndex);
+      String before = s.isNotEmpty ? String.fromCharCodes(s) : "";
 
-      String link = String.fromCharCodes(
-          runes.sublist(entity.startIndex, entity.endIndex));
+      s = runes.sublist(entity.startIndex, entity.endIndex);
+      String link = s.isNotEmpty ? String.fromCharCodes(s) : "";
 
       start = entity.endIndex;
       linkedTexts.addAll([
@@ -316,7 +417,8 @@ class TwitterSocialCard extends SocialCard {
       ]);
     }
 
-    String rest = String.fromCharCodes(runes.sublist(start, runes.length));
+    var s = runes.sublist(start, runes.length);
+    String rest = s.isNotEmpty ? String.fromCharCodes(s) : "";
     linkedTexts.add(TwitterLinkedText(rest, false));
 
     for (TwitterLinkedText linkedText in linkedTexts) {
@@ -330,6 +432,21 @@ class TwitterSocialCard extends SocialCard {
 
     final textWidget = RichText(text: TextSpan(text: "", children: textSpans));
     return textWidget;
+  }
+
+  @override
+  Widget buildGifs(BuildContext context) {
+    if (feedItem.gifs == null || feedItem.gifs.isEmpty) {
+      return Container();
+    }
+
+    return TwitterGif(
+      placeHolderUrl: feedItem.gifs[0].displayImage,
+      gifUrl: feedItem.gifs[0].gifImage,
+      aspectRatio:
+          (feedItem.gifs[0].aspectRatio[0] / feedItem.gifs[0].aspectRatio[1])
+              .toDouble(),
+    );
   }
 }
 
@@ -363,6 +480,11 @@ class FacebookSocialCard extends SocialCard {
       color: primaryColor,
       size: iconSize,
     );
+  }
+
+  @override
+  Widget buildGifs(BuildContext context) {
+    return Container();
   }
 
   @override

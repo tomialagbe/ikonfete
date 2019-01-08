@@ -17,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppInitState {
   bool isOnBoarded = false;
 
-//  bool isArtist = false;
   bool isLoggedIn = false;
   FirebaseUser currentUser;
   Artist _artist;

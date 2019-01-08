@@ -19,8 +19,10 @@ class CloudStorageUploadHelper {
     StorageReference ref =
         firebaseStorage.ref().child("profile_pictures").child("$fileName");
     final uploadTask = ref.putFile(file, StorageMetadata());
-    final snapshot = await uploadTask.future;
-    String downloadUrl = snapshot.downloadUrl.toString();
+
+    final snapshot = await uploadTask.onComplete;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+//    String downloadUrl = snapshot.downloadUrl.toString();
     return UploadResult(fileName: fileName, fileDownloadUrl: downloadUrl);
   }
 

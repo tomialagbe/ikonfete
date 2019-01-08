@@ -12,6 +12,24 @@ class HudOverlay {
     return show(context, dotsLoadingIndicator(), defaultColor());
   }
 
+  static Widget getOverlay() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: defaultColor(),
+          ),
+          dotsLoadingIndicator(),
+        ],
+      ),
+    );
+  }
+
   static HudOverlay show(
       BuildContext context, Widget child, Color overlayColor) {
     final overlayState = Overlay.of(context);

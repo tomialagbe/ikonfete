@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ikonfetemobile/api/api.dart';
-import 'package:ikonfetemobile/model/SocialFeedItem.dart';
+import 'package:ikonfetemobile/model/social_feed_item.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:meta/meta.dart';
 

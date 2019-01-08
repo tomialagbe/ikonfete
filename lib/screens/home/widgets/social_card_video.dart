@@ -8,11 +8,13 @@ class SocialCardVideo extends StatefulWidget {
   final String videoUrl;
   final String placeHolderUrl;
   final Duration videoDuration;
+  final double aspectRatio;
 
   SocialCardVideo({
     @required this.videoUrl,
     @required this.placeHolderUrl,
     @required this.videoDuration,
+    @required this.aspectRatio,
   });
 
   @override
@@ -50,9 +52,10 @@ class SocialCardVideoState extends State<SocialCardVideo> {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: AspectRatio(
-        aspectRatio: 3 / 2,
+//        aspectRatio: 3 / 2,
+        aspectRatio: widget.aspectRatio,
         child: _isPlaying
-            ? _VideoContent(_controller)
+            ? _VideoContent(_controller, widget.aspectRatio)
             : _VideoPlaceHolder(
                 _controller,
                 widget.placeHolderUrl,
@@ -65,8 +68,9 @@ class SocialCardVideoState extends State<SocialCardVideo> {
 
 class _VideoContent extends StatelessWidget {
   final VideoPlayerController _controller;
+  final double aspectRatio;
 
-  _VideoContent(this._controller);
+  _VideoContent(this._controller, this.aspectRatio);
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +80,7 @@ class _VideoContent extends StatelessWidget {
           _controller,
           looping: true,
           startAt: Duration.zero,
+          aspectRatio: aspectRatio,
         ),
       ],
     );

@@ -12,6 +12,14 @@ class SocialFeedVideo {
   String videoUrl;
   int durationInMillis;
   String contentType;
+  List<int> aspectRatio;
+}
+
+class SocialFeedGif {
+  String displayImage;
+  String gifImage;
+  bool isImage;
+  List<int> aspectRatio;
 }
 
 abstract class SocialFeedItem implements Comparable<SocialFeedItem> {
@@ -42,6 +50,8 @@ abstract class SocialFeedItem implements Comparable<SocialFeedItem> {
   List<SocialFeedImage> get images;
 
   List<SocialFeedVideo> get videos;
+
+  List<SocialFeedGif> get gifs;
 
   @override
   int get hashCode => id.hashCode;
@@ -140,6 +150,11 @@ class FacebookFeedItem extends SocialFeedItem {
   List<SocialFeedVideo> get videos {
     return <SocialFeedVideo>[]; // TODO: implement this
   }
+
+  @override
+  List<SocialFeedGif> get gifs {
+    return <SocialFeedGif>[];
+  }
 }
 
 enum TweetMediaItemType { photo, video, animated_gif }
@@ -147,22 +162,27 @@ enum TwitterResize { crop, fit }
 
 class TwitterFeedItem extends SocialFeedItem {
   String text;
+  String realName;
   String screenName;
   String profileImageUrl;
   bool retweeted;
   int retweetCount;
   bool favourited;
   int favouriteCount;
+  bool isRetweet;
   List<TweetMediaItem> media;
   List<TweetHashTag> hashTags;
   List<TweetUrl> urls;
   List<TweetUserMention> userMentions;
+  RetweetInfo retweetInfo;
+  QuotedTweet quotedTweet;
 
   @override
   void fromJson(Map json) {
     super.fromJson(json);
     this
       ..text = json["text"]
+      ..realName = json["name"]
       ..screenName = json["screenName"]
       ..profileImageUrl = json["profileImageUrl"]
       ..retweeted = json["retweeted"]
@@ -172,13 +192,73 @@ class TwitterFeedItem extends SocialFeedItem {
       ..media = _parseMedia(json["media"] ?? null)
       ..hashTags = _parseHashTags(json["hashTags"] ?? null)
       ..urls = _parseUrls(json["urls"] ?? null)
-      ..userMentions = _parseUserMentions(json["userMentions"] ?? null);
+      ..userMentions = _parseUserMentions(json["userMentions"] ?? null)
+      ..isRetweet = json["isRetweet"]
+      ..retweetInfo = json["retweetInfo"] == null
+          ? null
+          : RetweetInfo.fromJson(json["retweetInfo"])
+      ..quotedTweet = json["quotedTweet"] == null
+          ? null
+          : QuotedTweet.fromJson(json["quotedTweet"]);
 
     // strip media urls from text
+    var len = text.length;
+    var shift = 0;
     for (TweetMediaItem mediaItem in media) {
-      if (mediaItem.type == TweetMediaItemType.photo ||
-          mediaItem.type == TweetMediaItemType.animated_gif) {
-        this.text = this.text.substring(0, mediaItem.startIndex);
+      if (!StringUtils.isNullOrEmpty(this.text)) {
+//        var start = 0;
+//        var end =
+//            shift > 0 ? mediaItem.startIndex - shift : mediaItem.startIndex;
+//        if (start > len || end > len) continue;
+//
+//        final s1 = this.text.substring(start, end);
+//
+//        start = shift > 0 ? mediaItem.endIndex - shift : mediaItem.endIndex;
+//        end = len;
+//        if (start > len || end > len) continue;
+//
+//        final s2 = this.text.substring(start, end);
+//
+//        var newText = "$s1$s2";
+//        shift = text.length - newText.length;
+//
+//        this.text = newText;
+//        len = newText.length;
+
+//        final runes = this.text.runes.toList();
+//        final rem = runes.sublist(0, mediaItem.startIndex)
+//          ..addAll(runes.sublist(mediaItem.endIndex, runes.length));
+//        this.text = String.fromCharCodes(rem);
+      }
+    }
+
+    _stripRetweetsFromText();
+  }
+
+  void _stripRetweetsFromText() {
+    // strip retweet text (i.e in the format RT @screenName:) and the corresponding user mention
+    if (this.text.startsWith("RT")) {
+      final retweetMention = this.userMentions[0];
+      int idx = retweetMention.endIndex + 1;
+      this.userMentions.removeAt(0);
+      this.text = this.text.substring(idx + 1);
+
+      // adjust start and end indices in tweet entities to account for stripped text
+      for (var mediaItem in media) {
+        mediaItem.startIndex -= idx + 1;
+        mediaItem.endIndex -= idx + 1;
+      }
+      for (var hashTag in hashTags) {
+        hashTag.startIndex -= idx + 1;
+        hashTag.endIndex -= idx + 1;
+      }
+      for (var url in urls) {
+        url.startIndex -= idx + 1;
+        url.endIndex -= idx + 1;
+      }
+      for (var mention in userMentions) {
+        mention.startIndex -= idx + 1;
+        mention.endIndex -= idx + 1;
       }
     }
   }
@@ -202,9 +282,8 @@ class TwitterFeedItem extends SocialFeedItem {
   List<SocialFeedImage> get images {
     if (media == null) return null;
 
-    final imageItems = media.where((item) =>
-        item.type == TweetMediaItemType.photo ||
-        item.type == TweetMediaItemType.animated_gif);
+    final imageItems =
+        media.where((item) => item.type == TweetMediaItemType.photo);
     if (imageItems.isEmpty) return null;
 
     final feedImages = <SocialFeedImage>[]
@@ -226,9 +305,27 @@ class TwitterFeedItem extends SocialFeedItem {
       ..addAll(videoItems.map((videoItem) => SocialFeedVideo()
         ..durationInMillis = videoItem.videoInfo.durationMillis
         ..contentType = videoItem.videoInfo.contentType
-        ..displayImage = videoItem.displayUrl
-        ..videoUrl = videoItem.videoInfo.videoUrl));
+        ..displayImage = videoItem.mediaUrl
+        ..videoUrl = videoItem.videoInfo.videoUrl
+        ..aspectRatio = videoItem.videoInfo.aspectRatio));
     return feedVideos;
+  }
+
+  @override
+  List<SocialFeedGif> get gifs {
+    if (media == null) return null;
+
+    final gifItems =
+        media.where((item) => item.type == TweetMediaItemType.animated_gif);
+    if (gifItems.isEmpty) return null;
+
+    final feedGifs = <SocialFeedGif>[]
+      ..addAll(gifItems.map((gifItem) => SocialFeedGif()
+        ..isImage = false
+        ..displayImage = gifItem.mediaUrl
+        ..gifImage = gifItem.videoInfo.videoUrl
+        ..aspectRatio = gifItem.videoInfo.aspectRatio));
+    return feedGifs;
   }
 
   List<TweetMediaItem> _parseMedia(List json) {
@@ -276,6 +373,35 @@ class TwitterFeedItem extends SocialFeedItem {
   }
 }
 
+class QuotedTweet {
+  String screenName;
+  String name;
+  String text;
+
+  QuotedTweet.fromJson(Map json) {
+    this
+      ..screenName = json["screenName"]
+      ..name = json["name"]
+      ..text = json["text"];
+  }
+}
+
+class RetweetInfo {
+  DateTime postedDate;
+  String screenName;
+  String name;
+  String profilePictureUrl;
+
+  RetweetInfo.fromJson(Map json) {
+    this
+      ..screenName = json["screenName"]
+      ..name = json["name"]
+      ..profilePictureUrl = json["profilePictureUrl"]
+      ..postedDate =
+          DateTime.fromMillisecondsSinceEpoch(json["postedDate"] * 1000);
+  }
+}
+
 class TweetMediaItem {
   int startIndex;
   int endIndex;
@@ -302,7 +428,8 @@ class TweetMediaItem {
       ..type = _getTwitterMediaItemType(json["type"]);
 
     // handle videos
-    this.videoInfo = type == TweetMediaItemType.video
+    this.videoInfo = type == TweetMediaItemType.video ||
+            type == TweetMediaItemType.animated_gif
         ? _getVideoInfo(json["video_info"])
         : null;
   }
@@ -328,7 +455,7 @@ class TweetMediaItem {
     final videoInfo = VideoInfo();
     List aspectRatio = videoInfoMap["aspect_ratio"];
     videoInfo.aspectRatio = <int>[aspectRatio[0], aspectRatio[1]];
-    videoInfo.durationMillis = videoInfoMap["duration_millis"];
+    videoInfo.durationMillis = videoInfoMap["duration_millis"] ?? 0;
 
     List variants = videoInfoMap["variants"]; // TODO: handle better
     if (variants.isEmpty) {
@@ -359,14 +486,7 @@ class VideoInfo {
   List<int> aspectRatio;
   int durationMillis;
   String videoUrl;
-//  List<VideoVariant> variants;
 }
-
-//class VideoVariant {
-//  String contentType;
-//  int bitrate;
-//  String url;
-//}
 
 abstract class TweetEntity implements Comparable<TweetEntity> {
   int startIndex;

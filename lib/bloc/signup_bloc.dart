@@ -6,8 +6,8 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/auth_utils.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/model/auth_utils.dart';
 
 class SignupBloc implements BlocBase {
   final AppConfig appConfig;

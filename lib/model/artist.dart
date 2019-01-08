@@ -104,4 +104,12 @@ class Artist extends Model<String> {
     });
     return map;
   }
+
+  @override
+  int get hashCode => uid.hashCode;
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      other is Artist && runtimeType == other.runtimeType && uid == other.uid;
 }

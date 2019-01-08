@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ikonfetemobile/colors.dart';
-import 'package:ikonfetemobile/model/SocialFeedItem.dart';
+import 'package:ikonfetemobile/model/social_feed_item.dart';
+import 'package:ikonfetemobile/screens/photo_gallery.dart';
 
 class SocialCardImage extends StatelessWidget {
   final SocialFeedItem feedItem;
-  final Function onTap;
 
-  SocialCardImage({
-    @required this.feedItem,
-    this.onTap,
-  });
+  SocialCardImage({@required this.feedItem});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +22,7 @@ class SocialCardImage extends StatelessWidget {
 
   Widget _buildOneImage(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _showImageGallery(context),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5.0),
         child: Container(
@@ -42,7 +39,7 @@ class SocialCardImage extends StatelessWidget {
 
   Widget _buildTwoImages(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _showImageGallery(context),
       child: Container(
         constraints: BoxConstraints(maxHeight: 300.0),
         child: Row(
@@ -65,7 +62,7 @@ class SocialCardImage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 5.0),
+//            SizedBox(width: 5.0),
             Expanded(
               flex: 1,
               child: ClipRRect(
@@ -88,7 +85,7 @@ class SocialCardImage extends StatelessWidget {
 
   Widget _buildThreeOrMoreImages(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _showImageGallery(context),
       child: Container(
         constraints: BoxConstraints(maxHeight: 300.0),
         child: Row(
@@ -98,16 +95,22 @@ class SocialCardImage extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex: 3,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(5.0),
-                    bottomLeft: Radius.circular(5.0)),
-                child: Container(
-                  child: Image.network(
-                    feedItem.images[0].displayImage,
-                    fit: BoxFit.cover,
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5.0),
+                          bottomLeft: Radius.circular(5.0)),
+                      child: Container(
+                        child: Image.network(
+                          feedItem.images[0].displayImage,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             SizedBox(width: 5.0),
@@ -162,7 +165,7 @@ class SocialCardImage extends StatelessWidget {
                                         Icon(Icons.add, color: Colors.white),
                                         SizedBox(height: 5.0),
                                         Text(
-                                            "${3 - feedItem.images.length} more",
+                                            "${feedItem.images.length - 3} more",
                                             style:
                                                 TextStyle(color: Colors.white)),
                                       ],
@@ -179,6 +182,16 @@ class SocialCardImage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showImageGallery(BuildContext context) {
+    final uriList = feedItem.images.map((i) => i.fullImage).toList();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => PhotoGalleryScreen(networkImages: uriList),
       ),
     );
   }

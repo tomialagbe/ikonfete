@@ -1,28 +1,23 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/application_bloc.dart';
-import 'package:ikonfetemobile/bloc/artist_verification_bloc.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/bloc/login_bloc.dart';
-import 'package:ikonfetemobile/bloc/pending_verification_bloc.dart';
-import 'package:ikonfetemobile/bloc/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/localization.dart';
+import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/routes.dart';
-import 'package:ikonfetemobile/screens/artist_verification.dart';
-import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
-import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
-import 'package:ikonfetemobile/screens/init_error.dart';
-import 'package:ikonfetemobile/screens/login.dart';
+import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
+import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
-import 'package:ikonfetemobile/screens/pending_verification.dart';
-import 'package:ikonfetemobile/screens/splash.dart';
-import 'package:ikonfetemobile/screens/user_signup_profile.dart';
-import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
+import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
+import 'package:ikonfetemobile/screens/signup/user_signup_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IkonfeteApp extends StatefulWidget {
-  // This widget is the root of your application.
+  final SharedPreferences preferences;
+
+  IkonfeteApp({@required this.preferences});
+
   @override
   IkonfeteAppState createState() {
     return IkonfeteAppState();
@@ -30,23 +25,92 @@ class IkonfeteApp extends StatefulWidget {
 }
 
 class IkonfeteAppState extends State<IkonfeteApp> {
-  ApplicationBloc _bloc;
+//  ApplicationBloc _bloc;
+  AppBloc _appBloc;
 
   @override
   void initState() {
     super.initState();
-    defineRoutes(router, null);
+    defineRoutes(router);
+
+    _appBloc = AppBloc(preferences: widget.preferences);
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_bloc == null) {
-      _bloc = ApplicationBloc(appConfig: AppConfig.of(context));
+  Widget build(BuildContext context) {
+    return BlocProvider<AppBloc>(
+      bloc: _appBloc,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: "SanFranciscoDisplay",
+        ),
+        localizationsDelegates: [
+          AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale("en", "NG"),
+        ],
+        onGenerateTitle: (context) {
+          return AppLocalizations.of(context).title;
+        },
+        onGenerateRoute: (settings) {
+          final routeMatch = router.match(settings.name);
+          final params = routeMatch.parameters;
+          Handler handler = routeMatch.route.handler;
+          return CupertinoPageRoute(
+            builder: (ctx) {
+              return handler.handlerFunc(ctx, params);
+            },
+            settings: settings,
+          );
+        },
+        home: BlocBuilder<AppEvent, AppState>(
+          bloc: _appBloc,
+          builder: (context, state) {
+            return getInitialScreen(context, state);
+          },
+        ),
+      ),
+    );
+  }
+
+  static Widget getInitialScreen(BuildContext context, AppState state) {
+    if (!state.isOnBoarded) {
+      return OnBoardingScreen();
+    } else if (state.isLoggedIn) {
+      if (!state.isProfileSetup) {
+        return userSignupProfileScreen(context, state.uid);
+      } else if (state.isArtist) {
+        if (state.artistOrFan.first.isVerified) {
+          // TODO: artist home screen
+          return Container();
+        } else if (state.artistOrFan.first.isPendingVerification) {
+          return pendingVerificationScreen(context, state.uid);
+        } else {
+          return artistVerificationScreen(context, state.uid);
+        }
+      } else {
+        // TODO: check if fan team is setup
+        if (state.isFanTeamSetup) {
+          // TODO: fan home screen
+          return Container();
+        } else {
+          // todo: fan team selection
+          return Container();
+        }
+      }
+    } else {
+      return loginScreen(context);
     }
+
+//    return signupScreen(context);
   }
 
-  @override
+/*@override
   Widget build(BuildContext context) {
     return BlocProvider<ApplicationBloc>(
       bloc: _bloc,
@@ -162,4 +226,5 @@ class IkonfeteAppState extends State<IkonfeteApp> {
       ),
     );
   }
+  */
 }
