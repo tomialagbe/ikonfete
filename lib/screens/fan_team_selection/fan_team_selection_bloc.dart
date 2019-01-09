@@ -1,104 +1,286 @@
-import 'dart:async';
-
+import 'package:bloc/bloc.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/artist.dart';
+import 'package:ikonfetemobile/api/fan.dart';
 import 'package:ikonfetemobile/api/teams.dart';
 import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/model/team.dart';
 import 'package:ikonfetemobile/types/types.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-class FanTeamSelectionBloc extends BlocBase {
-  final AppConfig appConfig;
+abstract class TeamSelectionEvent {}
 
-  BehaviorSubject<String> _searchArtistTeamActionController =
-      BehaviorSubject<String>();
-  StreamController<List<Team>> _searchArtistTeamResultController =
-      StreamController.broadcast();
+class LoadFan extends TeamSelectionEvent {
+  final String uid;
 
-  /// A stream that takes the uid of an artist
-  StreamController<Team> _loadArtistForTeamActionController =
-      StreamController.broadcast();
-  StreamController<Pair<Team, Artist>> _loadArtistForTeamResultController =
-      StreamController.broadcast();
+  LoadFan(this.uid);
+}
 
-  /// A stream that takes a pair of - the team id and the fan id and adds the fan to the
-  /// team
-  StreamController<Pair<String, String>> _addFanToTeamActionController =
-      StreamController<Pair<String, String>>();
+class _LoadFan extends TeamSelectionEvent {
+  final String uid;
 
-  StreamController<bool> _addFanToTeamResultController =
-      StreamController.broadcast();
+  _LoadFan(this.uid);
+}
 
-  Sink<String> get searchArtistTeam => _searchArtistTeamActionController.sink;
+class SearchQuery extends TeamSelectionEvent {
+  final String query;
 
-  Stream<List<Team>> get searchArtistTeamResult =>
-      _searchArtistTeamResultController.stream;
+  SearchQuery(this.query);
+}
 
-  Sink<Team> get loadArtistForTeam => _loadArtistForTeamActionController.sink;
+class _SearchQuery extends TeamSelectionEvent {
+  final String query;
 
-  Stream<Pair<Team, Artist>> get loadArtistForTeamResult =>
-      _loadArtistForTeamResultController.stream;
+  _SearchQuery(this.query);
+}
 
-  Sink<Pair<String, String>> get addFanToTeam =>
-      _addFanToTeamActionController.sink;
+class TeamSelected extends TeamSelectionEvent {
+  final Team team;
 
-  Stream<bool> get addFanToTeamResult => _addFanToTeamResultController.stream;
+  TeamSelected(this.team);
+}
 
-  FanTeamSelectionBloc({@required this.appConfig}) {
-    _searchArtistTeamActionController.stream
-        .debounce(Duration(milliseconds: 500))
-        .listen(_searchArtistTeams);
-    _loadArtistForTeamActionController.stream.listen(_loadArtistForTeam);
-    _addFanToTeamActionController.stream
-        .listen((r) => _addFanToTeam(r.first, r.second));
+class _LoadArtistForTeam extends TeamSelectionEvent {
+  final Team team;
+
+  _LoadArtistForTeam(this.team);
+}
+
+class AddFanToTeam extends TeamSelectionEvent {
+  final String teamId;
+  final String fanUid;
+
+  AddFanToTeam({@required this.teamId, @required this.fanUid});
+}
+
+class _AddFanToTeam extends TeamSelectionEvent {
+  final String teamId;
+  final String fanUid;
+
+  _AddFanToTeam({@required this.teamId, @required this.fanUid});
+}
+
+class ClearSelectedTeam extends TeamSelectionEvent {}
+
+class TeamSelectionState {
+  final bool isLoading;
+  final Fan fan;
+  final List<Team> teams;
+  final bool isSearching;
+  final Team selectedTeam;
+  final Artist selectedArtist;
+  final bool hasError;
+  final String errorMessage;
+  final bool teamSelectionResult;
+
+  TeamSelectionState({
+    @required this.isLoading,
+    @required this.fan,
+    @required this.teams,
+    @required this.isSearching,
+    @required this.selectedTeam,
+    @required this.selectedArtist,
+    @required this.hasError,
+    @required this.errorMessage,
+    @required this.teamSelectionResult,
+  });
+
+  factory TeamSelectionState.initial() {
+    return TeamSelectionState(
+      isLoading: false,
+      fan: null,
+      teams: [],
+      isSearching: false,
+      selectedTeam: null,
+      selectedArtist: null,
+      hasError: false,
+      errorMessage: null,
+      teamSelectionResult: false,
+    );
+  }
+
+  TeamSelectionState copyWith({
+    bool isLoading,
+    Fan fan,
+    List<Team> teams,
+    bool isSearching,
+    Team selectedTeam,
+    Artist selectedArtist,
+    bool hasError,
+    String errorMessage,
+    bool teamSelectionResult,
+  }) {
+    return TeamSelectionState(
+      isLoading: isLoading ?? this.isLoading,
+      fan: fan ?? this.fan,
+      teams: teams ?? this.teams,
+      isSearching: isSearching ?? this.isSearching,
+      selectedTeam: selectedTeam ?? this.selectedTeam,
+      selectedArtist: selectedArtist ?? this.selectedArtist,
+      hasError: hasError ?? this.hasError,
+      errorMessage: errorMessage ?? this.errorMessage,
+      teamSelectionResult: teamSelectionResult ?? this.teamSelectionResult,
+    );
+  }
+
+  TeamSelectionState withError(String errorMessage) {
+    return copyWith(
+        isLoading: false,
+        isSearching: false,
+        hasError: true,
+        errorMessage: errorMessage);
   }
 
   @override
-  void dispose() {
-    _searchArtistTeamActionController.close();
-    _searchArtistTeamResultController.close();
-    _loadArtistForTeamActionController.close();
-    _loadArtistForTeamResultController.close();
-    _addFanToTeamActionController.close();
-    _addFanToTeamResultController.close();
+  bool operator ==(other) =>
+      identical(this, other) &&
+      other is TeamSelectionState &&
+      runtimeType == other.runtimeType &&
+      isLoading == other.isLoading &&
+      fan == other.fan &&
+      teams == other.teams &&
+      isSearching == other.isSearching &&
+      selectedTeam == other.selectedTeam &&
+      selectedArtist == other.selectedArtist &&
+      hasError == other.hasError &&
+      errorMessage == other.errorMessage &&
+      teamSelectionResult == other.teamSelectionResult;
+
+  @override
+  int get hashCode =>
+      isLoading.hashCode ^
+      teams.hashCode ^
+      fan.hashCode ^
+      isSearching.hashCode ^
+      selectedTeam.hashCode ^
+      selectedArtist.hashCode ^
+      hashCode.hashCode ^
+      errorMessage.hashCode ^
+      teamSelectionResult.hashCode;
+}
+
+class TeamSelectionBloc extends Bloc<TeamSelectionEvent, TeamSelectionState> {
+  final AppConfig appConfig;
+
+  TeamSelectionBloc({@required this.appConfig});
+
+  @override
+  TeamSelectionState get initialState => TeamSelectionState.initial();
+
+  @override
+  void onTransition(
+      Transition<TeamSelectionEvent, TeamSelectionState> transition) {
+    super.onTransition(transition);
+    final event = transition.event;
+
+    if (event is LoadFan) {
+      dispatch(_LoadFan(event.uid));
+    }
+
+    if (event is SearchQuery) {
+      dispatch(_SearchQuery(event.query));
+    }
+
+    if (event is TeamSelected) {
+      dispatch(_LoadArtistForTeam(event.team));
+    }
+
+    if (event is AddFanToTeam) {
+      dispatch(_AddFanToTeam(teamId: event.teamId, fanUid: event.fanUid));
+    }
   }
 
-  void _searchArtistTeams(String query) async {
+  @override
+  Stream<TeamSelectionEvent> transform(Stream<TeamSelectionEvent> events) {
+    return (events as Observable<TeamSelectionEvent>)
+        .debounce(Duration(milliseconds: 100));
+  }
+
+  // TODO: implement infinite scrolling list
+  @override
+  Stream<TeamSelectionState> mapEventToState(
+      TeamSelectionState state, TeamSelectionEvent event) async* {
+    if (event is LoadFan || event is AddFanToTeam) {
+      yield state.copyWith(isLoading: true, hasError: false);
+    }
+
+    if (event is SearchQuery) {
+      yield state.copyWith(isSearching: true, hasError: false);
+    }
+
+    if (event is TeamSelected) {
+      yield state.copyWith(
+          selectedTeam: event.team, isLoading: true, hasError: false);
+    }
+
+    if (event is ClearSelectedTeam) {
+      yield TeamSelectionState.initial()
+          .copyWith(fan: state.fan, teams: state.teams);
+    }
+
+    try {
+      if (event is _LoadFan) {
+        final fan = await _loadFan(event.uid);
+        dispatch(SearchQuery(""));
+        yield state.copyWith(isLoading: false, fan: fan, hasError: false);
+      }
+
+      if (event is _SearchQuery) {
+        final teams = await _searchArtistTeams(event.query);
+        yield state.copyWith(isSearching: false, teams: teams, hasError: false);
+      }
+
+      if (event is _LoadArtistForTeam) {
+        final artist = await _loadArtistForTeam(event.team);
+        yield state.copyWith(
+            selectedArtist: artist.second, isLoading: false, hasError: false);
+      }
+
+      if (event is _AddFanToTeam) {
+        final result = await _addFanToTeam(event.teamId, event.fanUid);
+        yield state.copyWith(isLoading: false, teamSelectionResult: result);
+      }
+    } on ApiException catch (e) {
+      yield state.withError(e.message);
+    }
+  }
+
+  Future<Fan> _loadFan(String uid) async {
+    try {
+      final fanApi = FanApi(appConfig.serverBaseUrl);
+      final fan = fanApi.findByUID(uid);
+      if (fan == null) {
+        throw ApiException("Fan not found");
+      }
+      return fan;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<List<Team>> _searchArtistTeams(String query) async {
     final teamApi = TeamApi(appConfig.serverBaseUrl);
     List<Team> teams;
-    try {
-      if (query.trim().isEmpty) {
-        teams = await teamApi.getTeams(1, 20);
-      } else {
-        teams = await teamApi.searchTeams(query, 1, 20);
-      }
-      _searchArtistTeamResultController.add(teams);
-    } on ApiException catch (e) {
-      _searchArtistTeamResultController.addError(e.message);
+    if (query.trim().isEmpty) {
+      teams = await teamApi.getTeams(1, 20);
+    } else {
+      teams = await teamApi.searchTeams(query, 1, 20);
     }
+    return teams;
   }
 
-  void _loadArtistForTeam(Team team) async {
+  Future<Pair<Team, Artist>> _loadArtistForTeam(Team team) async {
     final artistApi = ArtistApi(appConfig.serverBaseUrl);
-    try {
-      final artist = await artistApi.findByUID(team.artistUid);
-      _loadArtistForTeamResultController.add(Pair.from(team, artist));
-    } on ApiException catch (e) {
-      _loadArtistForTeamResultController.addError(e.message);
-    }
+    final artist = await artistApi.findByUID(team.artistUid);
+    return Pair.from(team, artist);
   }
 
-  void _addFanToTeam(String teamId, String fanId) async {
+  Future<bool> _addFanToTeam(String teamId, String fanUid) async {
     final teamApi = TeamApi(appConfig.serverBaseUrl);
-    try {
-      final success = await teamApi.addFanToTeam(teamId, fanId);
-      _addFanToTeamResultController.add(success);
-    } on ApiException catch (e) {
-      _addFanToTeamResultController.addError(e.message);
-    }
+    final success = await teamApi.addFanToTeam(teamId, fanUid);
+    return success;
   }
 }

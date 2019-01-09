@@ -69,7 +69,7 @@ class UserSignupProfileState {
 
   factory UserSignupProfileState.initial() {
     return UserSignupProfileState(
-      isLoading: true,
+      isLoading: false,
       username: null,
       profilePicture: null,
       countryIsoCode: null,

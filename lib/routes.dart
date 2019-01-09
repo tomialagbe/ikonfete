@@ -2,8 +2,6 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
-import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection_bloc.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
@@ -144,10 +142,11 @@ final artistPendingVerificationHandler = Handler(handlerFunc: (ctx, params) {
 final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
   final uid = params["uid"][0];
   final name = params["name"][0];
-  return BlocProvider<FanTeamSelectionBloc>(
-    bloc: FanTeamSelectionBloc(appConfig: AppConfig.of(ctx)),
-    child: FanTeamSelectionScreen(uid: uid, name: name),
-  );
+//  return BlocProvider<FanTeamSelectionBloc>(
+//    bloc: FanTeamSelectionBloc(appConfig: AppConfig.of(ctx)),
+//    child: FanTeamSelectionScreen(uid: uid, name: name),
+//  );
+  return Container();
 });
 
 final artistHomeHandler = Handler(handlerFunc: (ctx, params) {

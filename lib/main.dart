@@ -7,6 +7,7 @@ import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
@@ -94,13 +95,12 @@ class IkonfeteAppState extends State<IkonfeteApp> {
           return artistVerificationScreen(context, state.uid);
         }
       } else {
-        // TODO: check if fan team is setup
+        // check if fan team is setup
         if (state.isFanTeamSetup) {
           // TODO: fan home screen
           return Container();
         } else {
-          // todo: fan team selection
-          return Container();
+          return teamSelectionScreen(context, state.uid);
         }
       }
     } else {

@@ -28,8 +28,16 @@ Widget signupScreen(BuildContext context) {
   );
 }
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
+  @override
+  _SignupScreenState createState() {
+    return new _SignupScreenState();
+  }
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   final formKey = GlobalKey<FormState>();
 
   @override

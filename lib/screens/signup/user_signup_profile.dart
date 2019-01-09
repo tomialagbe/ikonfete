@@ -13,6 +13,7 @@ import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/screen_utils.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/signup/user_signup_profile_bloc.dart';
 import 'package:ikonfetemobile/utils/compressed_image_capture.dart';
 import 'package:ikonfetemobile/widget/form_fields.dart';
@@ -72,7 +73,10 @@ class _UserSignupProfileScreenState extends State<UserSignupProfileScreen> {
                         ),
                       );
                     } else {
-                      //TODO: navigate to team selection screen
+                      Navigator.of(context)
+                          .pushReplacement(CupertinoPageRoute(builder: (ctx) {
+                        return teamSelectionScreen(ctx, widget.uid);
+                      }));
                     }
                   });
                 } else {
