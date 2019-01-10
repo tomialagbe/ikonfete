@@ -58,13 +58,18 @@ class AppState {
 
   String get uid => currentUser != null ? currentUser.uid : null;
 
-  factory AppState.initial(SharedPreferences preferences) {
+  factory AppState.initial(
+      SharedPreferences preferences, FirebaseUser currentUser) {
     // get shared prefs
+    final isOnBoarded =
+        preferences.getBool(PreferenceKeys.isOnBoarded) ?? false;
+    final isLoggedIn = preferences.getBool(PreferenceKeys.isLoggedIn) ?? false;
+// TODO: load artist or fan
 
     return AppState(
-      isOnBoarded: preferences.getBool(PreferenceKeys.isOnBoarded) ?? false,
-      isLoggedIn: false,
-      currentUser: null,
+      isOnBoarded: isOnBoarded,
+      isLoggedIn: isLoggedIn,
+      currentUser: currentUser,
       isProfileSetup: false,
       isFanTeamSetup: false,
       isArtist: preferences.getBool(PreferenceKeys.isArtist) ?? false,
@@ -118,11 +123,13 @@ class AppState {
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   final SharedPreferences preferences;
+  final FirebaseUser initialCurrentUser;
 
-  AppBloc({@required this.preferences});
+  AppBloc({@required this.preferences, @required this.initialCurrentUser});
 
   @override
-  AppState get initialState => AppState.initial(preferences);
+  AppState get initialState =>
+      AppState.initial(preferences, initialCurrentUser);
 
   @override
   Stream<AppState> mapEventToState(AppState state, AppEvent event) async* {
@@ -141,6 +148,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     if (event is Signout) {
       await _signOut();
+      await preferences.setBool(PreferenceKeys.isLoggedIn, false);
+      await preferences.remove(PreferenceKeys.uid);
       yield state.copyWith(
           artistOrFan: null, isLoggedIn: false, currentUser: null);
     }
@@ -155,6 +164,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final isProfileSetup = isArtist
           ? !StringUtils.isNullOrEmpty(artistOrFan.first.username)
           : !StringUtils.isNullOrEmpty(artistOrFan.second.username);
+      final uid = isArtist ? artistOrFan.first.uid : artistOrFan.second.uid;
+
+      await preferences.setBool(PreferenceKeys.isLoggedIn, true);
+      await preferences.setString(PreferenceKeys.uid, uid);
 
       yield state.copyWith(
         artistOrFan: artistOrFan,

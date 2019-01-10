@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,8 @@ void main() async {
     ),
   );
 
-  var sharedPreferences = await SharedPreferences.getInstance();
+  final sharedPreferences = await SharedPreferences.getInstance();
+  final currentUser = await FirebaseAuth.instance.currentUser();
 
   var configuredApp = AppConfig(
     appName: "Ikonfete",
@@ -45,7 +47,8 @@ void main() async {
       accessTokenSecret: "dTdKFRrZScqgERhzLQnQEqrgkWNDag5T5yQF3ncAukS0h",
     ),
     serverBaseUrl: "https://7fdf08c6.ngrok.io",
-    child: IkonfeteApp(preferences: sharedPreferences),
+    child:
+        IkonfeteApp(preferences: sharedPreferences, currentUser: currentUser),
   );
   runApp(configuredApp);
 }

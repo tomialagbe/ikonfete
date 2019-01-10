@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:ikonfetemobile/screens/home/home.dart';
 import 'package:ikonfetemobile/screens/ikonscreen/ikon_screen.dart';
 import 'package:ikonfetemobile/screens/messages/inbox.dart';
@@ -39,11 +38,11 @@ class MenuItem {
 
 Map<MenuItem, Screen> zoomScaffoldMenuItems({@required bool isArtist}) {
   final menu = <MenuItem, Screen>{};
+
   menu[MenuItem(id: MenuIDs.home, title: 'Home', isDefault: true)] =
-      homeScreen(isArtist: isArtist);
+      homeScreen();
   menu[MenuItem(id: MenuIDs.superFans, title: 'Super Fans')] = superfansScreen;
 
-  // artist menu
   if (isArtist) {
     menu[MenuItem(id: MenuIDs.team, title: 'Team')] = teamScreen;
     menu[MenuItem(id: MenuIDs.inbox, title: 'Inbox')] = inboxScreen;
@@ -72,6 +71,7 @@ Screen defaultScreen({@required bool isArtist}) {
   return zoomScaffoldMenuItems(isArtist: isArtist)[menuItem];
 }
 
+//MenuItem defaultMenuItem({@required bool isArtist}) {
 MenuItem defaultMenuItem({@required bool isArtist}) {
   final menuItem = zoomScaffoldMenuItems(isArtist: isArtist)
       .keys

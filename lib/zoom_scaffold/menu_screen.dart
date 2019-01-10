@@ -1,12 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/bloc/application_bloc.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
-import 'package:ikonfetemobile/routes.dart';
-import 'package:ikonfetemobile/utils/logout_helper.dart';
+import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/zoom_scaffold/menu.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -102,7 +99,8 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         });
   }
 
-  Widget createMenuProfileDetails(MenuController menuController) {
+  Widget createMenuProfileDetails(
+      MenuController menuController, AppState appState) {
     switch (menuController.state) {
       case MenuState.open:
       case MenuState.opening:
@@ -114,10 +112,15 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         break;
     }
 
-    final initState = BlocProvider.of<ApplicationBloc>(context).initState;
-    final photoUrl = initState.isArtist
-        ? initState.artist.profilePictureUrl
-        : initState.fan.profilePictureUrl;
+//    final initState = BlocProvider.of<ApplicationBloc>(context).initState;
+    final isArtist = appState.isArtist;
+    final artist = isArtist ? appState.artistOrFan.first : null;
+    final fan = isArtist ? null : appState.artistOrFan.second;
+    final photoUrl =
+        isArtist ? artist.profilePictureUrl : fan.profilePictureUrl;
+//    final photoUrl = initState.isArtist
+//        ? initState.artist.profilePictureUrl
+//        : initState.fan.profilePictureUrl;
 
     return Transform(
       transform: Matrix4.translationValues(0.0, 100.0, 0.0),
@@ -133,19 +136,20 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
               isThreeLine: false,
               onTap: () async {
                 // navigate to profile page
-                final result = router.navigateTo(
-                  context,
-                  RouteNames.profile(
-                      uid: initState.currentUser.uid,
-                      isArtist: initState.isArtist),
-                  replace: false,
-                  transition: TransitionType.inFromRight,
-                );
-                if (result != null &&
-                    (result is bool) &&
-                    (result as bool) == true) {
-                  setState(() {});
-                }
+                // TODO: fix
+//                    final result = router.navigateTo(
+//                      context,
+//                      RouteNames.profile(
+//                          uid: initState.currentUser.uid,
+//                          isArtist: initState.isArtist),
+//                      replace: false,
+//                      transition: TransitionType.inFromRight,
+//                    );
+//                    if (result != null &&
+//                        (result is bool) &&
+//                        (result as bool) == true) {
+//                      setState(() {});
+//                    }
               },
               leading: CircleAvatar(
                 backgroundColor: primaryColor,
@@ -155,7 +159,8 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                     : MemoryImage(kTransparentImage),
               ),
               title: Text(
-                initState.isArtist ? initState.artist.name : initState.fan.name,
+//                    initState.isArtist ? initState.artist.name : initState.fan.name,
+                appState.isArtist ? artist.name : fan.name,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -163,9 +168,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                 ),
               ),
               subtitle: Text(
-                initState.isArtist
-                    ? "@${initState.artist.username}"
-                    : "@${initState.fan.username}",
+                isArtist ? "@${artist.username}" : "@${fan.username}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.0,
@@ -220,8 +223,11 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget createFeteScore(MenuController menuController) {
-    final initState = BlocProvider.of<ApplicationBloc>(context).initState;
+  Widget createFeteScore(MenuController menuController, AppState appState) {
+    final isArtist = appState.isArtist;
+    final artist = isArtist ? appState.artistOrFan.first : null;
+    final fan = isArtist ? null : appState.artistOrFan.second;
+
     return Positioned(
       bottom: 100.0,
       left: 35.0,
@@ -234,9 +240,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Text(
-              initState.isArtist
-                  ? initState.artist.feteScore.toString()
-                  : initState.fan.feteScore.toString(),
+              isArtist ? artist.feteScore.toString() : fan.feteScore.toString(),
               style: TextStyle(fontSize: 50.0, color: Color(0xFFF0F0F0)),
             ),
             SizedBox(width: 5.0),
@@ -247,8 +251,13 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget createLogoutMenuItem(MenuController menuController) {
-    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+  Widget createLogoutMenuItem(
+      MenuController menuController, AppState appState) {
+//    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+    final isArtist = appState.isArtist;
+    final artist = isArtist ? appState.artistOrFan.first : null;
+    final fan = isArtist ? null : appState.artistOrFan.second;
+
     return Positioned(
       bottom: 30.0,
       left: 35.0,
@@ -257,20 +266,21 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 800),
         child: GestureDetector(
           onTap: () async {
-            if (await canLogout(context)) {
-              if (await appBloc.doLogout()) {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  router.navigateTo(
-                    context,
-                    RouteNames.login(isArtist: appBloc.initState.isArtist),
-                    transition: TransitionType.inFromLeft,
-                    replace: true,
-                  );
-                }
-              }
-            }
+            // TODO: fix
+//            if (await canLogout(context)) {
+//              if (await appBloc.doLogout()) {
+//                if (Navigator.canPop(context)) {
+//                  Navigator.pop(context);
+//                } else {
+//                  router.navigateTo(
+//                    context,
+//                    RouteNames.login(isArtist: appBloc.initState.isArtist),
+//                    transition: TransitionType.inFromLeft,
+//                    replace: true,
+//                  );
+//                }
+//              }
+//            }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -320,34 +330,41 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         }
       }
 
-      return new Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: new BoxDecoration(
-          image: new DecorationImage(
-            image: new AssetImage('assets/images/dark_grunge_bk.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: new Material(
-          color: Colors.transparent,
-          child: new Stack(
-            children: [
+      final appBloc = BlocProvider.of<AppBloc>(context);
+
+      return BlocBuilder<AppEvent, AppState>(
+        bloc: appBloc,
+        builder: (BuildContext ctx, AppState appState) {
+          return new Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new AssetImage('assets/images/dark_grunge_bk.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: new Material(
+              color: Colors.transparent,
+              child: new Stack(
+                children: [
 //              createMenuTitle(menuController),
-              createMenuItems(menuController),
-              createMenuProfileDetails(menuController),
-              createFeteScore(menuController),
-              createLogoutMenuItem(menuController),
-              shouldRenderSelector
-                  ? new ItemSelector(
-                      topY: actualSelectorYTop,
-                      bottomY: actualSelectorYBottom,
-                      opacity: selectorOpacity,
-                    )
-                  : new Container(),
-            ],
-          ),
-        ),
+                  createMenuItems(menuController),
+                  createMenuProfileDetails(menuController, appState),
+                  createFeteScore(menuController, appState),
+                  createLogoutMenuItem(menuController, appState),
+                  shouldRenderSelector
+                      ? new ItemSelector(
+                          topY: actualSelectorYTop,
+                          bottomY: actualSelectorYBottom,
+                          opacity: selectorOpacity,
+                        )
+                      : new Container(),
+                ],
+              ),
+            ),
+          );
+        },
       );
     });
   }

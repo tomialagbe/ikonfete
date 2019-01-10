@@ -1,13 +1,12 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/screens/home/artist_home.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
-import 'package:ikonfetemobile/screens/profile/profile_screen.dart';
-import 'package:ikonfetemobile/screens/profile/profile_screen_bloc.dart';
 import 'package:ikonfetemobile/screens/signup/signup.dart';
 import 'package:ikonfetemobile/screens/splash.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
@@ -56,7 +55,15 @@ void defineRoutes(Router router) {
     Routes.fanHome,
     handler: Handler(
       handlerFunc: (ctx, params) {
-        return ZoomScaffoldScreen(screenId: 'home');
+        return BlocBuilder<AppEvent, AppState>(
+          bloc: BlocProvider.of<AppBloc>(ctx),
+          builder: (BuildContext context, AppState appState) {
+            return ZoomScaffoldScreen(
+              screenId: 'home',
+              appState: appState,
+            );
+          },
+        );
       },
     ),
   );
@@ -171,28 +178,31 @@ final fanTeamSelectionHandler = Handler(handlerFunc: (ctx, params) {
 });
 
 final artistHomeHandler = Handler(handlerFunc: (ctx, params) {
-  return ZoomScaffoldScreen(
-    isArtist: true,
-    screenId: 'home',
-    params: <String, String>{},
-  );
+//  return ZoomScaffoldScreen(
+//    isArtist: true,
+//    screenId: 'home',
+//    params: <String, String>{},
+//  );
+  return Container();
 });
 
 final fanHomeHandler = Handler(handlerFunc: (ctx, params) {
-  return ZoomScaffoldScreen(
-    isArtist: false,
-    screenId: 'home',
-    params: <String, String>{},
-  );
+//  return ZoomScaffoldScreen(
+//    isArtist: false,
+//    screenId: 'home',
+//    params: <String, String>{},
+//  );
+  return Container();
 });
 
 Handler profileHandler({bool isArtist: true}) {
   return Handler(handlerFunc: (ctx, params) {
     final uid = params["uid"][0];
-    return BlocProvider<ProfileScreenBloc>(
-      bloc: ProfileScreenBloc(appConfig: AppConfig.of(ctx), isArtist: isArtist),
-      child: ProfileScreen(uid: uid, isArtist: isArtist),
-    );
+//    return BlocProvider<ProfileScreenBloc>(
+//      bloc: ProfileScreenBloc(appConfig: AppConfig.of(ctx), isArtist: isArtist),
+//      child: ProfileScreen(uid: uid, isArtist: isArtist),
+//    );
+    return Container();
   });
 }
 

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/application_bloc.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
@@ -11,9 +10,7 @@ import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/model/settings.dart';
 import 'package:ikonfetemobile/screens/settings/settings_bloc.dart';
 import 'package:ikonfetemobile/streaming/deezer/deezer.dart';
-import 'package:ikonfetemobile/streaming/deezer/deezer_auth_bloc.dart';
 import 'package:ikonfetemobile/streaming/spotify/models.dart';
-import 'package:ikonfetemobile/streaming/spotify/spotify_auth_bloc.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
@@ -24,14 +21,15 @@ import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 final Screen settingsScreen = Screen(
   title: "Settings",
   contentBuilder: (context) {
-    return BlocProvider<SettingsBloc>(
-      bloc: SettingsBloc(
-        appConfig: AppConfig.of(context),
-        deezerAuthBloc: DeezerAuthBloc(),
-        spotifyAuthBloc: SpotifyAuthBloc(),
-      ),
-      child: SettingsScreen(),
-    );
+//    return BlocProvider<SettingsBloc>(
+//      bloc: SettingsBloc(
+//        appConfig: AppConfig.of(context),
+//        deezerAuthBloc: DeezerAuthBloc(),
+//        spotifyAuthBloc: SpotifyAuthBloc(),
+//      ),
+//      child: SettingsScreen(),
+//    );
+    return Container();
   },
 );
 

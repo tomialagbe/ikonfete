@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,18 +9,18 @@ import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
-import 'package:ikonfetemobile/screens/home/artist_home.dart';
-import 'package:ikonfetemobile/screens/home/fan_home/fan_home.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
 import 'package:ikonfetemobile/screens/signup/user_signup_profile.dart';
+import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IkonfeteApp extends StatefulWidget {
   final SharedPreferences preferences;
+  final FirebaseUser currentUser;
 
-  IkonfeteApp({@required this.preferences});
+  IkonfeteApp({@required this.preferences, @required this.currentUser});
 
   @override
   IkonfeteAppState createState() {
@@ -35,7 +36,9 @@ class IkonfeteAppState extends State<IkonfeteApp> {
     super.initState();
     defineRoutes(router);
 
-    _appBloc = AppBloc(preferences: widget.preferences);
+    _appBloc = AppBloc(
+        preferences: widget.preferences,
+        initialCurrentUser: widget.currentUser);
   }
 
   @override
@@ -88,7 +91,10 @@ class IkonfeteAppState extends State<IkonfeteApp> {
         return userSignupProfileScreen(context, state.uid);
       } else if (state.isArtist) {
         if (state.artistOrFan.first.isVerified) {
-          return artistHomeScreen(context);
+          return ZoomScaffoldScreen(
+            screenId: 'home',
+            appState: state,
+          );
         } else if (state.artistOrFan.first.isPendingVerification) {
           return pendingVerificationScreen(context, state.uid);
         } else {
@@ -97,7 +103,10 @@ class IkonfeteAppState extends State<IkonfeteApp> {
       } else {
         // check if fan team is setup
         if (state.isFanTeamSetup) {
-          return fanHomeScreen(context);
+          return ZoomScaffoldScreen(
+            screenId: 'home',
+            appState: state,
+          );
         } else {
           return teamSelectionScreen(context, state.uid);
         }
@@ -105,8 +114,6 @@ class IkonfeteAppState extends State<IkonfeteApp> {
     } else {
       return loginScreen(context);
     }
-
-//    return signupScreen(context);
   }
 
 /*@override

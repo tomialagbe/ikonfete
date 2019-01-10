@@ -184,8 +184,14 @@ class _SignupScreenState extends State<SignupScreen> {
     final appBloc = BlocProvider.of<AppBloc>(context);
 
     final tapHandler = TapGestureRecognizer();
-    tapHandler.onTap =
-        () => Navigator.pushReplacementNamed(context, Routes.login);
+//    tapHandler.onTap = () => Navigator.pushReplacementNamed(context, Routes.login);
+    tapHandler.onTap = () {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      } else {
+        Navigator.pushReplacementNamed(context, Routes.login);
+      }
+    };
 
     final signInText = TextSpan(
       text: AppLocalizations.of(context).signIn, //"Sign in",
