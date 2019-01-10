@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+Widget artistHomeScreen(BuildContext context) {
+  return ArtistHomeScreen();
+}
+
 class ArtistHomeScreen extends StatefulWidget {
   @override
   _ArtistHomeScreenState createState() => _ArtistHomeScreenState();

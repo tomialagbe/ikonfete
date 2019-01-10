@@ -8,6 +8,8 @@ import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
+import 'package:ikonfetemobile/screens/home/artist_home.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/fan_home.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
@@ -26,7 +28,6 @@ class IkonfeteApp extends StatefulWidget {
 }
 
 class IkonfeteAppState extends State<IkonfeteApp> {
-//  ApplicationBloc _bloc;
   AppBloc _appBloc;
 
   @override
@@ -87,8 +88,7 @@ class IkonfeteAppState extends State<IkonfeteApp> {
         return userSignupProfileScreen(context, state.uid);
       } else if (state.isArtist) {
         if (state.artistOrFan.first.isVerified) {
-          // TODO: artist home screen
-          return Container();
+          return artistHomeScreen(context);
         } else if (state.artistOrFan.first.isPendingVerification) {
           return pendingVerificationScreen(context, state.uid);
         } else {
@@ -97,8 +97,7 @@ class IkonfeteAppState extends State<IkonfeteApp> {
       } else {
         // check if fan team is setup
         if (state.isFanTeamSetup) {
-          // TODO: fan home screen
-          return Container();
+          return fanHomeScreen(context);
         } else {
           return teamSelectionScreen(context, state.uid);
         }

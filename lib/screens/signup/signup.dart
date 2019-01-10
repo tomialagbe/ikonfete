@@ -10,6 +10,7 @@ import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
 import 'package:ikonfetemobile/screens/signup/activation.dart';
 import 'package:ikonfetemobile/screens/signup/signup_bloc.dart';
 import 'package:ikonfetemobile/screens/signup/signup_events.dart';
@@ -75,8 +76,16 @@ class _SignupScreenState extends State<SignupScreen> {
                             ctx, signupResult.artist.uid)));
                   });
                 } else {
-                  // TODO:
                   // if fan, go to team selection
+                  _onWidgetDidBuild(() {
+                    Navigator.of(context).pushReplacement(
+                      CupertinoPageRoute(
+                        builder: (ctx) {
+                          return teamSelectionScreen(ctx, signupResult.fan.uid);
+                        },
+                      ),
+                    );
+                  });
                 }
               }
             } else {

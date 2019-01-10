@@ -72,6 +72,7 @@ class TeamSelectionState {
   final bool isSearching;
   final Team selectedTeam;
   final Artist selectedArtist;
+  final bool showArtistModal;
   final bool hasError;
   final String errorMessage;
   final bool teamSelectionResult;
@@ -83,6 +84,7 @@ class TeamSelectionState {
     @required this.isSearching,
     @required this.selectedTeam,
     @required this.selectedArtist,
+    @required this.showArtistModal,
     @required this.hasError,
     @required this.errorMessage,
     @required this.teamSelectionResult,
@@ -96,6 +98,7 @@ class TeamSelectionState {
       isSearching: false,
       selectedTeam: null,
       selectedArtist: null,
+      showArtistModal: false,
       hasError: false,
       errorMessage: null,
       teamSelectionResult: false,
@@ -109,6 +112,7 @@ class TeamSelectionState {
     bool isSearching,
     Team selectedTeam,
     Artist selectedArtist,
+    bool showArtistModal,
     bool hasError,
     String errorMessage,
     bool teamSelectionResult,
@@ -120,6 +124,7 @@ class TeamSelectionState {
       isSearching: isSearching ?? this.isSearching,
       selectedTeam: selectedTeam ?? this.selectedTeam,
       selectedArtist: selectedArtist ?? this.selectedArtist,
+      showArtistModal: showArtistModal ?? this.showArtistModal,
       hasError: hasError ?? this.hasError,
       errorMessage: errorMessage ?? this.errorMessage,
       teamSelectionResult: teamSelectionResult ?? this.teamSelectionResult,
@@ -131,6 +136,7 @@ class TeamSelectionState {
         isLoading: false,
         isSearching: false,
         hasError: true,
+        showArtistModal: false,
         errorMessage: errorMessage);
   }
 
@@ -145,6 +151,7 @@ class TeamSelectionState {
       isSearching == other.isSearching &&
       selectedTeam == other.selectedTeam &&
       selectedArtist == other.selectedArtist &&
+      showArtistModal == other.showArtistModal &&
       hasError == other.hasError &&
       errorMessage == other.errorMessage &&
       teamSelectionResult == other.teamSelectionResult;
@@ -157,6 +164,7 @@ class TeamSelectionState {
       isSearching.hashCode ^
       selectedTeam.hashCode ^
       selectedArtist.hashCode ^
+      showArtistModal.hashCode ^
       hashCode.hashCode ^
       errorMessage.hashCode ^
       teamSelectionResult.hashCode;
@@ -236,12 +244,34 @@ class TeamSelectionBloc extends Bloc<TeamSelectionEvent, TeamSelectionState> {
       if (event is _LoadArtistForTeam) {
         final artist = await _loadArtistForTeam(event.team);
         yield state.copyWith(
-            selectedArtist: artist.second, isLoading: false, hasError: false);
+            selectedArtist: artist.second,
+            isLoading: false,
+            hasError: false,
+            showArtistModal: true);
       }
 
       if (event is _AddFanToTeam) {
+        final fan = state.fan;
         final result = await _addFanToTeam(event.teamId, event.fanUid);
-        yield state.copyWith(isLoading: false, teamSelectionResult: result);
+        fan.currentTeamId = event.teamId;
+        final newState =
+            TeamSelectionState.initial().copyWith(fan: fan, teams: state.teams);
+        if (!result) {
+          yield newState.copyWith(
+            teamSelectionResult: false,
+            isLoading: false,
+            hasError: true,
+            showArtistModal: false,
+            errorMessage: "Failed to join team",
+          );
+        } else {
+          yield newState.copyWith(
+            isLoading: false,
+            teamSelectionResult: true,
+            hasError: false,
+            showArtistModal: false,
+          );
+        }
       }
     } on ApiException catch (e) {
       yield state.withError(e.message);

@@ -2,6 +2,8 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:ikonfetemobile/screens/home/artist_home.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/fan_home.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
@@ -41,11 +43,31 @@ void defineRoutes(Router router) {
       },
     ),
   );
+
+  router.define(
+    Routes.artistHome,
+    handler: Handler(
+      handlerFunc: (ctx, params) {
+        return artistHomeScreen(ctx);
+      },
+    ),
+  );
+
+  router.define(
+    Routes.fanHome,
+    handler: Handler(
+      handlerFunc: (ctx, params) {
+        return fanHomeScreen(ctx);
+      },
+    ),
+  );
 }
 
 class Routes {
   static final String login = "/login";
   static final String signup = "/signup";
+  static final String artistHome = "/artistHome";
+  static final String fanHome = "/fanHome";
 
   static String pendingVerification({String uid}) {
     return "/pendingVerification/${uid == null ? ":uid" : uid}";

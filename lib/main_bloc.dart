@@ -31,6 +31,12 @@ class LoginDone extends AppEvent {
 
 class Signout extends AppEvent {}
 
+class FanSignupDone extends AppEvent {
+  final Fan fan;
+
+  FanSignupDone(this.fan);
+}
+
 class AppState {
   final bool isOnBoarded;
   final bool isLoggedIn;
@@ -154,6 +160,23 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         artistOrFan: artistOrFan,
         isArtist: event.loginResult.isArtist,
         currentUser: event.loginResult.firebaseUser,
+        isFanTeamSetup: isFanTeamSetup,
+        isProfileSetup: isProfileSetup,
+        isLoggedIn: true,
+      );
+    }
+
+    if (event is FanSignupDone) {
+      final firebaseUser = await FirebaseAuth.instance.currentUser();
+      final artistOrFan = ExclusivePair<Artist, Fan>.withSecond(event.fan);
+      final isFanTeamSetup =
+          !StringUtils.isNullOrEmpty(event.fan.currentTeamId);
+      final isProfileSetup = !StringUtils.isNullOrEmpty(event.fan.username);
+
+      yield state.copyWith(
+        artistOrFan: artistOrFan,
+        isArtist: false,
+        currentUser: firebaseUser,
         isFanTeamSetup: isFanTeamSetup,
         isProfileSetup: isProfileSetup,
         isLoggedIn: true,
