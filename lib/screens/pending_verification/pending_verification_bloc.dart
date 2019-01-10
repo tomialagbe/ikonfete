@@ -4,7 +4,7 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/artist.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:meta/meta.dart';
 
 abstract class PendingVerificationEvents {}

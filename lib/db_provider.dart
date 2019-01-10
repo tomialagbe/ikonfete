@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/fan.dart';
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';

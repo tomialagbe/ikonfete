@@ -5,10 +5,10 @@ import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/model/pending_verification.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification_events.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification_state.dart';
-import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/utils/facebook_auth.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/utils/twitter_auth.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:meta/meta.dart';
 
 class _SubmitVerification extends ArtistVerificationEvent {}

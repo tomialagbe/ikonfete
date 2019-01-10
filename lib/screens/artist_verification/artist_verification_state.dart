@@ -1,4 +1,4 @@
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:meta/meta.dart';
 
 class ArtistVerificationState {

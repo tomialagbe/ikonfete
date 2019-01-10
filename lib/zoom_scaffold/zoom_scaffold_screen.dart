@@ -4,12 +4,12 @@ import 'package:ikonfetemobile/zoom_scaffold/menu_screen.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 class ZoomScaffoldScreen extends StatefulWidget {
-  final bool isArtist;
+//  final bool isArtist;
   final String screenId;
   final Map<String, String> params;
 
   ZoomScaffoldScreen({
-    @required this.isArtist,
+//    @required this.isArtist,
     @required this.screenId,
     this.params,
   });

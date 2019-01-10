@@ -8,7 +8,7 @@ import 'package:ikonfetemobile/bloc/inactive_user_bloc.dart';
 import 'package:ikonfetemobile/colors.dart' as colors;
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/routes.dart';
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 

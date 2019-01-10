@@ -7,7 +7,7 @@ import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/model/team.dart';
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 

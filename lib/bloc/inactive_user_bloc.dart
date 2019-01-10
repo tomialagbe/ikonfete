@@ -5,7 +5,7 @@ import 'package:ikonfetemobile/api/auth.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/bloc/bloc.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:meta/meta.dart';
 
 class InactiveUserScreenBloc extends BlocBase {

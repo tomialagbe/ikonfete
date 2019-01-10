@@ -7,7 +7,7 @@ import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/auth_type.dart';
 import 'package:ikonfetemobile/model/fan.dart';
-import 'package:ikonfetemobile/types/types.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 
 class UserData {
   String uid;

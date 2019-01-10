@@ -4,8 +4,8 @@ import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/auth_utils.dart';
 import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/preferences.dart';
-import 'package:ikonfetemobile/types/types.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
