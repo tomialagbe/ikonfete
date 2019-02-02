@@ -5,8 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/db_provider.dart';
 import 'package:ikonfetemobile/facebook/facebook.dart';
 import 'package:ikonfetemobile/main.dart';
+import 'package:ikonfetemobile/preferences.dart';
 import 'package:ikonfetemobile/twitter/twitter_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,8 +32,15 @@ Future main() async {
     ),
   );
 
-  var sharedPreferences = await SharedPreferences.getInstance();
+  await DbProvider.db.database; // init database
+  final sharedPreferences = await SharedPreferences.getInstance();
   final currentUser = await FirebaseAuth.instance.currentUser();
+  final uid = sharedPreferences.getString(PreferenceKeys.uid);
+  var artistOrFan;
+  if (uid != null) {
+    artistOrFan = await DbProvider.db.getArtistOrFanByUid(uid);
+  }
+
   var configuredApp = AppConfig(
     appName: "Ikonfete",
     flavorName: "production",
@@ -45,9 +54,11 @@ Future main() async {
       accessToken: "232707493-WuE4AfaUH6FZ4DP23dAFe6Aw4ta8mXD63oIyAXkB",
       accessTokenSecret: "dTdKFRrZScqgERhzLQnQEqrgkWNDag5T5yQF3ncAukS0h",
     ),
-    serverBaseUrl: "https://ikonfete-server.appspot.com",
-    child:
-        IkonfeteApp(preferences: sharedPreferences, currentUser: currentUser),
+    serverBaseUrl: "http://104.248.166.222:8080",
+    child: IkonfeteApp(
+        preferences: sharedPreferences,
+        currentUser: currentUser,
+        currentArtistOrFan: artistOrFan),
   );
   runApp(configuredApp);
 }

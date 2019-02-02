@@ -47,4 +47,5 @@ class FontAwesome5Icons {
   static final grinAlt = IconData(0xf581, fontFamily: fontFamilySolid);
   static final paperPlane = IconData(0xf1d8, fontFamily: fontFamilySolid);
   static final retweet = IconData(0xf079, fontFamily: fontFamilySolid);
+  static final arrowUp = IconData(0xf062, fontFamily: fontFamilySolid);
 }

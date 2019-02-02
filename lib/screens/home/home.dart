@@ -10,15 +10,6 @@ Screen homeScreen() {
     title: "HOME",
     contentBuilder: (BuildContext context) {
       final appBloc = BlocProvider.of<AppBloc>(context);
-//      final currentTeamID = appBloc.initState.fan.currentTeamId;
-//      final fanUID = appBloc.initState.fan.uid;
-//      return isArtist
-//          ? ArtistHomeScreen()
-//          : FanHomeScreen(
-//              currentTeamID: currentTeamID,
-//              fanUID: fanUID,
-//              appConfig: appBloc.appConfig,
-//            );
       return BlocBuilder<AppEvent, AppState>(
         bloc: appBloc,
         builder: (BuildContext ctx, AppState appState) {

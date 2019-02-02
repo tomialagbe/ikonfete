@@ -121,14 +121,20 @@ class ArtistFeedBloc extends Bloc<ArtistFeedEvent, ArtistFeedState> {
           : await loadFeed(state.facebookPagingToken, state.lastTweetId);
       final items = state.feedItems.toList() + feedItems;
 
-      final fbPagingToken = (items.lastWhere((item) {
-        return (item is FacebookFeedItem) &&
-            !StringUtils.isNullOrEmpty(item.pagingToken);
-      }) as FacebookFeedItem)
-          .pagingToken;
+      final fbi = items?.lastWhere(
+        (item) {
+          return (item is FacebookFeedItem) &&
+              !StringUtils.isNullOrEmpty(item.pagingToken);
+        },
+        orElse: () => null,
+      );
+      final fbPagingToken =
+          fbi != null ? (fbi as FacebookFeedItem).pagingToken : "";
 
-      final lastTweetId =
-          int.parse(items.lastWhere((item) => item is TwitterFeedItem).id);
+      final twid = items
+          .lastWhere((item) => item is TwitterFeedItem, orElse: () => null)
+          ?.id;
+      final lastTweetId = twid != null ? int.parse(twid) : -1;
 
       yield state.copyWith(
         feedItems: SplayTreeSet.from(items.toList()),

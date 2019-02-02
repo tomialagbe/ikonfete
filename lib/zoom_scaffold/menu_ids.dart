@@ -1,6 +1,7 @@
 class MenuIDs {
   static final String home = 'home';
   static final String superFans = 'superfans';
+  static final String profile = 'profile';
   static final String team = 'team';
   static final String messages = 'messages';
   static final String ikon = 'ikon';

@@ -39,7 +39,8 @@ class DbProvider {
 
   Future<void> _createArtistTable(Database db) async {
     return db.execute("CREATE TABLE Artist ("
-        "uid TEXT NOT NULL PRIMARY KEY, "
+        "id TEXT NOT NULL PRIMARY KEY, "
+        "uid TEXT NOT NULL, "
         "username TEXT, "
         "name TEXT NOT NULL, "
         "email TEXT NOT NULL, "
@@ -63,7 +64,8 @@ class DbProvider {
 
   Future<void> _createFanTable(Database db) {
     return db.execute("CREATE TABLE Fan ("
-        "uid TEXT NOT NULL PRIMARY KEY, "
+        "id TEXT NOT NULL PRIMARY KEY, "
+        "uid TEXT NOT NULL, "
         "username TEXT, "
         "name TEXT NOT NULL, "
         "email TEXT NOT NULL, "
@@ -77,10 +79,14 @@ class DbProvider {
   }
 
   Future<bool> setCurrentArtist(Artist artist) async {
-    _clearCurrentArtist();
-    _clearCurrentFan();
+    await clearCurrentArtistOrFan();
     int insertId = await _database.insert("Artist", artist.toJson());
     return insertId > 0;
+  }
+
+  Future<void> clearCurrentArtistOrFan() async {
+    await _clearCurrentArtist();
+    await _clearCurrentFan();
   }
 
   Future<void> _clearCurrentArtist() async {
@@ -89,13 +95,16 @@ class DbProvider {
 
   Future<Artist> getCurrentArtist() async {
     final result = await _database.query("Artist", limit: 1);
-    Artist artist = Artist()..fromJson(result.first);
-    return artist;
+    if (result.isNotEmpty) {
+      Artist artist = Artist()..fromJson(result.first);
+      return artist;
+    }
+    return null;
   }
 
   Future<bool> setCurrentFan(Fan fan) async {
-    _clearCurrentArtist();
-    _clearCurrentFan();
+    await _clearCurrentArtist();
+    await _clearCurrentFan();
     int insertId = await _database.insert("Fan", fan.toJson());
     return insertId > 0;
   }
@@ -106,8 +115,11 @@ class DbProvider {
 
   Future<Fan> getCurrentFan() async {
     final result = await _database.query("Fan", limit: 1);
-    Fan fan = Fan()..fromJson(result.first);
-    return fan;
+    if (result.isNotEmpty) {
+      Fan fan = Fan()..fromJson(result.first);
+      return fan;
+    }
+    return null;
   }
 
   Future<ExclusivePair<Artist, Fan>> getArtistOrFanByUid(String uid) async {

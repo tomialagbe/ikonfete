@@ -1,20 +1,32 @@
 import 'dart:async';
 
-import 'package:ikonfetemobile/api/api.dart';
-import 'package:ikonfetemobile/api/artist.dart';
-import 'package:ikonfetemobile/api/teams.dart';
-import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:bloc/bloc.dart';
 import 'package:ikonfetemobile/model/artist.dart';
-import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/model/team.dart';
-import 'package:meta/meta.dart';
 
 class ArtistData {
   Artist artist;
   Team artistTeam;
 }
 
+abstract class IkonScreenEvent {}
+
+class IkonScreenState {}
+
+class IkonScreenBloc extends Bloc<IkonScreenEvent, IkonScreenState> {
+  @override
+  // TODO: implement initialState
+  IkonScreenState get initialState => null;
+
+  @override
+  Stream<IkonScreenState> mapEventToState(
+      IkonScreenState state, IkonScreenEvent event) {
+    // TODO: implement mapEventToState
+    return null;
+  }
+}
+
+/*
 class IkonScreenBloc extends BlocBase {
   final AppConfig appConfig;
 
@@ -68,3 +80,4 @@ class IkonScreenBloc extends BlocBase {
     }
   }
 }
+*/

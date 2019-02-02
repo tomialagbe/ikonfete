@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ikonfetemobile/localization.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
+import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/model/fan.dart';
 import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
 import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
@@ -13,14 +15,19 @@ import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
 import 'package:ikonfetemobile/screens/signup/user_signup_profile.dart';
+import 'package:ikonfetemobile/utils/types.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IkonfeteApp extends StatefulWidget {
   final SharedPreferences preferences;
   final FirebaseUser currentUser;
+  final ExclusivePair<Artist, Fan> currentArtistOrFan;
 
-  IkonfeteApp({@required this.preferences, @required this.currentUser});
+  IkonfeteApp(
+      {@required this.preferences,
+      @required this.currentUser,
+      @required this.currentArtistOrFan});
 
   @override
   IkonfeteAppState createState() {
@@ -37,8 +44,10 @@ class IkonfeteAppState extends State<IkonfeteApp> {
     defineRoutes(router);
 
     _appBloc = AppBloc(
-        preferences: widget.preferences,
-        initialCurrentUser: widget.currentUser);
+      preferences: widget.preferences,
+      initialCurrentUser: widget.currentUser,
+      initialCurrentArtistOrFan: widget.currentArtistOrFan,
+    );
   }
 
   @override
@@ -114,6 +123,7 @@ class IkonfeteAppState extends State<IkonfeteApp> {
     } else {
       return loginScreen(context);
     }
+//    return loginScreen(context);
   }
 
 /*@override

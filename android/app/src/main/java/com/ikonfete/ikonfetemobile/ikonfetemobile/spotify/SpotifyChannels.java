@@ -19,7 +19,7 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class SpotifyChannels {
 
-    private static final String SPOTIFY_CLIENT_ID = "47f4ab726a2e487f92b9f9645f9375bc";
+    private static final String SPOTIFY_CLIENT_ID = "32b3180329a040b0967ce130abecb1a3";
 
     private static final String SPOTIFY_METHOD_CHANNEL = "ikonfete_spotify_method_channel";
 

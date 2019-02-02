@@ -1,4 +1,28 @@
-import 'dart:async';
+import 'package:bloc/bloc.dart';
+import 'package:ikonfetemobile/app_config.dart';
+import 'package:meta/meta.dart';
+
+abstract class SettingsEvent {}
+
+class SettingsState {}
+
+class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
+  final AppConfig appConfig;
+  SettingsBloc({@required this.appConfig});
+
+  @override
+  // TODO: implement initialState
+  SettingsState get initialState => null;
+
+  @override
+  Stream<SettingsState> mapEventToState(
+      SettingsState state, SettingsEvent event) {
+    // TODO: implement mapEventToState
+    return null;
+  }
+}
+
+/*import 'dart:async';
 
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/settings.dart';
@@ -75,3 +99,4 @@ class SettingsBloc extends BlocBase {
     }
   }
 }
+*/

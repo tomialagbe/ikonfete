@@ -2,6 +2,7 @@ import 'package:ikonfetemobile/screens/home/home.dart';
 import 'package:ikonfetemobile/screens/ikonscreen/ikon_screen.dart';
 import 'package:ikonfetemobile/screens/messages/inbox.dart';
 import 'package:ikonfetemobile/screens/messages/messages.dart';
+import 'package:ikonfetemobile/screens/profile/profile_screen.dart';
 import 'package:ikonfetemobile/screens/settings/settings_screen.dart';
 import 'package:ikonfetemobile/screens/superfans/superfans.dart';
 import 'package:ikonfetemobile/screens/team/team.dart';
@@ -21,11 +22,13 @@ class MenuItem {
   final String id;
   final String title;
   final bool isDefault;
+  final bool display;
 
   MenuItem({
     this.id,
     this.title,
     this.isDefault: false,
+    this.display: true,
   });
 
   @override
@@ -38,6 +41,9 @@ class MenuItem {
 
 Map<MenuItem, Screen> zoomScaffoldMenuItems({@required bool isArtist}) {
   final menu = <MenuItem, Screen>{};
+
+  menu[MenuItem(id: MenuIDs.profile, title: 'Profile', display: false)] =
+      profileScreen;
 
   menu[MenuItem(id: MenuIDs.home, title: 'Home', isDefault: true)] =
       homeScreen();

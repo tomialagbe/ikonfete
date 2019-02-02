@@ -1,28 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/app_config.dart';
-import 'package:ikonfetemobile/bloc/application_bloc.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
-import 'package:ikonfetemobile/colors.dart';
-import 'package:ikonfetemobile/icons.dart';
-import 'package:ikonfetemobile/model/fan.dart';
-import 'package:ikonfetemobile/screens/ikonscreen/artist_profile_header.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ikonfetemobile/screens/ikonscreen/ikon_screen_bloc.dart';
-import 'package:ikonfetemobile/zoom_scaffold/menu_ids.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
-import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 
 final Screen ikonScreen = Screen(
   title: "Ikon",
   contentBuilder: (ctx) {
-    final fan = BlocProvider.of<ApplicationBloc>(ctx).initState.fan;
+//    final fan = BlocProvider.of<ApplicationBloc>(ctx).initState.fan;
+//    return BlocProvider<IkonScreenBloc>(
+//      bloc: IkonScreenBloc(appConfig: AppConfig.of(ctx)),
+//      child: IkonScreen(fan: fan),
+//    );
     return BlocProvider<IkonScreenBloc>(
-      bloc: IkonScreenBloc(appConfig: AppConfig.of(ctx)),
-      child: IkonScreen(fan: fan),
+      bloc: IkonScreenBloc(),
+      child: IkonScreen(),
     );
   },
 );
 
+class IkonScreen extends StatelessWidget {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      body: Container(),
+    );
+  }
+}
+
+/*
 class IkonScreen extends StatefulWidget {
   final Fan fan;
 
@@ -375,3 +384,4 @@ class ArtistBioScreen extends StatelessWidget {
     );
   }
 }
+*/

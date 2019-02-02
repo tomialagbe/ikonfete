@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
+import 'package:ikonfetemobile/utils/logout_helper.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
 import 'package:ikonfetemobile/zoom_scaffold/menu.dart';
+import 'package:ikonfetemobile/zoom_scaffold/menu_ids.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'zoom_scaffold.dart';
@@ -112,15 +114,11 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         break;
     }
 
-//    final initState = BlocProvider.of<ApplicationBloc>(context).initState;
     final isArtist = appState.isArtist;
     final artist = isArtist ? appState.artistOrFan.first : null;
     final fan = isArtist ? null : appState.artistOrFan.second;
     final photoUrl =
         isArtist ? artist.profilePictureUrl : fan.profilePictureUrl;
-//    final photoUrl = initState.isArtist
-//        ? initState.artist.profilePictureUrl
-//        : initState.fan.profilePictureUrl;
 
     return Transform(
       transform: Matrix4.translationValues(0.0, 100.0, 0.0),
@@ -136,6 +134,10 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
               isThreeLine: false,
               onTap: () async {
                 // navigate to profile page
+                final profileMenuItem = widget.menu.items
+                    .firstWhere((item) => item.id == MenuIDs.profile);
+                widget.onMenuItemSelected(profileMenuItem.id);
+                menuController.close();
                 // TODO: fix
 //                    final result = router.navigateTo(
 //                      context,
@@ -159,7 +161,6 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                     : MemoryImage(kTransparentImage),
               ),
               title: Text(
-//                    initState.isArtist ? initState.artist.name : initState.fan.name,
                 appState.isArtist ? artist.name : fan.name,
                 style: TextStyle(
                   color: Colors.white,
@@ -189,6 +190,10 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     final perListItemDelay =
         menuController.state != MenuState.closing ? 0.05 : 0.0;
     for (var i = 0; i < widget.menu.items.length; ++i) {
+      final menuItem = widget.menu.items[i];
+      if (!menuItem.display) {
+        continue;
+      }
       final animationIntervalStart = i * perListItemDelay;
       final animationIntervalEnd =
           animationIntervalStart + animationIntervalDuration;
@@ -201,7 +206,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         curve: new Interval(animationIntervalStart, animationIntervalEnd,
             curve: Curves.easeOut),
         menuListItem: new _MenuListItem(
-          title: widget.menu.items[i].title,
+          title: menuItem.title,
           isSelected: isSelected,
           onTap: () {
             widget.onMenuItemSelected(widget.menu.items[i].id);
@@ -253,10 +258,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
 
   Widget createLogoutMenuItem(
       MenuController menuController, AppState appState) {
-//    final appBloc = BlocProvider.of<ApplicationBloc>(context);
+    final appBloc = BlocProvider.of<AppBloc>(context);
+
     final isArtist = appState.isArtist;
-    final artist = isArtist ? appState.artistOrFan.first : null;
-    final fan = isArtist ? null : appState.artistOrFan.second;
 
     return Positioned(
       bottom: 30.0,
@@ -266,21 +270,10 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 800),
         child: GestureDetector(
           onTap: () async {
-            // TODO: fix
-//            if (await canLogout(context)) {
-//              if (await appBloc.doLogout()) {
-//                if (Navigator.canPop(context)) {
-//                  Navigator.pop(context);
-//                } else {
-//                  router.navigateTo(
-//                    context,
-//                    RouteNames.login(isArtist: appBloc.initState.isArtist),
-//                    transition: TransitionType.inFromLeft,
-//                    replace: true,
-//                  );
-//                }
-//              }
-//            }
+            // handle logout
+            if (await canLogout(context)) {
+              appBloc.dispatch(Signout());
+            }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,

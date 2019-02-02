@@ -162,6 +162,7 @@ enum TwitterResize { crop, fit }
 
 class TwitterFeedItem extends SocialFeedItem {
   String text;
+  String trimmedText;
   String realName;
   String screenName;
   String profileImageUrl;
@@ -205,30 +206,32 @@ class TwitterFeedItem extends SocialFeedItem {
     var len = text.length;
     var shift = 0;
     for (TweetMediaItem mediaItem in media) {
-      if (!StringUtils.isNullOrEmpty(this.text)) {
+      String cleanText = this.text;
+      if (!StringUtils.isNullOrEmpty(cleanText)) {
 //        var start = 0;
 //        var end =
 //            shift > 0 ? mediaItem.startIndex - shift : mediaItem.startIndex;
 //        if (start > len || end > len) continue;
 //
-//        final s1 = this.text.substring(start, end);
+//        final s1 = cleanText.substring(start, end);
 //
 //        start = shift > 0 ? mediaItem.endIndex - shift : mediaItem.endIndex;
 //        end = len;
 //        if (start > len || end > len) continue;
 //
-//        final s2 = this.text.substring(start, end);
+//        final s2 = cleanText.substring(start, end);
 //
 //        var newText = "$s1$s2";
-//        shift = text.length - newText.length;
+//        shift = cleanText.length - newText.length;
 //
-//        this.text = newText;
+//        cleanText = newText;
 //        len = newText.length;
-
+//
 //        final runes = this.text.runes.toList();
 //        final rem = runes.sublist(0, mediaItem.startIndex)
 //          ..addAll(runes.sublist(mediaItem.endIndex, runes.length));
-//        this.text = String.fromCharCodes(rem);
+//        cleanText = String.fromCharCodes(rem);
+//        this.trimmedText = cleanText;
       }
     }
 
@@ -276,7 +279,7 @@ class TwitterFeedItem extends SocialFeedItem {
   int get numberOfLikes => favouriteCount;
 
   @override
-  String get textContent => text;
+  String get textContent => trimmedText ?? text;
 
   @override
   List<SocialFeedImage> get images {
@@ -461,9 +464,14 @@ class TweetMediaItem {
     if (variants.isEmpty) {
       return null;
     }
-    final largest = variants[0];
-    videoInfo.contentType = largest["content_type"];
-    videoInfo.videoUrl = largest["url"];
+
+    final smallest = variants.reduce((v1, v2) {
+      return v1["bitrate"] < v1["bitrate"] ? v1 : v2;
+    });
+
+//    final largest = variants[0];
+    videoInfo.contentType = smallest["content_type"];
+    videoInfo.videoUrl = smallest["url"];
     return videoInfo;
   }
 }

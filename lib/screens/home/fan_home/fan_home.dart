@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ikonfetemobile/app_config.dart';
+import 'package:ikonfetemobile/colors.dart';
+import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/artist_feed.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/artist_feed_bloc.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/fan_home_bloc.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/fan_home_events.dart';
+import 'package:ikonfetemobile/screens/home/fan_home/fan_home_state.dart';
+import 'package:ikonfetemobile/screens/home/leaderboard.dart';
+import 'package:ikonfetemobile/screens/home/team_feed.dart';
+import 'package:ikonfetemobile/widget/artist_event.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
+import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
 
 Widget fanHomeScreen(BuildContext context) {
-  return FanHomeScreen();
-}
+  final appConfig = AppConfig.of(context);
+  final appBloc = BlocProvider.of<AppBloc>(context);
 
-class FanHomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final appBloc = BlocProvider.of<AppBloc>(context);
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: MaterialButton(
-            onPressed: () {
-              appBloc.dispatch(Signout());
-            },
-            child: Text("FAN HOME"),
-          ),
+  return BlocBuilder<AppEvent, AppState>(
+    bloc: appBloc,
+    builder: (BuildContext bldContext, AppState appState) {
+      return BlocProvider<FanHomeBloc>(
+        bloc: FanHomeBloc(appConfig: appConfig),
+        child: FanHomeScreen(
+          appConfig: appConfig,
+          fanUID: appState.artistOrFan.second.uid,
+          currentTeamID: appState.artistOrFan.second.currentTeamId,
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
 }
 
-/*
 class FanHomeScreen extends StatefulWidget {
   final String fanUID;
   final String currentTeamID;
@@ -212,6 +217,16 @@ class _FanHomeScreenState extends State<FanHomeScreen>
             alignment: Alignment.center,
             child: child,
           ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: primaryButtonColor,
+            child: Icon(FontAwesome5Icons.arrowUp, color: Colors.white),
+            tooltip: "Back to top",
+            mini: true,
+            onPressed: () {
+              _scrollController.animateTo(0,
+                  duration: Duration(seconds: 1), curve: Curves.easeOut);
+            },
+          ),
         );
       },
     );
@@ -262,7 +277,9 @@ class _FanHomeScreenState extends State<FanHomeScreen>
     }
 
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 800),
+      switchInCurve: Curves.easeIn,
+      switchOutCurve: Curves.easeOut,
       child: tabContent,
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(
@@ -273,4 +290,3 @@ class _FanHomeScreenState extends State<FanHomeScreen>
     );
   }
 }
-*/

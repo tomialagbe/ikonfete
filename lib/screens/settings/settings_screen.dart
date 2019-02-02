@@ -1,39 +1,256 @@
-import 'dart:async';
+//import 'package:flutter/cupertino.dart';
+//import 'package:flutter/material.dart';
+//import 'package:ikonfetemobile/bloc/bloc.dart';
+//import 'package:ikonfetemobile/main_bloc.dart';
+//import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:ikonfetemobile/bloc/application_bloc.dart';
-import 'package:ikonfetemobile/bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
-import 'package:ikonfetemobile/model/settings.dart';
+import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/screens/settings/settings_bloc.dart';
-import 'package:ikonfetemobile/streaming/deezer/deezer.dart';
-import 'package:ikonfetemobile/streaming/spotify/models.dart';
-import 'package:ikonfetemobile/utils/strings.dart';
-import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
-import 'package:ikonfetemobile/zoom_scaffold/menu_ids.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
-import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
 
 final Screen settingsScreen = Screen(
   title: "Settings",
   contentBuilder: (context) {
-//    return BlocProvider<SettingsBloc>(
-//      bloc: SettingsBloc(
-//        appConfig: AppConfig.of(context),
+    final appBloc = BlocProvider.of<AppBloc>(context);
+    return BlocProvider<SettingsBloc>(
+      bloc: SettingsBloc(
+        appConfig: AppConfig.of(context),
 //        deezerAuthBloc: DeezerAuthBloc(),
 //        spotifyAuthBloc: SpotifyAuthBloc(),
-//      ),
-//      child: SettingsScreen(),
-//    );
-    return Container();
+      ),
+      child: SettingsScreen(),
+    );
   },
 );
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final settingHeaderTextStyle = TextStyle(
+    fontFamily: "SanFranciscoDisplay",
+    fontSize: 18.0,
+    color: Colors.black87,
+  );
+  final settingInfoTextStyle = TextStyle(
+    fontFamily: "SanFranciscoDisplay",
+    fontSize: 14.0,
+    color: Colors.black54,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+//        child: _settingsLoading
+//            ? _buildLoadingIndicator()
+//            : _loadSettingsFailed
+//            ? _buildLoadSettingsError()
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Connected Social Profiles",
+              style: settingHeaderTextStyle,
+            ),
+            SizedBox(height: 30.0),
+            _buildSoundCloudConnector(),
+            SizedBox(height: 30.0),
+            _buildSpotifyConnector(),
+            SizedBox(height: 30.0),
+            _buildDeezerConnector(),
+            SizedBox(height: 40.0),
+            _buildNotificationSettings(),
+            SizedBox(height: 30.0),
+            _buildAboutLink(),
+            Expanded(child: Container()),
+            _buildSaveButton(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSoundCloudConnector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          width: 40.0,
+          height: 40.0,
+          decoration: BoxDecoration(
+            color: soundCloudColor,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Icon(FontAwesome5Icons.soundCloud, color: Colors.white),
+        ),
+        SizedBox(width: 20.0),
+        Text("SoundCloud", style: settingHeaderTextStyle),
+        Expanded(child: Container()),
+        CupertinoSwitch(
+//          value: _soundCloudEnabled, TODO:
+          value: false,
+          onChanged: (val) {},
+          activeColor: primaryColor,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSpotifyConnector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          width: 40.0,
+          height: 40.0,
+          decoration: BoxDecoration(
+            color: spotifyColor,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Icon(FontAwesome5Icons.spotify, color: Colors.white),
+        ),
+        SizedBox(width: 20.0),
+        Text("Spotify", style: settingHeaderTextStyle),
+        Expanded(child: Container()),
+        CupertinoSwitch(
+//          value: _spotifyEnabled, TODO:
+          value: false,
+          onChanged: (val) async {
+//            setState(() => _spotifyEnabled = val);
+//            if (val) {
+//              _bloc.spotifyAuthBloc.authorizeSpotify();
+//            } else if (_settings != null) {
+//              _settings.spotifyUserId = "";
+//            }
+          },
+          activeColor: primaryColor,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDeezerConnector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          width: 40.0,
+          height: 40.0,
+          padding: EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            color: Color(0xFF162737),
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Image.asset("assets/images/deezer.png", fit: BoxFit.contain),
+        ),
+        SizedBox(width: 20.0),
+        Text("Deezer", style: settingHeaderTextStyle),
+        Expanded(child: Container()),
+        CupertinoSwitch(
+//          value: _deezerEnabled, TODO:
+          value: false,
+          onChanged: (val) async {
+//            setState(() => _deezerEnabled = val);
+//            if (val) {
+//              _bloc.deezerAuthBloc.authorizeDeezer();
+//            } else if (_settings != null) {
+//              _settings.deezerUserId = "";
+//            }
+          },
+          activeColor: primaryColor,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationSettings() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Notifications",
+                style: settingHeaderTextStyle,
+              ),
+              SizedBox(height: 5.0),
+              Text(
+                "We send notifications about new tracks, albums and other important things",
+                style: settingInfoTextStyle,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 5.0),
+        CupertinoSwitch(
+//          value: _notificationsEnabled, TODO:
+          value: false,
+          onChanged: (val) {
+//            setState(() {
+//              _notificationsEnabled = val;
+//            });
+//            _settings?.enableNotifications = val;
+          },
+          activeColor: primaryColor,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutLink() {
+    final aboutTapHandler = TapGestureRecognizer();
+    aboutTapHandler.onTap = () {};
+
+    return RichText(
+      text: TextSpan(
+        text: "About Ikonfete",
+        style: settingHeaderTextStyle,
+        recognizer: aboutTapHandler,
+      ),
+    );
+  }
+
+  Widget _buildSaveButton(BuildContext context) {
+    return PrimaryButton(
+      width: MediaQuery.of(context).size.width - 40.0,
+      height: 50.0,
+      defaultColor: primaryButtonColor,
+      activeColor: primaryButtonActiveColor,
+      text: "SAVE SETTINGS",
+//      disabled: !_changesMade(), TODO:
+      disabled: false,
+//      onTap: _saveChanges,
+      onTap: () {},
+    );
+  }
+}
+
+/*class SettingsScreen extends StatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -416,3 +633,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
         content: Text(errMessage.toString()), backgroundColor: Colors.red));
   }
 }
+*/

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ikonfetemobile/db_provider.dart';
 import 'package:ikonfetemobile/model/artist.dart';
 import 'package:ikonfetemobile/model/auth_utils.dart';
 import 'package:ikonfetemobile/model/fan.dart';
@@ -58,22 +59,32 @@ class AppState {
 
   String get uid => currentUser != null ? currentUser.uid : null;
 
-  factory AppState.initial(
-      SharedPreferences preferences, FirebaseUser currentUser) {
+  factory AppState.initial(SharedPreferences preferences,
+      FirebaseUser currentUser, ExclusivePair<Artist, Fan> artistOrFan) {
     // get shared prefs
+    final isArtist = preferences.getBool(PreferenceKeys.isArtist) ?? false;
     final isOnBoarded =
         preferences.getBool(PreferenceKeys.isOnBoarded) ?? false;
     final isLoggedIn = preferences.getBool(PreferenceKeys.isLoggedIn) ?? false;
-// TODO: load artist or fan
+    final isProfileSetup = artistOrFan == null
+        ? false
+        : (isArtist
+            ? !StringUtils.isNullOrEmpty(artistOrFan.first.username)
+            : !StringUtils.isNullOrEmpty(artistOrFan.second.username));
+    final isFanTeamSetup = isArtist
+        ? false
+        : (artistOrFan == null
+            ? false
+            : !StringUtils.isNullOrEmpty(artistOrFan.second.currentTeamId));
 
     return AppState(
       isOnBoarded: isOnBoarded,
       isLoggedIn: isLoggedIn,
       currentUser: currentUser,
-      isProfileSetup: false,
-      isFanTeamSetup: false,
-      isArtist: preferences.getBool(PreferenceKeys.isArtist) ?? false,
-      artistOrFan: null,
+      isProfileSetup: isProfileSetup,
+      isFanTeamSetup: isFanTeamSetup,
+      isArtist: isArtist,
+      artistOrFan: artistOrFan,
     );
   }
 
@@ -124,12 +135,16 @@ class AppState {
 class AppBloc extends Bloc<AppEvent, AppState> {
   final SharedPreferences preferences;
   final FirebaseUser initialCurrentUser;
+  final ExclusivePair<Artist, Fan> initialCurrentArtistOrFan;
 
-  AppBloc({@required this.preferences, @required this.initialCurrentUser});
+  AppBloc(
+      {@required this.preferences,
+      @required this.initialCurrentUser,
+      @required this.initialCurrentArtistOrFan});
 
   @override
-  AppState get initialState =>
-      AppState.initial(preferences, initialCurrentUser);
+  AppState get initialState => AppState.initial(
+      preferences, initialCurrentUser, initialCurrentArtistOrFan);
 
   @override
   Stream<AppState> mapEventToState(AppState state, AppEvent event) async* {
@@ -150,8 +165,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       await _signOut();
       await preferences.setBool(PreferenceKeys.isLoggedIn, false);
       await preferences.remove(PreferenceKeys.uid);
-      yield state.copyWith(
-          artistOrFan: null, isLoggedIn: false, currentUser: null);
+      await DbProvider.db.clearCurrentArtistOrFan();
+      final newState = AppState.initial(preferences, null, null);
+      yield newState.copyWith(isLoggedIn: false);
     }
 
     if (event is LoginDone) {
@@ -168,6 +184,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
       await preferences.setBool(PreferenceKeys.isLoggedIn, true);
       await preferences.setString(PreferenceKeys.uid, uid);
+      if (isArtist) {
+        await DbProvider.db.setCurrentArtist(artistOrFan.first);
+      } else {
+        await DbProvider.db.setCurrentFan(artistOrFan.second);
+      }
 
       yield state.copyWith(
         artistOrFan: artistOrFan,
@@ -185,6 +206,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final isFanTeamSetup =
           !StringUtils.isNullOrEmpty(event.fan.currentTeamId);
       final isProfileSetup = !StringUtils.isNullOrEmpty(event.fan.username);
+      await DbProvider.db.setCurrentFan(event.fan);
 
       yield state.copyWith(
         artistOrFan: artistOrFan,
