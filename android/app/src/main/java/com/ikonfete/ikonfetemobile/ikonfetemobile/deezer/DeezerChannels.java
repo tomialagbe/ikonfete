@@ -1,7 +1,6 @@
 package com.ikonfete.ikonfetemobile.ikonfetemobile.deezer;
 
-import android.app.Activity;
-
+import androidx.appcompat.app.AppCompatActivity;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
@@ -16,7 +15,7 @@ public class DeezerChannels {
 
     private DeezerApi deezerApi;
 
-    public void initialize(Activity activity, BinaryMessenger binaryMessenger) {
+    public void initialize(AppCompatActivity activity, BinaryMessenger binaryMessenger) {
 
         deezerApi = new DeezerApi(DEEZER_APPLICATION_ID, activity);
         new EventChannel(binaryMessenger, DEEZER_PLAYER_EVENT_CHANNEL).setStreamHandler(new EventChannel.StreamHandler() {

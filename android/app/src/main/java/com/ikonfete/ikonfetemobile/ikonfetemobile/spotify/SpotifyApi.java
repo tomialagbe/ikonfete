@@ -1,26 +1,24 @@
 package com.ikonfete.ikonfetemobile.ikonfetemobile.spotify;
 
-import android.app.Activity;
-
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
-import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.flutter.plugin.common.MethodChannel;
 
 public class SpotifyApi implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
 
-    private Activity activity;
+    private AppCompatActivity activity;
     private String clientId;
     private int authRequestCode;
     private Player player;
 
-    SpotifyApi(Activity activity, String clientId, int authRequestCode) {
+    SpotifyApi(AppCompatActivity activity, String clientId, int authRequestCode) {
         this.activity = activity;
         this.clientId = clientId;
         this.authRequestCode = authRequestCode;

@@ -1,10 +1,8 @@
 package com.ikonfete.ikonfetemobile.ikonfetemobile.spotify;
 
 
-import android.app.Activity;
 import android.util.Log;
 
-import com.ikonfete.ikonfetemobile.ikonfetemobile.MainActivity;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Spotify;
@@ -13,6 +11,7 @@ import com.spotify.sdk.android.player.SpotifyPlayer;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -24,12 +23,12 @@ public class SpotifyChannels {
     private static final String SPOTIFY_METHOD_CHANNEL = "ikonfete_spotify_method_channel";
 
     private SpotifyApi spotifyApi;
-    private Activity activity;
+    private AppCompatActivity activity;
     private BinaryMessenger binaryMessenger;
     private int spotifyAuthActivityRequestCode;
     private MethodChannel.Result loginResultHandler;
 
-    public SpotifyChannels(Activity activity, BinaryMessenger binaryMessenger, int spotifyAuthActivityRequestCode) {
+    public SpotifyChannels(AppCompatActivity activity, BinaryMessenger binaryMessenger, int spotifyAuthActivityRequestCode) {
         this.activity = activity;
         this.binaryMessenger = binaryMessenger;
         this.spotifyAuthActivityRequestCode = spotifyAuthActivityRequestCode;

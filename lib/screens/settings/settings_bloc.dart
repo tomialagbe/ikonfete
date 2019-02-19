@@ -110,7 +110,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<Settings> loadSettings(String uid) async {
-    final settingsApi = SettingsApi();
+    final settingsApi = SettingsApi(appConfig.serverBaseUrl);
     final settings = await settingsApi.findByUID(uid);
     return settings;
   }

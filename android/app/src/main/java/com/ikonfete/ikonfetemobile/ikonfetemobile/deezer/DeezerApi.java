@@ -1,6 +1,5 @@
 package com.ikonfete.ikonfetemobile.ikonfetemobile.deezer;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.deezer.sdk.model.Permissions;
@@ -20,6 +19,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -38,13 +38,13 @@ public class DeezerApi {
 
     private DeezerConnect deezerConnect;
     private SessionStore sessionStore;
-    private Activity activity;
+    private AppCompatActivity activity;
     //    private String applicationId;
     private DeezerTrackPlayer deezerTrackPlayer;
     private EventChannel.EventSink playerEventSink;
     private EventChannel.EventSink playerBufferEventSink;
 
-    DeezerApi(String applicationId, Activity activity) {
+    DeezerApi(String applicationId, AppCompatActivity activity) {
         this.activity = activity;
 //        this.applicationId = applicationId;
         this.sessionStore = new SessionStore();

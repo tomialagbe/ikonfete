@@ -1,7 +1,5 @@
 package com.ikonfete.ikonfetemobile.ikonfetemobile.deezer;
 
-import android.app.Activity;
-
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.TrackPlayer;
@@ -14,9 +12,11 @@ import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.NetworkStateCheckerFactory;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class DeezerTrackPlayer implements OnBufferStateChangeListener, OnPlayerStateChangeListener, OnPlayerProgressListener, OnPlayerErrorListener {
     private DeezerConnect deezerConnect;
-    private Activity activity;
+    private AppCompatActivity activity;
     private TrackPlayer trackPlayer;
     private DeezerTrackPlayerEventListener playerEventListener;
 
@@ -26,7 +26,7 @@ public class DeezerTrackPlayer implements OnBufferStateChangeListener, OnPlayerS
     private double bufferPercent;
     private long timePosition;
 
-    DeezerTrackPlayer(Activity activity, DeezerConnect deezerConnect, DeezerTrackPlayerEventListener playerEventListener) {
+    DeezerTrackPlayer(AppCompatActivity activity, DeezerConnect deezerConnect, DeezerTrackPlayerEventListener playerEventListener) {
         this.activity = activity;
         this.deezerConnect = deezerConnect;
         this.playerEventListener = playerEventListener;

@@ -5,38 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="56b0bc87-aa28-481f-87aa-7815205e17af" name="Default" comment="- Refactored routes to separate file">
-      <change afterPath="$PROJECT_DIR$/lib/screens/messaging/messaging.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/screens/music/music.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/android/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/deezer/DeezerApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/deezer/DeezerApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/deezer/DeezerChannels.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/deezer/DeezerChannels.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/deezer/DeezerTrackPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/deezer/DeezerTrackPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/spotify/SpotifyApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/spotify/SpotifyApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/spotify/SpotifyChannels.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/java/com/ikonfete/ikonfetemobile/ikonfetemobile/spotify/SpotifyChannels.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/api/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/artist.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/artist.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/routes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/artist_verification/artist_verification_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/artist_verification/artist_verification_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/home/artist_home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/home/artist_home/artist_home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/home/fan_home/fan_home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/home/fan_home/fan_home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/home/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/home/home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/login/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/login/login.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/login/login_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/login/login_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/messages/inbox.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/messages/inbox.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/pending_verification/pending_verification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/pending_verification/pending_verification.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/settings/settings_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/settings/settings_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/signup/signup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/signup/signup.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/signup/signup_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/signup/signup_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/signup/user_signup_profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/signup/user_signup_profile.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/streaming/deezer/deezer_auth_bloc.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/test_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/test_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/facebook_auth.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/facebook_auth.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/zoom_scaffold/menu.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/zoom_scaffold/menu.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/zoom_scaffold/menu_ids.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/zoom_scaffold/menu_ids.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
@@ -78,7 +57,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Dart" value="106890" />
+          <entry key="Dart" value="106952" />
           <entry key="Groovy" value="42" />
           <entry key="PLAIN_TEXT" value="19" />
           <entry key="YAML" value="56" />
@@ -93,7 +72,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Dart" value="632" />
+          <entry key="Dart" value="634" />
           <entry key="Groovy" value="6" />
           <entry key="Image" value="1" />
           <entry key="JAVA" value="1" />
@@ -110,11 +89,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pubspec.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="14" column="28" lean-forward="true" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
+            <state relative-caret-position="285">
+              <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -138,12 +117,29 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.8.2+3/lib/cloud_firestore.dart">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/api/settings.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="14" lean-forward="true" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+            <state relative-caret-position="-623">
+              <caret line="63" column="31" selection-start-line="63" selection-start-column="31" selection-end-line="63" selection-end-column="31" />
               <folding>
-                <element signature="e#0#54#0" expanded="true" />
+                <element signature="e#57#79#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="93">
+              <caret line="112" column="61" selection-start-line="112" selection-start-column="61" selection-end-line="112" selection-end-column="61" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -166,15 +162,6 @@
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/screens/messaging/messaging.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="17" column="6" selection-start-line="17" selection-start-column="6" selection-end-line="17" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -296,9 +283,7 @@
         <option value="$PROJECT_DIR$/lib/screens/login/login_bloc.dart" />
         <option value="$PROJECT_DIR$/lib/screens/signup/signup_bloc.dart" />
         <option value="$PROJECT_DIR$/lib/test_screen.dart" />
-        <option value="$PROJECT_DIR$/lib/api/settings.dart" />
         <option value="$PROJECT_DIR$/lib/screens/settings/settings_screen.dart" />
-        <option value="$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart" />
         <option value="$PROJECT_DIR$/lib/screens/signup/user_signup_profile.dart" />
         <option value="$PROJECT_DIR$/lib/zoom_scaffold/menu_screen.dart" />
         <option value="$PROJECT_DIR$/lib/screens/login/login.dart" />
@@ -306,6 +291,8 @@
         <option value="$PROJECT_DIR$/lib/screens/fan_team_selection/fan_team_selection.dart" />
         <option value="$PROJECT_DIR$/lib/screens/home/fan_home/fan_home.dart" />
         <option value="$PROJECT_DIR$/pubspec.yaml" />
+        <option value="$PROJECT_DIR$/lib/api/settings.dart" />
+        <option value="$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart" />
       </list>
     </option>
   </component>
@@ -329,6 +316,17 @@
               <item name="ikonfetemobile" type="b2602c69:ProjectViewProjectNode" />
               <item name="ikonfetemobile" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="ikonfetemobile" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ikonfetemobile" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ikonfetemobile" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ikonfetemobile" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -338,7 +336,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="Settings&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/api/settings.dart&#10;app&#9;null&#9;null&#10;login&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/login/login.dart&#10;messaging&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/messaging/messaging.dart&#10;team_s&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/fan_team_selection/fan_team_selection.dart&#10;signup_pr&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/user_signup_profile.dart&#10;activa&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/activation.dart&#10;signup.dar&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/signup.dart&#10;main&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/main.dart&#10;main.da&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/main.dart&#10;AppBloc&#9;null&#9;null&#10;appb&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/application_bloc.dart&#10;TeamSelec&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/fan_team_selection/fan_team_selection.dart&#10;UserSignupPr&#9;null&#9;null&#10;team_selec&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/fan_team_selection/fan_team_selection.dart&#10;routes&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/routes.dart&#10;artist_ho&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/home/artist_home.dart&#10;feed&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/model/social_feed_item.dart&#10;FacebookFe&#9;null&#9;null&#10;main_de&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/main_dev.dart&#10;log&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/login/login.dart&#10;main_&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/main_bloc.dart&#10;main)&#9;null&#9;null&#10;signu&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/signup.dart&#10;menu.&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/zoom_scaffold/menu.dart&#10;fan&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/fan_team_selection/fan_team_selection_bloc.dart&#10;main_b&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/main_bloc.dart&#10;sign&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/signup.dart&#10;signup_bl&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/signup_bloc.dart&#10;signup_blo&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/signup_bloc.dart&#10;login_b&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/login_bloc.dart&#10;signup_b&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/signup/signup_bloc.dart&#10;pending_ver&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/pending_verification_bloc.dart&#10;user&#9;null&#9;null&#10;onboard&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/onboarding.dart&#10;ProfilePic&#9;null&#9;null&#10;user_signup_&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/user_signup_profile_bloc.dart&#10;WidgetsBind&#9;null&#9;null&#10;activation_blo&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/activation_bloc.dart&#10;CupertinoPage&#9;null&#9;null&#10;AuthUser&#9;null&#9;null&#10;icons.da&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/icons.dart&#10;rout&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/routes.dart&#10;fan_hom&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/screens/home/fan_home/fan_home.dart&#10;artis&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/model/artist.dart&#10;Appli&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/bloc/application_bloc.dart&#10;pubsp&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/pubspec.yaml&#10;TwitterSocia&#9;null&#9;null&#10;menu_sc&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/zoom_scaffold/menu_screen.dart&#10;icons&#9;FILE&#9;file:///Users/tomi/IdeaProjects/ikonfetemobile/lib/icons.dart" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550606774889" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550607524523" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="project.structure.last.edited" value="Project" />
@@ -487,9 +485,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="709" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4890511" visible="true" weight="0.24959612" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4890511" visible="true" weight="0.24959612" />
       <window_info id="Project Explorer" order="1" sideWeight="0.49752474" weight="0.32956383" />
       <window_info id="Job Explorer" order="2" weight="0.32956383" />
       <window_info id="DB Browser" internal_type="SLIDING" order="3" show_stripe_button="false" type="SLIDING" weight="0.32956383" />
@@ -511,8 +508,8 @@
       <window_info anchor="bottom" id="Dart Analysis" order="7" sideWeight="0.4983845" weight="0.32252836" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50403875" side_tool="true" weight="0.33387357" />
       <window_info anchor="bottom" id="Logcat" order="9" weight="0.32901135" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32576984" />
-      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49676898" visible="true" weight="0.32252836" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3241491" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49676898" weight="0.32252836" />
       <window_info anchor="bottom" id="Version Control" order="12" weight="0.32843137" />
       <window_info anchor="bottom" id="Android Profiler" order="13" show_stripe_button="false" />
       <window_info anchor="bottom" id="DB Execution Console" order="14" />
@@ -710,13 +707,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/model/artist.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="41" column="43" lean-forward="true" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/screens/artist_verification/artist_verification_bloc.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="158">
@@ -1030,13 +1020,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart">
+    <entry file="file://$PROJECT_DIR$/lib/model/settings.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="89" column="20" selection-start-line="89" selection-start-column="20" selection-end-line="89" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="30">
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pubspec.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
         </state>
       </provider>
     </entry>
@@ -1047,27 +1041,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.8.2+3/lib/cloud_firestore.dart">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/api/settings.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="14" lean-forward="true" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+        <state relative-caret-position="-623">
+          <caret line="63" column="31" selection-start-line="63" selection-start-column="31" selection-end-line="63" selection-end-column="31" />
           <folding>
-            <element signature="e#0#54#0" expanded="true" />
+            <element signature="e#57#79#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/settings.dart">
+    <entry file="file://$PROJECT_DIR$/lib/screens/settings/settings_bloc.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pubspec.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="14" column="28" lean-forward="true" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
+        <state relative-caret-position="93">
+          <caret line="112" column="61" selection-start-line="112" selection-start-column="61" selection-end-line="112" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
