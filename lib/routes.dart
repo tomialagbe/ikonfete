@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
-import 'package:ikonfetemobile/screens/home/artist_home.dart';
+import 'package:ikonfetemobile/screens/home/artist_home/artist_home.dart';
 import 'package:ikonfetemobile/screens/login/login.dart';
 import 'package:ikonfetemobile/screens/onboarding.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';

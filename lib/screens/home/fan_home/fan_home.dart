@@ -26,8 +26,8 @@ Widget fanHomeScreen(BuildContext context) {
         bloc: FanHomeBloc(appConfig: appConfig),
         child: FanHomeScreen(
           appConfig: appConfig,
-          fanUID: appState.artistOrFan.second.uid,
-          currentTeamID: appState.artistOrFan.second.currentTeamId,
+          fanUID: appState.artistOrFan?.second?.uid ?? "",
+          currentTeamID: appState.artistOrFan?.second?.currentTeamId ?? "",
         ),
       );
     },

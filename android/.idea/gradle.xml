@@ -3,6 +3,9 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT" />
+        </compositeConfiguration>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -10,9 +13,10 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$USER_HOME$/flutter/.pub-cache/git/plugins-4bbd94bc542a6bd83726a3e07518f2e404230011/packages/image_picker/android" />
-            <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.6.6/android" />
+            <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.8.2+3/android" />
+            <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.7.0/android" />
             <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.5+1/android" />
-            <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_storage-1.0.4/android" />
+            <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_storage-1.1.0+1/android" />
             <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_facebook_login-1.1.1/android" />
             <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_twitter_login-1.1.0/android" />
             <option value="$USER_HOME$/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_webview_plugin-0.2.1+2/android" />

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
-import 'package:ikonfetemobile/screens/home/artist_home.dart';
+import 'package:ikonfetemobile/screens/home/artist_home/artist_home.dart';
 import 'package:ikonfetemobile/screens/home/fan_home/fan_home.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 

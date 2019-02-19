@@ -126,8 +126,12 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
                 : facebookLoginResult.errorMessage);
       }
 
-      final firebaseUser = await FirebaseAuth.instance.signInWithFacebook(
+//      final firebaseUser = await FirebaseAuth.instance.signInWithFacebook(
+//          accessToken: facebookLoginResult.accessToken.token);
+      final facebookAuthCredential = FacebookAuthProvider.getCredential(
           accessToken: facebookLoginResult.accessToken.token);
+      final firebaseUser = await FirebaseAuth.instance
+          .signInWithCredential(facebookAuthCredential);
       if (firebaseUser == null) {
         return AuthResult.error(authRequest, "Facebook Sign up failed");
       }

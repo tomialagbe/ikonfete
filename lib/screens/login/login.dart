@@ -136,7 +136,8 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildIntroText(BuildContext context) {
     final tapHandler = TapGestureRecognizer();
-    tapHandler.onTap = () => Navigator.pushNamed(context, Routes.signup);
+    tapHandler.onTap =
+        () => Navigator.pushReplacementNamed(context, Routes.signup);
 
     return RichText(
       textAlign: TextAlign.center,

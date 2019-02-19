@@ -23,8 +23,6 @@ class FacebookAuth {
 
   FacebookAuth._internal() {
     facebookLogin = FacebookLogin();
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
-//    facebookLogin.loginBehavior = FacebookLoginBehavior.nativeWithFallback;
   }
 
   Future<bool> isLoggedIn() {
@@ -39,7 +37,10 @@ class FacebookAuth {
     return null;
   }
 
-  Future<FacebookAuthResult> facebookAuth() async {
+  Future<FacebookAuthResult> facebookAuth(
+      {FacebookLoginBehavior loginBehaviour:
+          FacebookLoginBehavior.webViewOnly}) async {
+    facebookLogin.loginBehavior = loginBehaviour;
     await facebookLogin.logOut();
     final result = await facebookLogin.logInWithReadPermissions(
       [

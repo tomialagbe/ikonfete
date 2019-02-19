@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:ikonfetemobile/api/api.dart';
 import 'package:ikonfetemobile/api/pending_verification.dart';
 import 'package:ikonfetemobile/app_config.dart';
@@ -90,7 +91,8 @@ class ArtistVerificationBloc
 
   Future<FacebookAuthResult> _addFacebook() async {
     final fbAuth = FacebookAuth();
-    final fbResult = await fbAuth.facebookAuth();
+    final fbResult = await fbAuth.facebookAuth(
+        loginBehaviour: FacebookLoginBehavior.nativeWithFallback);
     return fbResult;
   }
 

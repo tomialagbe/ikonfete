@@ -209,8 +209,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return authResult;
       }
 
-      final firebaseUser = await FirebaseAuth.instance
-          .signInWithFacebook(accessToken: result.accessToken.token);
+//      final firebaseUser = await FirebaseAuth.instance
+//          .signInWithFacebook(accessToken: result.accessToken.token);
+      final facebookCredential = FacebookAuthProvider.getCredential(
+          accessToken: result.accessToken.token);
+      final firebaseUser =
+          await FirebaseAuth.instance.signInWithCredential(facebookCredential);
 
       // find the user
       if (authRequest.isArtist) {

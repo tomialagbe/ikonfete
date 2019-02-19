@@ -8,6 +8,7 @@ import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
+import 'package:ikonfetemobile/routes.dart';
 import 'package:ikonfetemobile/screen_utils.dart';
 import 'package:ikonfetemobile/screens/pending_verification/pending_verification_bloc.dart';
 import 'package:ikonfetemobile/utils/strings.dart';
@@ -98,6 +99,8 @@ class PendingVerificationScreen extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       appBloc.dispatch(Signout());
+                                      Navigator.of(context)
+                                          .pushReplacementNamed(Routes.login);
                                     }),
                               ),
                               Column(
@@ -205,7 +208,10 @@ class PendingVerificationScreen extends StatelessWidget {
                   activeColor: primaryButtonActiveColor,
                   text: "SIGN OUT",
                   // REGISTER
-                  onTap: () => appBloc.dispatch(Signout()),
+                  onTap: () {
+                    appBloc.dispatch(Signout());
+                    Navigator.of(context).pushReplacementNamed(Routes.login);
+                  },
                 ),
                 SizedBox(height: 40.0),
               ],

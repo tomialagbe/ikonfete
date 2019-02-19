@@ -41,8 +41,12 @@ class Artist extends Model<String> {
       ..spotifyUserId = json["spotifyUserId"]
       ..deezerUserId = json["deezerUserId"]
       ..feteScore = json["feteScore"] ?? 0
-      ..isVerified = json["isVerified"] ?? false
-      ..isPendingVerification = json["isPendingVerification"] ?? false
+      ..isVerified = (json["isVerified"] is num)
+          ? (json["isVerified"] == 0 ? false : true)
+          : json["isVerified"] ?? false
+      ..isPendingVerification = (json["isPendingVerification"] is num)
+          ? (json["isPendingVerification"] == 0 ? false : true)
+          : json["isPendingVerification"] ?? false
       ..bio = json["bio"]
       ..spotifyArtistId = json["spotifyArtistId"]
       ..deezerArtistId = json["deezerArtistId"]

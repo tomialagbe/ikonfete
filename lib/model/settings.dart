@@ -38,4 +38,23 @@ class Settings extends Model<String> {
     });
     return data;
   }
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) &&
+      other is Settings &&
+      runtimeType == other.runtimeType &&
+      id == other.id &&
+      uid == other.uid &&
+      deezerUserId == other.deezerUserId &&
+      spotifyUserId == other.spotifyUserId &&
+      enableNotifications == other.enableNotifications;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      uid.hashCode ^
+      deezerUserId.hashCode ^
+      spotifyUserId.hashCode ^
+      enableNotifications.hashCode;
 }

@@ -1,7 +1,7 @@
 import 'package:ikonfetemobile/screens/home/home.dart';
 import 'package:ikonfetemobile/screens/ikonscreen/ikon_screen.dart';
-import 'package:ikonfetemobile/screens/messages/inbox.dart';
-import 'package:ikonfetemobile/screens/messages/messages.dart';
+import 'package:ikonfetemobile/screens/messaging/messaging.dart';
+import 'package:ikonfetemobile/screens/music/music.dart';
 import 'package:ikonfetemobile/screens/profile/profile_screen.dart';
 import 'package:ikonfetemobile/screens/settings/settings_screen.dart';
 import 'package:ikonfetemobile/screens/superfans/superfans.dart';
@@ -51,13 +51,15 @@ Map<MenuItem, Screen> zoomScaffoldMenuItems({@required bool isArtist}) {
 
   if (isArtist) {
     menu[MenuItem(id: MenuIDs.team, title: 'Team')] = teamScreen;
-    menu[MenuItem(id: MenuIDs.inbox, title: 'Inbox')] = inboxScreen;
+//    menu[MenuItem(id: MenuIDs.inbox, title: 'Inbox')] = inboxScreen;
   } else {
     // fan menu
     menu[MenuItem(id: MenuIDs.ikon, title: 'Ikon')] = ikonScreen;
-    menu[MenuItem(id: MenuIDs.messages, title: 'Messages')] = messagesScreen;
+//    menu[MenuItem(id: MenuIDs.messages, title: 'Messages')] = messagesScreen;
   }
 
+  menu[MenuItem(id: MenuIDs.music, title: 'Music')] = musicScreen;
+  menu[MenuItem(id: MenuIDs.messaging, title: 'Messaging')] = messagingScreen;
   menu[MenuItem(id: MenuIDs.settings, title: 'Settings')] = settingsScreen;
   return menu;
 }

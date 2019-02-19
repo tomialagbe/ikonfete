@@ -374,16 +374,3 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
     );
   }
 }
-//  Future<Uint8List> _loadImageBytes(String url) async {
-//    try {
-//      final response = await http.get(url);
-//      if (response.statusCode == 200) {
-//        return response.bodyBytes;
-//      }
-//      return null;
-//    } on Exception catch (e) {
-//      // image failed to load
-//      // TODO: handle better
-//      return null;
-//    }
-//  }

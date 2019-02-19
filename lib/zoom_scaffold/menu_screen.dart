@@ -115,10 +115,11 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     }
 
     final isArtist = appState.isArtist;
-    final artist = isArtist ? appState.artistOrFan.first : null;
-    final fan = isArtist ? null : appState.artistOrFan.second;
-    final photoUrl =
-        isArtist ? artist.profilePictureUrl : fan.profilePictureUrl;
+    final artist = isArtist ? appState.artistOrFan?.first ?? null : null;
+    final fan = isArtist ? null : appState.artistOrFan?.second ?? null;
+    final photoUrl = isArtist
+        ? artist?.profilePictureUrl ?? null
+        : fan?.profilePictureUrl ?? null;
 
     return Transform(
       transform: Matrix4.translationValues(0.0, 100.0, 0.0),
@@ -161,7 +162,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                     : MemoryImage(kTransparentImage),
               ),
               title: Text(
-                appState.isArtist ? artist.name : fan.name,
+                appState.isArtist ? artist?.name ?? "" : fan?.name ?? "",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -169,7 +170,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                 ),
               ),
               subtitle: Text(
-                isArtist ? "@${artist.username}" : "@${fan.username}",
+                isArtist
+                    ? "@${artist?.username ?? ""}"
+                    : "@${fan?.username ?? ""}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.0,
@@ -230,8 +233,8 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
 
   Widget createFeteScore(MenuController menuController, AppState appState) {
     final isArtist = appState.isArtist;
-    final artist = isArtist ? appState.artistOrFan.first : null;
-    final fan = isArtist ? null : appState.artistOrFan.second;
+    final artist = isArtist ? appState.artistOrFan?.first ?? null : null;
+    final fan = isArtist ? null : appState.artistOrFan?.second ?? null;
 
     return Positioned(
       bottom: 100.0,
@@ -245,7 +248,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Text(
-              isArtist ? artist.feteScore.toString() : fan.feteScore.toString(),
+              isArtist
+                  ? artist?.feteScore.toString() ?? ""
+                  : fan?.feteScore.toString() ?? "",
               style: TextStyle(fontSize: 50.0, color: Color(0xFFF0F0F0)),
             ),
             SizedBox(width: 5.0),

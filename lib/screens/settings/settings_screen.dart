@@ -13,31 +13,50 @@ import 'package:ikonfetemobile/colors.dart';
 import 'package:ikonfetemobile/icons.dart';
 import 'package:ikonfetemobile/main_bloc.dart';
 import 'package:ikonfetemobile/screens/settings/settings_bloc.dart';
+import 'package:ikonfetemobile/utils/strings.dart';
+import 'package:ikonfetemobile/widget/hud_overlay.dart';
 import 'package:ikonfetemobile/widget/ikonfete_buttons.dart';
+import 'package:ikonfetemobile/widget/overlays.dart';
 import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold.dart';
 
 final Screen settingsScreen = Screen(
   title: "Settings",
   contentBuilder: (context) {
     final appBloc = BlocProvider.of<AppBloc>(context);
-    return BlocProvider<SettingsBloc>(
-      bloc: SettingsBloc(
-        appConfig: AppConfig.of(context),
+    return BlocBuilder<AppEvent, AppState>(
+      bloc: appBloc,
+      builder: (bldContet, appState) {
+        return BlocProvider<SettingsBloc>(
+          bloc: SettingsBloc(
+            appConfig: AppConfig.of(context),
 //        deezerAuthBloc: DeezerAuthBloc(),
 //        spotifyAuthBloc: SpotifyAuthBloc(),
-      ),
-      child: SettingsScreen(),
+          ),
+          child: SettingsScreen(uid: appState.uid),
+        );
+      },
     );
   },
 );
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
+  final String uid;
+
+  SettingsScreen({this.uid});
+
+  @override
+  SettingsScreenState createState() => SettingsScreenState();
+}
+
+class SettingsScreenState extends State<SettingsScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   final settingHeaderTextStyle = TextStyle(
     fontFamily: "SanFranciscoDisplay",
     fontSize: 18.0,
     color: Colors.black87,
   );
+
   final settingInfoTextStyle = TextStyle(
     fontFamily: "SanFranciscoDisplay",
     fontSize: 14.0,
@@ -45,41 +64,61 @@ class SettingsScreen extends StatelessWidget {
   );
 
   @override
+  void initState() {
+    super.initState();
+    SettingsBloc bloc = BlocProvider.of<SettingsBloc>(context);
+    bloc.dispatch(LoadSettingsEvent(widget.uid));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<SettingsBloc>(context);
     return Scaffold(
       key: scaffoldKey,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
-//        child: _settingsLoading
-//            ? _buildLoadingIndicator()
-//            : _loadSettingsFailed
-//            ? _buildLoadSettingsError()
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Connected Social Profiles",
-              style: settingHeaderTextStyle,
+      body: BlocBuilder<SettingsEvent, SettingsState>(
+        bloc: bloc,
+        builder: (bldContext, settingsState) {
+          if (settingsState.hasError) {
+            scaffoldKey.currentState.showSnackBar(
+                SnackBar(content: Text(settingsState.errorMessage)));
+          }
+
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+            padding:
+                const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                OverlayBuilder(
+                  child: Container(),
+                  showOverlay: settingsState.isLoading,
+                  overlayBuilder: (context) => HudOverlay.getOverlay(),
+                ),
+                Text(
+                  "Connected Social Profiles",
+                  style: settingHeaderTextStyle,
+                ),
+                SizedBox(height: 30.0),
+                _buildSoundCloudConnector(),
+                SizedBox(height: 30.0),
+                _buildSpotifyConnector(settingsState),
+                SizedBox(height: 30.0),
+                _buildDeezerConnector(settingsState),
+                SizedBox(height: 40.0),
+                _buildNotificationSettings(),
+                SizedBox(height: 30.0),
+                _buildAboutLink(),
+                Expanded(child: Container()),
+                _buildSaveButton(context),
+              ],
             ),
-            SizedBox(height: 30.0),
-            _buildSoundCloudConnector(),
-            SizedBox(height: 30.0),
-            _buildSpotifyConnector(),
-            SizedBox(height: 30.0),
-            _buildDeezerConnector(),
-            SizedBox(height: 40.0),
-            _buildNotificationSettings(),
-            SizedBox(height: 30.0),
-            _buildAboutLink(),
-            Expanded(child: Container()),
-            _buildSaveButton(context),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -112,7 +151,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSpotifyConnector() {
+  Widget _buildSpotifyConnector(SettingsState settingsState) {
+    final bloc = BlocProvider.of<SettingsBloc>(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,7 +172,8 @@ class SettingsScreen extends StatelessWidget {
         Expanded(child: Container()),
         CupertinoSwitch(
 //          value: _spotifyEnabled, TODO:
-          value: false,
+          value:
+              !StringUtils.isNullOrEmpty(settingsState.settings.spotifyUserId),
           onChanged: (val) async {
 //            setState(() => _spotifyEnabled = val);
 //            if (val) {
@@ -147,7 +188,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDeezerConnector() {
+  Widget _buildDeezerConnector(SettingsState settingsState) {
+    final bloc = BlocProvider.of<SettingsBloc>(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,8 +210,12 @@ class SettingsScreen extends StatelessWidget {
         Expanded(child: Container()),
         CupertinoSwitch(
 //          value: _deezerEnabled, TODO:
-          value: false,
+          value:
+              !StringUtils.isNullOrEmpty(settingsState.settings.deezerUserId),
           onChanged: (val) async {
+            if (val) {
+              bloc.dispatch(EnableDeezerEvent());
+            }
 //            setState(() => _deezerEnabled = val);
 //            if (val) {
 //              _bloc.deezerAuthBloc.authorizeDeezer();
