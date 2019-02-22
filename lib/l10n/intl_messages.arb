@@ -1,0 +1,87 @@
+{
+  "@@last_modified": "2018-09-06T08:30:18.777948",
+  "title": "Ikonfete",
+  "@title": {
+    "description": "The application title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "splashScreenText": "Harness the power of\n your fan base and loyalty",
+  "@splashScreenText": {
+    "description": "The text at the bottom of the splash screen",
+    "type": "text",
+    "placeholders": {}
+  },
+  "onboardText1": "Connect with your\n true fans or favourite artist.",
+  "@onboardText1": {
+    "description": "The text of the first slide of the onboarding slider",
+    "type": "text",
+    "placeholders": {}
+  },
+  "onboardText2": "Understand your fan\n base with analytics.",
+  "@onboardText2": {
+    "description": "The text of the second slide of the onboarding slider",
+    "type": "text",
+    "placeholders": {}
+  },
+  "onboardText3": "Leverage your fan base\n and artist loyalty.",
+  "@onboardText3": {
+    "description": "The text of the third slide of the onboarding slider",
+    "type": "text",
+    "placeholders": {}
+  },
+  "onboardText4": "Choose what you want\n to stream, anytime.",
+  "@onboardText4": {
+    "description": "The text of the fourth slide of the onboarding slider",
+    "type": "text",
+    "placeholders": {}
+  },
+  "artistSignupButtonText": "I'M AN ARTIST",
+  "@artistSignupButtonText": {
+    "description": "The text on the artist signup button on the onboarding screen",
+    "type": "text",
+    "placeholders": {}
+  },
+  "fanSignupButtonText": "I'M A FAN",
+  "@fanSignupButtonText": {
+    "description": "The text on the fan signup button on the onboarding screen",
+    "type": "text",
+    "placeholders": {}
+  },
+  "skip": "Skip",
+  "@skip": {
+    "description": "The skip button at the top of the onboarding page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "artistSignupIntroText": "Create an account to connect to\nyour awesome superfans. Already have\nan account? ",
+  "@artistSignupIntroText": {
+    "description": "The text at the top of the artist sign up page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "signIn": "Sign in",
+  "@signIn": {
+    "description": "Sign in",
+    "type": "text",
+    "placeholders": {}
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Register",
+    "type": "text",
+    "placeholders": {}
+  },
+  "or": "or",
+  "@or": {
+    "description": "or",
+    "type": "text",
+    "placeholders": {}
+  }
+}

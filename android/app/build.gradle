@@ -17,9 +17,9 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 android {
     compileSdkVersion 27
 
-    defaultConfig {
-        multiDexEnabled true
-    }
+//    defaultConfig {
+//        multiDexEnabled true
+//    }
 
     lintOptions {
         disable 'InvalidPackage'
@@ -32,7 +32,8 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -42,6 +43,17 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 flutter {
@@ -49,12 +61,28 @@ flutter {
 }
 
 dependencies {
-//    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-    implementation 'com.android.support:multidex:1.0.3'
+//    implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.firebase:firebase-core:16.0.1'
+//    implementation fileTree(include: ['*.aar'], dir: 'libs')
+
+    // Deezer Integration
+    implementation 'com.deezer.sdk:deezer-sdk-0.11.2@aar'
+
+    // Spotify Integration
+    implementation 'com.spotify.android:auth:1.0.0-alpha'
+    // This library handles authentication and authorization
+    implementation 'com.spotify.sdk:spotify-player-24-noconnect-2.20b@aar'
+    // This library handles music playback
+
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 }
+
+//configurations.all {
+//    resolutionStrategy {
+//        force 'com.android.support:support-v4:27.0.1'
+//    }
+//}
 
 apply plugin: 'com.google.gms.google-services'

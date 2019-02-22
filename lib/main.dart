@@ -1,15 +1,34 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluro/fluro.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_twitter_login/flutter_twitter_login.dart';
-import 'package:ikonfetemobile/app_config.dart';
 import 'package:ikonfetemobile/localization.dart';
-
-void main() => runApp(new IkonfeteApp());
+import 'package:ikonfetemobile/main_bloc.dart';
+import 'package:ikonfetemobile/model/artist.dart';
+import 'package:ikonfetemobile/model/fan.dart';
+import 'package:ikonfetemobile/routes.dart';
+import 'package:ikonfetemobile/screens/artist_verification/artist_verification.dart';
+import 'package:ikonfetemobile/screens/fan_team_selection/fan_team_selection.dart';
+import 'package:ikonfetemobile/screens/login/login.dart';
+import 'package:ikonfetemobile/screens/onboarding.dart';
+import 'package:ikonfetemobile/screens/pending_verification/pending_verification.dart';
+import 'package:ikonfetemobile/screens/signup/user_signup_profile.dart';
+import 'package:ikonfetemobile/utils/types.dart';
+import 'package:ikonfetemobile/zoom_scaffold/zoom_scaffold_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IkonfeteApp extends StatefulWidget {
-  // This widget is the root of your application.
+  final SharedPreferences preferences;
+  final FirebaseUser currentUser;
+  final ExclusivePair<Artist, Fan> currentArtistOrFan;
+
+  IkonfeteApp(
+      {@required this.preferences,
+      @required this.currentUser,
+      @required this.currentArtistOrFan});
+
   @override
   IkonfeteAppState createState() {
     return IkonfeteAppState();
@@ -17,100 +36,211 @@ class IkonfeteApp extends StatefulWidget {
 }
 
 class IkonfeteAppState extends State<IkonfeteApp> {
+  AppBloc _appBloc;
+
   @override
   void initState() {
     super.initState();
+    defineRoutes(router);
+
+    _appBloc = AppBloc(
+      preferences: widget.preferences,
+      initialCurrentUser: widget.currentUser,
+      initialCurrentArtistOrFan: widget.currentArtistOrFan,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      localizationsDelegates: [
-        AppLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-//      supportedLocales: [Locale("en", ""), Locale("es", ""), Locale("pt", "")],
-      supportedLocales: [
-        Locale("en", ""),
-      ],
-      onGenerateTitle: (context) {
-        return AppLocalizations.of(context).title;
-      },
-      home: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("Ikonfete"),
-          ),
-          body: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  onPressed: _facebookLogin,
-                  child: Text("Facebook Login"),
-                ),
-                SizedBox(height: 20.0),
-                RaisedButton(
-                  onPressed: _twitterLogin,
-                  child: Text("Twitter Login"),
-                ),
-              ],
-            ),
-          ),
+    return BlocProvider<AppBloc>(
+      bloc: _appBloc,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: "SanFranciscoDisplay",
+        ),
+        localizationsDelegates: [
+          AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale("en", "NG"),
+        ],
+        onGenerateTitle: (context) {
+          return AppLocalizations.of(context).title;
+        },
+        onGenerateRoute: (settings) {
+          final routeMatch = router.match(settings.name);
+          final params = routeMatch.parameters;
+          Handler handler = routeMatch.route.handler;
+          return CupertinoPageRoute(
+            builder: (ctx) {
+              return handler.handlerFunc(ctx, params);
+            },
+            settings: settings,
+          );
+        },
+        home: BlocBuilder<AppEvent, AppState>(
+          bloc: _appBloc,
+          builder: (context, state) {
+            return getInitialScreen(context, state);
+          },
         ),
       ),
     );
   }
 
-  void _facebookLogin() async {
-    final appConfig = AppConfig.of(context);
-    final facebookLogin = FacebookLogin();
-    if (await facebookLogin.isLoggedIn) {
-      print("USER ALREADY LOGGED IN");
-    } else {
-      final result = await facebookLogin
-          .logInWithReadPermissions(['email', 'public_profile']);
-      if (result.status == FacebookLoginStatus.loggedIn) {
-        print("LOGIN SUCCESSFUL. TOKEN: ${result.accessToken.token}");
-        final firebaseUser = await FirebaseAuth.instance
-            .signInWithFacebook(accessToken: result.accessToken.token);
-        print("LOGGED IN SUCCESSFULY: ${firebaseUser.uid}");
-      } else if (result.status == FacebookLoginStatus.cancelledByUser) {
-        print("LOGIN CANCELLED");
+  static Widget getInitialScreen(BuildContext context, AppState state) {
+    if (!state.isOnBoarded) {
+      return OnBoardingScreen();
+    } else if (state.isLoggedIn) {
+      if (!state.isProfileSetup) {
+        return userSignupProfileScreen(context, state.uid);
+      } else if (state.isArtist) {
+        if (state.artistOrFan.first.isVerified) {
+          return ZoomScaffoldScreen(
+            screenId: 'home',
+            appState: state,
+          );
+        } else if (state.artistOrFan.first.isPendingVerification) {
+          return pendingVerificationScreen(context, state.uid);
+        } else {
+          return artistVerificationScreen(context, state.uid);
+        }
       } else {
-        print("LOGIN FAILED: ${result.errorMessage}");
+        // check if fan team is setup
+        if (state.isFanTeamSetup) {
+          return ZoomScaffoldScreen(
+            screenId: 'home',
+            appState: state,
+          );
+        } else {
+          return teamSelectionScreen(context, state.uid);
+        }
       }
+    } else {
+      return loginScreen(context);
     }
+//    return loginScreen(context);
   }
 
-  void _twitterLogin() async {
-    final appConfig = AppConfig.of(context);
-    final twitterLogin = TwitterLogin(
-      consumerKey: appConfig.twitterConfig.consumerKey,
-      consumerSecret: appConfig.twitterConfig.consumerSecret,
+/*@override
+  Widget build(BuildContext context) {
+    return BlocProvider<ApplicationBloc>(
+      bloc: _bloc,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: "SanFranciscoDisplay",
+        ),
+        localizationsDelegates: [
+          AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale("en", "NG"),
+        ],
+        onGenerateTitle: (context) {
+          return AppLocalizations.of(context).title;
+        },
+        home: FutureBuilder<AppInitState>(
+          initialData: null,
+          future: _bloc.getAppInitState(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              // show init error screen
+              return InitErrorScreen(
+                message: snapshot.error.toString(),
+                retryHandler: () {
+                  setState(() {}); // reload the app
+                },
+              );
+            } else if (snapshot.hasData) {
+              final initState = snapshot.data;
+              if (initState.isOnBoarded) {
+                // check if the user has signed in
+                if (initState.isLoggedIn) {
+                  if (!initState.isProfileSetup) {
+                    return BlocProvider<UserSignupProfileBloc>(
+                      bloc: UserSignupProfileBloc(
+                        appConfig: AppConfig.of(ctx),
+                        isArtist: initState.isArtist,
+                        uid: initState.currentUser.uid,
+                      ),
+                      child: UserSignupProfileScreen(
+                        isArtist: initState.isArtist,
+                      ),
+                    );
+                  } else if (initState.isArtist) {
+                    if (initState.artist.isVerified) {
+                      // Artist Home Screen
+                      return ZoomScaffoldScreen(
+                        isArtist: true,
+                        screenId: 'home',
+                        params: <String, String>{},
+                      );
+                    } else if (initState.artist.isPendingVerification) {
+                      // pending verification screen
+                      return BlocProvider<ArtistPendingVerificationBloc>(
+                        bloc: ArtistPendingVerificationBloc(
+                          uid: initState.currentUser.uid,
+                          appConfig: AppConfig.of(ctx),
+                        ),
+                        child: ArtistPendingVerificationScreen(
+                            uid: initState.currentUser.uid),
+                      );
+                    } else {
+                      // to verification screen
+                      return BlocProvider<ArtistVerificationBloc>(
+                        bloc: ArtistVerificationBloc(
+                            appConfig: AppConfig.of(ctx)),
+                        child: ArtistVerificationScreen(
+                            uid: initState.currentUser.uid),
+                      );
+                    }
+                  } else {
+                    // TODO: seek better alternatives
+                    if (initState.isFanTeamSetup) {
+                      // Fan Home Screen
+                      return ZoomScaffoldScreen(
+                        isArtist: false,
+                        screenId: 'home',
+                        params: <String, String>{},
+                      );
+                    } else {
+                      return BlocProvider<FanTeamSelectionBloc>(
+                        bloc:
+                            FanTeamSelectionBloc(appConfig: AppConfig.of(ctx)),
+                        child: FanTeamSelectionScreen(
+                            uid: initState.currentUser.uid,
+                            name: initState.currentUser.displayName),
+                      );
+                    }
+                  }
+                } else {
+                  return BlocProvider<LoginBloc>(
+                    child: LoginScreen(isArtist: initState.isArtist),
+                    bloc: LoginBloc(
+                      isArtist: initState.isArtist,
+                      appConfig: AppConfig.of(context),
+                    ),
+                  );
+                }
+              } else {
+                // user not onboarded, show onboarding screen
+                return OnBoardingScreen();
+              }
+            } else {
+              return SplashScreen();
+            }
+          },
+        ),
+      ),
     );
-    if (await twitterLogin.isSessionActive) {
-      final token = ((await twitterLogin.currentSession).token);
-      print("LOGGED IN WITH TWITTER. TOKEN: $token");
-    } else {
-      final twitterLoginResult = await twitterLogin.authorize();
-      switch (twitterLoginResult.status) {
-        case TwitterLoginStatus.loggedIn:
-          final firebaseUser = await FirebaseAuth.instance.signInWithTwitter(
-              authToken: twitterLoginResult.session.token,
-              authTokenSecret: twitterLoginResult.session.secret);
-          print("LOGGED IN SUCCESSFULY: ${firebaseUser.uid}");
-          break;
-        case TwitterLoginStatus.cancelledByUser:
-        case TwitterLoginStatus.error:
-        default:
-          print("TWITTER LOGIN FAILED");
-          break;
-      }
-    }
   }
+  */
 }

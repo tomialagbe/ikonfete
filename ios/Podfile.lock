@@ -36,12 +36,18 @@ PODS:
   - Firebase/Firestore (5.7.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (= 0.13.2)
+  - Firebase/Storage (5.7.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (= 3.0.1)
   - firebase_auth (0.0.1):
     - Firebase/Auth
     - Firebase/Core
     - Flutter
   - firebase_core (0.0.1):
     - Firebase/Core
+    - Flutter
+  - firebase_storage (0.0.1):
+    - Firebase/Storage
     - Flutter
   - FirebaseAnalytics (5.1.1):
     - FirebaseCore (~> 5.1)
@@ -81,6 +87,9 @@ PODS:
   - FirebaseInstanceID (3.2.1):
     - FirebaseCore (~> 5.1)
     - GoogleUtilities/Environment (~> 5.2)
+  - FirebaseStorage (3.0.1):
+    - FirebaseCore (~> 5.0)
+    - GTMSessionFetcher/Core (~> 1.1)
   - Flutter (1.0.0)
   - flutter_facebook_login (0.0.1):
     - FBSDKLoginKit (~> 4.29)
@@ -134,12 +143,16 @@ PODS:
     - gRPC-Core (= 1.14.1)
     - gRPC-RxLibrary (= 1.14.1)
   - GTMSessionFetcher/Core (1.2.0)
+  - image_picker (0.0.1):
+    - Flutter
   - leveldb-library (1.20)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - path_provider (0.0.1):
+    - Flutter
   - Protobuf (3.6.1)
   - shared_preferences (0.0.1):
     - Flutter
@@ -152,10 +165,13 @@ DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
   - flutter_twitter_login (from `.symlinks/plugins/flutter_twitter_login/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
 
 EXTERNAL SOURCES:
@@ -165,6 +181,8 @@ EXTERNAL SOURCES:
     :path: .symlinks/plugins/firebase_auth/ios
   firebase_core:
     :path: .symlinks/plugins/firebase_core/ios
+  firebase_storage:
+    :path: .symlinks/plugins/firebase_storage/ios
   Flutter:
     :path: .symlinks/flutter/ios
   flutter_facebook_login:
@@ -173,6 +191,10 @@ EXTERNAL SOURCES:
     :path: .symlinks/plugins/flutter_twitter_login/ios
   flutter_webview_plugin:
     :path: .symlinks/plugins/flutter_webview_plugin/ios
+  image_picker:
+    :path: .symlinks/plugins/image_picker/ios
+  path_provider:
+    :path: .symlinks/plugins/path_provider/ios
   shared_preferences:
     :path: .symlinks/plugins/shared_preferences/ios
 
@@ -186,6 +208,7 @@ SPEC CHECKSUMS:
   Firebase: 734a4f92957aa6c40e7ae3fda3d9359e1890aa87
   firebase_auth: 27a5a77a032d557c18f8e223aaf8ec1368f6cdbc
   firebase_core: c96aa8b2fcf7f5167d32f22034f502f9304952b8
+  firebase_storage: e34d30ff8bb57e691191b70e9d255ec2eba2351f
   FirebaseAnalytics: 993577e91157feb40945abedd6ab346d8a4b6ac8
   FirebaseAuth: 657a25e4be044d2d333663ebf515a861c5a59cd7
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
@@ -193,6 +216,7 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 27be5ac5bc75e0b17537b2bbfada8258addcc8cd
   FirebaseFirestore: 7eec93809ad61e7ebe303089c5cc5efa63424b72
   FirebaseInstanceID: ea5af6920d0a4a29b40459d055bebe4a6c1333c4
+  FirebaseStorage: 43f823b96b72a08539eba21a7de043348a69d4c6
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   flutter_facebook_login: e3d2f0a348889fe0f49c302bc044b8cc66c691be
   flutter_twitter_login: 3cdd20f570fc128331e773432f8a3c98207ee7cb
@@ -204,13 +228,15 @@ SPEC CHECKSUMS:
   gRPC-ProtoRPC: 78f976fc6a1eafc0e1f4965c255c313aa0859b1e
   gRPC-RxLibrary: c4c826507ad3c8c8fab6887f153938eb04b86d59
   GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
+  image_picker: ee00aab0487cedc80a304085219503cc6d0f2e22
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
-  shared_preferences: 5a1d487c427ee18fcd3ea1f2a131569481834b53
+  shared_preferences: 2ec467dba9d9e35ff63563b14a62293d51bd3156
   TwitterCore: e959987be23c767004d29eb7fab8d85d8585a2e5
   TwitterKit: 3b6044a7320340326a4098f3e37aa1dbaeb94942
 
-PODFILE CHECKSUM: 42d847abdedf2d336ea5afaf6a49b3a1759bf741
+PODFILE CHECKSUM: c884e753c136b9d3f237f3b001d0d77b83d2059e
 
 COCOAPODS: 1.4.0

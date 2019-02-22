@@ -10,19 +10,41 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_localizations:
     sdk: flutter
+  http:
   flutter_webview_plugin: ^0.2.1+2
-  twitter: ^0.5.2
   shared_preferences: ^0.4.2
-  firebase_auth:
-  cloud_firestore:
+  firebase_core:
+  firebase_auth: ^0.7.0
+#  cloud_firestore: 0.8.2+3
+#  cloud_firestore: ^0.9.0
+  firebase_storage:
   flutter_facebook_login:
   flutter_twitter_login:
-
+  flutter_swiper:
+  rxdart:
+  progress_indicators: ^0.1.2
+  fluro:
+  image:
+  image_picker:
+    git:
+      url: git://github.com/tomialagbe/plugins
+      path: packages/image_picker
+  flutter_svg:
+  transparent_image:
+  cached_network_image:
+  mime: ^0.9.6+2
+  country_pickers: ^1.0.1
+  flutter_bloc: ^0.3.0
+  timeago: ^2.0.9
+  photo_view: ^0.1.0
+  chewie: ^0.8.0
+  sqflite: ^0.13.0+1
+  path_provider: ^0.4.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  intl_translation: "^0.16.7"
+  intl_translation:
 
 
 # For information on the generic Dart part of this file, see the
@@ -40,6 +62,16 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+  assets:
+  - assets/images/splash_background.png
+  - assets/images/Ikonfete_logo_white.png
+  - assets/images/onboard_background1.png
+  - assets/images/onboard_background2.png
+  - assets/images/onboard_background3.png
+  - assets/images/onboard_background4.png
+  - assets/images/alert.svg
+  - assets/images/dark_grunge_bk.jpg
+  - assets/images/deezer.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
@@ -67,6 +99,34 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
   fonts:
-    - family: Bebas
-      fonts:
-        - asset: assets/fonts/bebas.ttf
+  - family: Themify
+    fonts:
+    - asset: assets/fonts/themify.ttf
+  - family: FontAwesome5
+    fonts:
+    - asset: assets/fonts/fa-regular-400.ttf
+  - family: FontAwesome5Solid
+    fonts:
+    - asset: assets/fonts/fa-solid-900.ttf
+  - family: FontAwesome5Brands
+    fonts:
+    - asset: assets/fonts/fa-brands-400.ttf
+  - family: LineAwesome
+    fonts:
+    - asset: assets/fonts/line-awesome.ttf
+  - family: Bebas
+    fonts:
+    - asset: assets/fonts/bebas.ttf
+  - family: SanFranciscoDisplay
+    fonts:
+    - asset: assets/fonts/sanfranciscodisplay-medium.ttf
+    - asset: assets/fonts/sanfranciscodisplay-semibold.ttf
+      weight: 500
+    - asset: assets/fonts/sanfranciscodisplay-bold.ttf
+      weight: 900
+  - family: mermaid
+    fonts:
+    - asset: assets/fonts/Mermaid1001.ttf
+  - family: bebas-neue
+    fonts:
+    - asset: assets/fonts/BebasNeue-Regular.ttf
